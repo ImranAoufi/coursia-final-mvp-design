@@ -18,10 +18,12 @@ const Pricing = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isAnnual, setIsAnnual] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
   
   // Get wizard data from navigation state
   const wizardData = location.state?.wizardData;
   const recommended = location.state?.recommended;
+  const fromWizard = !!wizardData;
 
   const tiers: PricingTier[] = [
     {
@@ -123,7 +125,10 @@ const Pricing = () => {
               Choose Your <span className="gradient-text">Perfect Plan</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              Transform your expertise into beautiful courses with the plan that fits your ambitions
+              {fromWizard 
+                ? "To create your complete course, please select an offer below"
+                : "Transform your expertise into beautiful courses with the plan that fits your ambitions"
+              }
             </p>
 
             {/* Monthly/Annual Toggle */}
@@ -178,11 +183,14 @@ const Pricing = () => {
                   )}
 
                   <div
-                    className={`h-full glass rounded-2xl p-8 transition-all duration-300 hover:scale-105 ${
+                    className={`h-full glass rounded-2xl p-8 transition-all duration-300 hover:scale-105 cursor-pointer ${
                       tier.highlighted
                         ? "border-2 border-primary/50 shadow-glow"
                         : "border border-glass-border hover:border-primary/30"
-                    } ${isRecommended ? "ring-2 ring-primary/30" : ""}`}
+                    } ${isRecommended ? "ring-2 ring-primary/30" : ""} ${
+                      selectedTier === tier.name ? "ring-2 ring-primary shadow-glow" : ""
+                    }`}
+                    onClick={() => fromWizard && setSelectedTier(tier.name)}
                   >
                     {/* Tier Header */}
                     <div className="mb-6">
@@ -201,13 +209,13 @@ const Pricing = () => {
                         )}
                         {price > 0 && (
                           <span className="text-muted-foreground ml-1">
-                            /{isAnnual ? "year" : "mo"}
+                            /mo
                           </span>
                         )}
                       </div>
                       {isAnnual && price > 0 && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          Billed annually (${(price * 12).toFixed(2)}/year)
+                          Billed annually (${(price * 12).toFixed(2)})
                         </p>
                       )}
                     </div>
@@ -232,18 +240,34 @@ const Pricing = () => {
                     </ul>
 
                     {/* CTA Button */}
-                    <Button
-                      variant={tier.highlighted ? "gradient" : "glass"}
-                      size="lg"
-                      className="w-full"
-                    >
-                      {tier.cta}
-                    </Button>
+                    {!fromWizard && (
+                      <Button
+                        variant={tier.highlighted ? "gradient" : "glass"}
+                        size="lg"
+                        className="w-full"
+                      >
+                        {tier.cta}
+                      </Button>
+                    )}
                   </div>
                 </div>
               );
             })}
           </div>
+
+          {/* Create Course Button (only shown when coming from wizard) */}
+          {fromWizard && (
+            <div className="text-center mt-12">
+              <Button
+                variant="gradient"
+                size="lg"
+                disabled={!selectedTier}
+                className="min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Create Course
+              </Button>
+            </div>
+          )}
 
           {/* Footer Note */}
           <div className="text-center mt-12">
