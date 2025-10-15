@@ -128,7 +128,7 @@ All colors MUST be HSL.
   }
 
   .light body {
-    background: linear-gradient(180deg, hsl(210 20% 98%), hsl(210 20% 94%));
+    background: linear-gradient(180deg, hsl(210 25% 98%), hsl(180 30% 95%), hsl(270 25% 96%));
   }
 
   /* Glass morphism utilities */
@@ -158,6 +158,32 @@ All colors MUST be HSL.
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid hsl(220 20% 60% / 0.3);
+  }
+
+  /* Light mode orb colors - vibrant and visible */
+  .light .orb-primary {
+    background: hsl(180 75% 45% / 0.25);
+  }
+
+  .light .orb-secondary {
+    background: hsl(270 65% 55% / 0.25);
+  }
+
+  .light .orb-accent {
+    background: hsl(210 80% 50% / 0.2);
+  }
+
+  /* Dark mode orb colors */
+  .orb-primary {
+    background: hsl(180 85% 55% / 0.2);
+  }
+
+  .orb-secondary {
+    background: hsl(270 70% 60% / 0.2);
+  }
+
+  .orb-accent {
+    background: hsl(210 85% 55% / 0.15);
   }
 
   /* Gradient text */

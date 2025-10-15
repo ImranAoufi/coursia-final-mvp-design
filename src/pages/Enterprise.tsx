@@ -14,6 +14,9 @@ import {
   TrendingUp,
   Check
 } from "lucide-react";
+import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { BackgroundOrbs } from "@/components/BackgroundOrbs";
 import logoFull from "@/assets/logo-full.png";
 
 const Enterprise = () => {
@@ -35,6 +38,8 @@ const Enterprise = () => {
 
   return (
     <div className="min-h-screen">
+      <BackgroundOrbs />
+      
       {/* Sticky Header */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -42,12 +47,7 @@ const Enterprise = () => {
         }`}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
-          <img 
-            src={logoFull} 
-            alt="Coursia" 
-            className="h-16 md:h-20 object-contain cursor-pointer" 
-            onClick={() => navigate("/")}
-          />
+          <Logo className="h-16 md:h-20 object-contain cursor-pointer" onClick={() => navigate("/")} />
           
           <nav className="hidden md:flex items-center gap-8">
             <button 
@@ -77,6 +77,7 @@ const Enterprise = () => {
           </nav>
 
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <button className="text-foreground/80 hover:text-foreground transition-colors">
               Login
             </button>
@@ -90,13 +91,6 @@ const Enterprise = () => {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-        {/* Animated background particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[128px] animate-float" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[128px] animate-float" style={{ animationDelay: "1s" }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[150px]" />
-        </div>
-
         <div className="container mx-auto max-w-6xl text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 animate-slide-up">
             <Building2 className="w-4 h-4 text-primary" />
@@ -348,10 +342,6 @@ const Enterprise = () => {
 
       {/* Final CTA Section */}
       <section className="py-32 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-brand opacity-10 rounded-full blur-[150px]" />
-        </div>
-
         <div className="container mx-auto max-w-4xl text-center relative z-10">
           <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
             Ready to build your organization's
