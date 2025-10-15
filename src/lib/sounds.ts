@@ -167,6 +167,69 @@ class SoundEngine {
     shimmer.stop(now + 0.28);
   }
 
+  // Step forward - rewarding progression sound (similar to confirmation but lighter)
+  playStepForward() {
+    const ctx = this.getContext();
+    const now = ctx.currentTime;
+    const master = this.getMasterGain();
+
+    // Create reverb for spatial depth
+    const reverb = this.createReverb(ctx, 0.6, 3.5);
+    const reverbGain = ctx.createGain();
+    reverbGain.gain.value = 0.25;
+    reverb.connect(reverbGain);
+    reverbGain.connect(master);
+
+    // Ascending triad - slightly different from confirmation
+    const frequencies = [659.25, 830.61, 1046.5]; // E5, G#5, C6
+    
+    frequencies.forEach((freq, index) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const panner = ctx.createStereoPanner();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+      
+      const startTime = now + (index * 0.04);
+      const duration = 0.22;
+      
+      // Smooth ADSR envelope
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.1, startTime + 0.012);
+      gain.gain.linearRampToValueAtTime(0.07, startTime + 0.07);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      
+      // Subtle stereo spread
+      panner.pan.value = (index - 1) * 0.2;
+      
+      osc.connect(gain);
+      gain.connect(panner);
+      panner.connect(master);
+      panner.connect(reverb);
+      
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    });
+
+    // Add crystalline shimmer (higher frequency than confirmation)
+    const shimmer = ctx.createOscillator();
+    const shimmerGain = ctx.createGain();
+    
+    shimmer.type = 'sine';
+    shimmer.frequency.setValueAtTime(2637, now + 0.07);
+    
+    shimmerGain.gain.setValueAtTime(0, now + 0.07);
+    shimmerGain.gain.linearRampToValueAtTime(0.07, now + 0.09);
+    shimmerGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    
+    shimmer.connect(shimmerGain);
+    shimmerGain.connect(reverb);
+    
+    shimmer.start(now + 0.07);
+    shimmer.stop(now + 0.25);
+  }
+
   // Progress tick - subtle blip with upward pitch sweep
   playProgressSound() {
     const ctx = this.getContext();
