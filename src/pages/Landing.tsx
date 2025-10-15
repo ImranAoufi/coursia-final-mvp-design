@@ -44,9 +44,12 @@ const Landing = () => {
             >
               Pricing
             </button>
-            <a href="#enterprise" className="text-foreground/80 hover:text-foreground transition-colors">
+            <button 
+              onClick={() => navigate("/enterprise")}
+              className="text-foreground/80 hover:text-foreground transition-colors"
+            >
               Enterprise
-            </a>
+            </button>
           </nav>
 
           <div className="flex items-center gap-4">
