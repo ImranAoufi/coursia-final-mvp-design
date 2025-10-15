@@ -90,7 +90,7 @@ const Landing = () => {
             <span className="text-foreground font-medium"> Upload once. We handle the rest.</span>
           </p>
 
-          <div className="flex flex-col items-center gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+          <div className="flex flex-col items-center gap-4 animate-slide-up relative z-20" style={{ animationDelay: "0.2s" }}>
             <Button 
               variant="gradient" 
               size="lg" 
@@ -246,15 +246,17 @@ const Landing = () => {
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
             No more editing, designing, or building. Just record and publish — in hours.
           </p>
-          <Button 
-            variant="gradient" 
-            size="lg" 
-            onClick={handleStartCreating}
-            className="text-lg px-12 py-6 h-auto group shadow-glow"
-          >
-            Start My Course Now
-            <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <div className="relative z-20">
+            <Button 
+              variant="gradient" 
+              size="lg" 
+              onClick={handleStartCreating}
+              className="text-lg px-12 py-6 h-auto group shadow-glow"
+            >
+              Start My Course Now
+              <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
         </div>
       </section>
 

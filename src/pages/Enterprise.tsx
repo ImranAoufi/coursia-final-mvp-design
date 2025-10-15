@@ -105,7 +105,7 @@ const Enterprise = () => {
             powered by
             <br />
             <span className="inline-flex items-center justify-center gap-4 mt-2">
-              <img src={logoFull} alt="Coursia" className="h-24 md:h-28 lg:h-32 inline-block" />
+              <Logo className="h-24 md:h-28 lg:h-32 inline-block" />
               <span className="gradient-text">Enterprise.</span>
             </span>
           </h1>
@@ -114,7 +114,7 @@ const Enterprise = () => {
             Custom AI course creation and branded learning infrastructure for teams, schools, and companies.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up relative z-20" style={{ animationDelay: "0.2s" }}>
             <Button 
               variant="gradient" 
               size="lg" 
@@ -353,7 +353,7 @@ const Enterprise = () => {
             Join the future of education. Let's discuss how Coursia Enterprise can transform your organization's learning infrastructure.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-20">
             <Button 
               variant="gradient" 
               size="lg" 
