@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Rocket, Upload, Wand2, Eye, Check } from "lucide-react";
-import logoFull from "@/assets/logo-full.png";
+import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { soundEngine } from "@/lib/sounds";
 
 const Landing = () => {
@@ -23,7 +24,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen relative bg-[hsl(220,40%,6%)]">
+    <div className="min-h-screen relative">
       {/* Animated Background Orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         {/* Turquoise orbs */}
@@ -46,7 +47,7 @@ const Landing = () => {
         }`}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
-          <img src={logoFull} alt="Coursia" className="h-16 md:h-20 object-contain" />
+          <Logo />
           
           <nav className="hidden md:flex items-center gap-8">
             <a href="#product" className="text-foreground/80 hover:text-foreground transition-colors">
@@ -70,6 +71,7 @@ const Landing = () => {
           </nav>
 
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <button className="text-foreground/80 hover:text-foreground transition-colors">
               Login
             </button>

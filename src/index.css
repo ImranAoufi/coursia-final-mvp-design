@@ -62,6 +62,55 @@ All colors MUST be HSL.
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+
+  /* Light Mode - Premium Glass with substance */
+  .light {
+    --background: 210 20% 96%;
+    --foreground: 220 30% 12%;
+
+    /* Glass card system - light with subtle tint */
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 12%;
+    --glass-background: 0 0% 100% / 0.7;
+    --glass-border: 220 20% 60% / 0.2;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 12%;
+
+    /* Turquoise - Trust & Clarity (primary) */
+    --primary: 180 75% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 180 75% 55%;
+
+    /* Purple - Creativity & Transformation (secondary) */
+    --secondary: 270 65% 55%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-glow: 270 65% 65%;
+
+    /* Blue - Tech & Professional */
+    --accent: 210 80% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 220 15% 88%;
+    --muted-foreground: 220 20% 40%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 70% / 0.3;
+    --input: 220 20% 85% / 0.5;
+    --ring: 180 75% 45%;
+
+    /* Gradients - maintain vibrancy in light mode */
+    --gradient-brand: linear-gradient(135deg, hsl(180 75% 45%), hsl(210 80% 50%), hsl(270 65% 55%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100% / 0.8), hsl(210 20% 96%));
+    --gradient-glass: linear-gradient(135deg, hsl(180 75% 45% / 0.15), hsl(270 65% 55% / 0.15));
+
+    /* Shadows with glow effects for light mode */
+    --shadow-glow: 0 0 40px hsl(180 75% 45% / 0.25);
+    --shadow-glass: 0 8px 32px hsl(220 20% 20% / 0.1);
+    --shadow-elevated: 0 20px 60px hsl(220 20% 20% / 0.15);
+  }
 }
 
 @layer base {
@@ -71,8 +120,15 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(180deg, hsl(220 30% 8%), hsl(220 35% 6%));
     min-height: 100vh;
+  }
+
+  body:not(.light) {
+    background: linear-gradient(180deg, hsl(220 30% 8%), hsl(220 35% 6%));
+  }
+
+  .light body {
+    background: linear-gradient(180deg, hsl(210 20% 98%), hsl(210 20% 94%));
   }
 
   /* Glass morphism utilities */
@@ -88,6 +144,20 @@ All colors MUST be HSL.
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid hsl(0 0% 100% / 0.15);
+  }
+
+  .light .glass {
+    background: hsl(0 0% 100% / 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(220 20% 60% / 0.25);
+  }
+
+  .light .glass-strong {
+    background: hsl(0 0% 100% / 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsl(220 20% 60% / 0.3);
   }
 
   /* Gradient text */

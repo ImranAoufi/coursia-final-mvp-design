@@ -9,7 +9,8 @@ import OutcomeStep from "./wizard/steps/OutcomeStep";
 import AudienceStep from "./wizard/steps/AudienceStep";
 import CourseSizeStep from "./wizard/steps/CourseSizeStep";
 import MaterialsStep from "./wizard/steps/MaterialsStep";
-import logoFull from "@/assets/logo-full.png";
+import { Logo } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 import { soundEngine } from "@/lib/sounds";
 
 interface WizardData {
@@ -101,9 +102,13 @@ const IntakeWizard = () => {
     <div className="min-h-screen">
       <CompletionMeter currentStep={currentStep} totalSteps={totalSteps} />
 
-      {/* Logo */}
-      <div className="fixed top-6 left-6 z-40">
-        <img src={logoFull} alt="Coursia" className="h-8 object-contain animate-glow" />
+      {/* Logo and Theme Toggle */}
+      <div className="fixed top-6 left-6 z-40 flex items-center gap-4">
+        <Logo className="h-8 object-contain animate-glow" />
+      </div>
+      
+      <div className="fixed top-6 right-6 z-40">
+        <ThemeToggle />
       </div>
 
       {/* Back to Home Button */}
