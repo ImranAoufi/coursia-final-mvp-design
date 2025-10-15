@@ -10,6 +10,7 @@ import AudienceStep from "./wizard/steps/AudienceStep";
 import CourseSizeStep from "./wizard/steps/CourseSizeStep";
 import MaterialsStep from "./wizard/steps/MaterialsStep";
 import logoFull from "@/assets/logo-full.png";
+import { soundEngine } from "@/lib/sounds";
 
 interface WizardData {
   outcome?: string;
@@ -31,6 +32,7 @@ const IntakeWizard = () => {
     setWizardData(updatedData);
     
     if (currentStep < totalSteps) {
+      soundEngine.playProgressSound();
       setCurrentStep(currentStep + 1);
     } else {
       // Wizard completed - navigate to pricing with recommendations

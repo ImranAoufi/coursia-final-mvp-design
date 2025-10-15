@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Rocket, Upload, Wand2, Eye, Check } from "lucide-react";
 import logoFull from "@/assets/logo-full.png";
+import { soundEngine } from "@/lib/sounds";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const Landing = () => {
   }, []);
 
   const handleStartCreating = () => {
+    soundEngine.playButtonClick();
     navigate("/wizard");
   };
 
