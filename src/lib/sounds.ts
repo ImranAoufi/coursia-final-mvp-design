@@ -194,10 +194,9 @@ class SoundEngine {
       const startTime = now + (index * 0.04);
       const duration = 0.22;
       
-      // Smooth ADSR envelope
-      gain.gain.setValueAtTime(0, startTime);
-      gain.gain.linearRampToValueAtTime(0.1, startTime + 0.012);
-      gain.gain.linearRampToValueAtTime(0.07, startTime + 0.07);
+      // Instant, punchy ADSR envelope for immediate response
+      gain.gain.setValueAtTime(0.12, startTime);
+      gain.gain.linearRampToValueAtTime(0.08, startTime + 0.06);
       gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
       
       // Subtle stereo spread
@@ -219,9 +218,8 @@ class SoundEngine {
     shimmer.type = 'sine';
     shimmer.frequency.setValueAtTime(2637, now + 0.07);
     
-    shimmerGain.gain.setValueAtTime(0, now + 0.07);
-    shimmerGain.gain.linearRampToValueAtTime(0.07, now + 0.09);
-    shimmerGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    shimmerGain.gain.setValueAtTime(0.06, now + 0.06);
+    shimmerGain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
     
     shimmer.connect(shimmerGain);
     shimmerGain.connect(reverb);
