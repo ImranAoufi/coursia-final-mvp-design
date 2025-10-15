@@ -32,7 +32,7 @@ const IntakeWizard = () => {
     setWizardData(updatedData);
     
     if (currentStep < totalSteps) {
-      soundEngine.playProgressSound();
+      soundEngine.playTransition();
       setCurrentStep(currentStep + 1);
     } else {
       // Wizard completed - navigate to pricing with recommendations
