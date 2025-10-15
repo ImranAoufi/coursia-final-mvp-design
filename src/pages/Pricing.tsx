@@ -68,8 +68,8 @@ const Pricing = () => {
     },
     {
       name: "Enterprise",
-      price: 1119.99,
-      priceAnnual: 1007.99,
+      price: 119.99,
+      priceAnnual: 107.99,
       description: "For organizations at scale",
       features: [
         "Custom pricing available",
