@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Rocket, Upload, Wand2, Eye, Check } from "lucide-react";
-import logoFull from "@/assets/logo-full.jpg";
+import logoFull from "@/assets/logo-full.png";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Landing = () => {
         }`}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
-          <img src={logoFull} alt="Coursia" className="h-8 object-contain" />
+          <img src={logoFull} alt="Coursia" className="h-16 md:h-20 object-contain" />
           
           <nav className="hidden md:flex items-center gap-8">
             <a href="#product" className="text-foreground/80 hover:text-foreground transition-colors">
