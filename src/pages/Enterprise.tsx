@@ -103,13 +103,15 @@ const Enterprise = () => {
             <span className="text-sm font-medium">Enterprise Solution</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up leading-tight">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up leading-tight">
             Transform how your organization learns
             <br />
-            — powered by
+            —
+            <br />
+            powered by
             <br />
             <span className="inline-flex items-center justify-center gap-4 mt-2">
-              <img src={logoFull} alt="Coursia" className="h-20 md:h-28 lg:h-32 inline-block" />
+              <img src={logoFull} alt="Coursia" className="h-16 md:h-20 lg:h-24 inline-block" />
               <span className="gradient-text">Enterprise.</span>
             </span>
           </h1>
