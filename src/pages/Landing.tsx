@@ -18,7 +18,7 @@ const Landing = () => {
   }, []);
 
   const handleStartCreating = () => {
-    soundEngine.playButtonClick();
+    soundEngine.playConfirmation();
     navigate("/wizard");
   };
 
