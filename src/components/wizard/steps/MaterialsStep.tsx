@@ -118,7 +118,7 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
           size="lg"
           className="w-full sm:flex-1"
         >
-          Generate Preview
+          Continue to Pricing
           <ChevronRight className="w-4 h-4 ml-2" />
         </Button>
       </div>

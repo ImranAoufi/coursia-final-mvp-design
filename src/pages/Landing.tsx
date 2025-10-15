@@ -38,9 +38,12 @@ const Landing = () => {
             <a href="#learn" className="text-foreground/80 hover:text-foreground transition-colors">
               Learn
             </a>
-            <a href="#pricing" className="text-foreground/80 hover:text-foreground transition-colors">
+            <button 
+              onClick={() => navigate("/pricing")}
+              className="text-foreground/80 hover:text-foreground transition-colors"
+            >
               Pricing
-            </a>
+            </button>
             <a href="#enterprise" className="text-foreground/80 hover:text-foreground transition-colors">
               Enterprise
             </a>
@@ -262,9 +265,12 @@ const Landing = () => {
             <a href="#learn" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
               Learn
             </a>
-            <a href="#pricing" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
+            <button 
+              onClick={() => navigate("/pricing")}
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >
               Pricing
-            </a>
+            </button>
             <a href="#careers" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
               Careers
             </a>

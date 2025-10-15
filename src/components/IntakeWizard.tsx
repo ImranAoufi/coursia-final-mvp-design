@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import CompletionMeter from "./CompletionMeter";
 import WizardStep from "./wizard/WizardStep";
@@ -6,7 +7,7 @@ import OutcomeStep from "./wizard/steps/OutcomeStep";
 import AudienceStep from "./wizard/steps/AudienceStep";
 import CourseSizeStep from "./wizard/steps/CourseSizeStep";
 import MaterialsStep from "./wizard/steps/MaterialsStep";
-import logoFull from "@/assets/logo-full.jpg";
+import logoFull from "@/assets/logo-full.png";
 
 interface WizardData {
   outcome?: string;
@@ -18,15 +19,43 @@ interface WizardData {
 }
 
 const IntakeWizard = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [wizardData, setWizardData] = useState<WizardData>({});
   const totalSteps = 4;
 
   const handleNext = (stepData: Partial<WizardData>) => {
-    setWizardData({ ...wizardData, ...stepData });
+    const updatedData = { ...wizardData, ...stepData };
+    setWizardData(updatedData);
+    
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
+    } else {
+      // Wizard completed - navigate to pricing with recommendations
+      handleComplete(updatedData);
     }
+  };
+
+  const handleComplete = (data: WizardData) => {
+    // Determine recommended plan based on wizard data
+    let recommended = "Starter";
+    
+    // Logic for recommendations
+    if (data.courseSize === "mini" || data.courseSize === "micro") {
+      recommended = "Free";
+    } else if (data.courseSize === "standard" && data.audienceLevel === "beginner") {
+      recommended = "Starter";
+    } else if (data.courseSize === "comprehensive" || data.audienceLevel === "advanced") {
+      recommended = "Pro";
+    }
+    
+    // Navigate to pricing with wizard data and recommendation
+    navigate("/pricing", {
+      state: {
+        wizardData: data,
+        recommended: recommended
+      }
+    });
   };
 
   const handleBack = () => {
