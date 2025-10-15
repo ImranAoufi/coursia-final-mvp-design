@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "./ui/button";
 import CompletionMeter from "./CompletionMeter";
 import WizardStep from "./wizard/WizardStep";
 import OutcomeStep from "./wizard/steps/OutcomeStep";
@@ -100,6 +102,18 @@ const IntakeWizard = () => {
       {/* Logo */}
       <div className="fixed top-6 left-6 z-40">
         <img src={logoFull} alt="Coursia" className="h-8 object-contain animate-glow" />
+      </div>
+
+      {/* Back to Home Button */}
+      <div className="fixed bottom-6 left-6 z-40">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/")}
+          className="rounded-full hover:bg-accent/50"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
       </div>
 
       {/* Main content */}
