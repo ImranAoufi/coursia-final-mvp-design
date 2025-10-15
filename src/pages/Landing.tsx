@@ -29,7 +29,7 @@ const Landing = () => {
         }`}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
-          <img src={logoFull} alt="Coursia" className="h-12 object-contain" />
+          <img src={logoFull} alt="Coursia" className="h-14 md:h-16 object-contain bg-transparent mix-blend-multiply" />
           
           <nav className="hidden md:flex items-center gap-8">
             <a href="#product" className="text-foreground/80 hover:text-foreground transition-colors">
