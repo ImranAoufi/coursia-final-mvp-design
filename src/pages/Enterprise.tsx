@@ -104,11 +104,13 @@ const Enterprise = () => {
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up leading-tight">
-            Scale your organization's
+            Transform how your organization learns
             <br />
-            knowledge — powered by
-            <br />
-            <span className="gradient-text">Coursia Enterprise.</span>
+            <span className="inline-flex items-center gap-4 mt-4">
+              — powered by 
+              <img src={logoFull} alt="Coursia" className="h-16 md:h-20 inline-block" />
+              <span className="gradient-text">Enterprise.</span>
+            </span>
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 animate-slide-up max-w-4xl mx-auto leading-relaxed" style={{ animationDelay: "0.1s" }}>
