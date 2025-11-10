@@ -1,0 +1,74 @@
+{
+  "course_title": "Strength Unleashed: Your Path to Gym Mastery",
+  "course_description": "Unlock your potential in the gym by understanding the fundamentals of strength training and the mindset needed to succeed.",
+  "lessons": [
+    {
+      "lesson_title": "Foundations of Strength Training",
+      "videos": [
+        {
+          "title": "Understanding Muscle Groups",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_1\\script_l1_v1.txt",
+          "script_content": "Welcome to 'Foundations of Strength Training'. In this video, we will explore the primary muscle groups involved in strength training. Let's start with the major muscle groups: the chest, back, legs, shoulders, arms, and core. Each group plays a crucial role in compound and isolation exercises. For instance, the chest muscles, including the pectoralis major and minor, are primarily targeted during bench presses and push-ups. The back muscles, such as the latissimus dorsi and trapezius, engage during rows and pull-ups. Legs consist of quadriceps, hamstrings, and calves, which are worked during squats and deadlifts. Shoulders, primarily the deltoids, are engaged in overhead presses. Arms include biceps and triceps, which are targeted in curls and extensions. Finally, the core, including the abdominals and obliques, is essential for stability in all movements. Understanding these muscle groups will help you design effective strength training programs. Now, let's move on to how these muscles gain strength."
+        },
+        {
+          "title": "The Science Behind Strength Gains",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_1\\script_l1_v2.txt",
+          "script_content": "In this video, we will discuss the science behind strength gains. Strength training works on the principle of progressive overload, which means gradually increasing the weight, frequency, or number of repetitions in your workout. This stimulates muscle fibers to adapt and grow stronger. During strength training, micro-tears occur in the muscle fibers, which the body repairs, leading to increased muscle size and strength. Additionally, hormones like testosterone and growth hormone play vital roles in muscle recovery and growth. It's also important to consider nutrition; protein intake is essential for muscle repair. Remember, rest and recovery are just as crucial as the training itself, as muscles need time to heal and grow stronger. Understanding this science will empower you to train smarter, not harder. Thank you for watching, and let's apply this knowledge in our training."
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Nutrition for Strength: Fueling Your Gains",
+      "videos": [
+        {
+          "title": "Macronutrients Explained",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_2\\script_l2_v1.txt",
+          "script_content": "Welcome to 'Nutrition for Strength: Fueling Your Gains'. In this video, we'll explore macronutrients, the building blocks of your diet. First, let's define macronutrients: proteins, carbohydrates, and fats. Each plays a crucial role in muscle growth and recovery. Proteins are essential for repairing and building muscle tissue. Aim for 1.6 to 2.2 grams of protein per kilogram of body weight daily. Next, carbohydrates provide the energy needed for intense workouts. Focus on complex carbs like whole grains, fruits, and vegetables. Finally, healthy fats support hormone production and overall health. Include sources like avocados, nuts, and olive oil in your diet. Remember, balance is key! Track your intake and adjust as needed to fuel your gains effectively."
+        },
+        {
+          "title": "Meal Planning for Muscle Growth",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_2\\script_l2_v2.txt",
+          "script_content": "Welcome back! In this video, we will discuss meal planning for muscle growth. Start by setting your daily caloric needs based on your activity level and goals. Use a food diary or app to track what you eat. Aim for 5-6 smaller meals throughout the day to maintain energy levels and support muscle repair. Each meal should include a source of protein, complex carbohydrates, and healthy fats. For example, a meal could consist of grilled chicken, quinoa, and steamed broccoli. Don’t forget to hydrate; water is vital for muscle function. Lastly, prepare meals in advance to avoid unhealthy choices. With proper planning, you can ensure you’re consistently fueling your body for strength gains."
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "The Art of Consistency: Building a Routine",
+      "videos": [
+        {
+          "title": "Creating an Effective Workout Schedule",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_3\\script_l3_v1.txt",
+          "script_content": "Welcome to 'The Art of Consistency: Building a Routine'. In this video, we’ll explore how to create an effective workout schedule that fits your lifestyle. Start by assessing your current commitments. Write down your daily and weekly obligations. Next, identify the best times for your workouts. Are you a morning person or do you prefer evening sessions? Once you have your time slots, choose the types of workouts you enjoy. Mix cardio, strength training, and flexibility exercises to keep things interesting. Finally, use a planner or app to schedule your workouts just like any important appointment. Consistency is key, so stick to your schedule, and remember to adjust as needed. Let's get started on your journey to a more consistent routine!"
+        },
+        {
+          "title": "Staying Motivated Through Challenges",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_3\\script_l3_v2.txt",
+          "script_content": "Welcome back! In this video, we’ll discuss staying motivated through challenges while building your routine. First, recognize that obstacles are part of the process. When you face a setback, reflect on what caused it and how you can overcome it. Set small, achievable goals to maintain motivation. Celebrate your progress, no matter how small. Find a workout buddy or join a community for support and accountability. Lastly, keep your end goal in mind and visualize your success. Remember, consistency takes time, and every step you take is a step closer to your goals. Let’s keep pushing through together!"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Tracking Progress: Metrics that Matter",
+      "videos": [
+        {
+          "title": "How to Measure Strength Improvements",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_4\\script_l4_v1.txt",
+          "script_content": "Welcome to 'Tracking Progress: Metrics that Matter'. In this video, we'll explore how to measure strength improvements effectively. First, let's discuss what strength metrics are important. Key metrics include your one-rep max, volume lifted, and frequency of workouts. To measure your one-rep max, start with a weight you can lift comfortably for several reps. Gradually increase the weight until you find your maximum for one rep. Keep a record of this number. Next, let's talk about volume. This is calculated by multiplying the weight lifted by the number of sets and reps. For example, if you lift 100 pounds for 5 sets of 5 reps, your volume is 2500 pounds. Lastly, track the frequency of your workouts. Are you training each muscle group once a week, twice, or more? Consistency is key to progress. Now, let's summarize: measure your one-rep max, calculate your volume, and track workout frequency. These metrics will help you see improvements over time. In our next video, we will discuss how to adjust your program for continuous growth. Stay tuned!"
+        },
+        {
+          "title": "Adjusting Your Program for Continuous Growth",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_4\\script_l4_v2.txt",
+          "script_content": "Welcome back! In this video, we will discuss adjusting your program for continuous growth. It's essential to adapt your training as you progress. First, increase the weight you lift gradually. Aim for a 5-10% increase in weight when you can complete all your sets and reps comfortably. Secondly, consider varying your exercises. If you always do the same movements, your muscles can adapt, leading to a plateau. Introduce new exercises or change the order of your routine. Thirdly, incorporate deload weeks. These are periods where you reduce your training volume or intensity, allowing your muscles to recover and grow. Lastly, listen to your body. If you're feeling fatigued, it might be time to adjust your program. Remember, tracking your progress is about more than just numbers; it's about understanding your body and making informed decisions. Thanks for watching, and keep pushing towards your goals!"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\ebb00510-1ded-4600-8860-b92a9d259fe6\\lesson_4\\workbook.txt"
+    }
+  ]
+}

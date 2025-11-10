@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What does Ummah refer to in Islam?",
+      "options": [
+        "A community of believers",
+        "A type of prayer",
+        "A religious text",
+        "A historical figure"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which of the following is one of the five pillars of Islam?",
+      "options": [
+        "Zakat",
+        "Charity",
+        "Fasting",
+        "Pilgrimage"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What is the primary purpose of Salah?",
+      "options": [
+        "Community building",
+        "Direct link to Allah",
+        "Social interaction",
+        "Cultural practice"
+      ],
+      "answer": "B"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "course_title": "The Art of Laughter: Harnessing Humor for Connection",
+  "course_description": "Discover the power of humor to enhance relationships, relieve stress, and create memorable interactions.",
+  "lessons": [
+    {
+      "lesson_title": "Unlocking the Power of Humor",
+      "videos": [
+        {
+          "title": "The Science Behind Laughter",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_1\\script_l1_v1.txt"
+        },
+        {
+          "title": "Types of Humor and Their Impact",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_1\\script_l1_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Crafting Your Unique Humor Style",
+      "videos": [
+        {
+          "title": "Finding Your Funny",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_2\\script_l2_v1.txt"
+        },
+        {
+          "title": "Tailoring Humor to Your Audience",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_2\\script_l2_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "Using Humor to Build Connections",
+      "videos": [
+        {
+          "title": "Icebreakers and Humor",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_3\\script_l3_v1.txt"
+        },
+        {
+          "title": "Humor in Everyday Conversations",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_3\\script_l3_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Navigating Humor's Sensitivities",
+      "videos": [
+        {
+          "title": "When Humor Backfires",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_4\\script_l4_v1.txt"
+        },
+        {
+          "title": "Cultural Sensitivity in Jokes",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_4\\script_l4_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\b4557de4-9c71-42eb-af10-b183329a631c\\lesson_4\\workbook.txt"
+    }
+  ]
+}

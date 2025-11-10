@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {
+      "question": "What is Tajweed?",
+      "options": [
+        "A set of rules for pronunciation",
+        "A type of Quran",
+        "An Arabic dialect",
+        "A historical event"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Why is reflection important in Quranic study?",
+      "options": [
+        "It helps with memorization",
+        "It deepens understanding",
+        "It is not important",
+        "It is only for scholars"
+      ],
+      "answer": "B"
+    }
+  ]
+}

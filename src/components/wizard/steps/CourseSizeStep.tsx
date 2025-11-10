@@ -43,6 +43,13 @@ const CourseSizeStep = ({ onNext, onBack }: CourseSizeStepProps) => {
     },
   ];
 
+  // ✅ NEU: Funktion, die Auswahl setzt UND in Session Storage speichert
+  const handleSelectSize = (sizeId: string) => {
+    setCourseSize(sizeId);
+    sessionStorage.setItem("courseSize", sizeId); // 🔥 speichert Kursgröße dauerhaft für MaterialsStep
+    console.log("📦 Course size saved to session:", sizeId);
+  };
+
   return (
     <div className="space-y-8">
       <div className="text-center max-w-2xl mx-auto mb-8">
@@ -56,16 +63,15 @@ const CourseSizeStep = ({ onNext, onBack }: CourseSizeStepProps) => {
         {sizes.map((size) => {
           const Icon = size.icon;
           const isSelected = courseSize === size.id;
-          
+
           return (
             <button
               key={size.id}
-              onClick={() => setCourseSize(size.id)}
-              className={`glass rounded-2xl p-8 transition-all duration-300 hover:scale-105 text-left group relative border-2 ${
-                isSelected
+              onClick={() => handleSelectSize(size.id)} // ⚡ geändert – nutzt neue Funktion
+              className={`glass rounded-2xl p-8 transition-all duration-300 hover:scale-105 text-left group relative border-2 ${isSelected
                   ? "border-primary shadow-glow"
                   : "border-glass-border hover:border-primary/50"
-              }`}
+                }`}
             >
               {size.recommended && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -74,16 +80,18 @@ const CourseSizeStep = ({ onNext, onBack }: CourseSizeStepProps) => {
                   </span>
                 </div>
               )}
-              
+
               <div className="flex flex-col gap-4">
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${size.color} flex items-center justify-center`}>
+                <div
+                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${size.color} flex items-center justify-center`}
+                >
                   <Icon className="w-8 h-8 text-white" />
                 </div>
-                
+
                 <div>
                   <h4 className="font-bold text-lg mb-1">{size.title}</h4>
                   <p className="text-xs text-muted-foreground mb-3">{size.description}</p>
-                  
+
                   <div className="space-y-1.5 text-sm">
                     <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
@@ -106,12 +114,7 @@ const CourseSizeStep = ({ onNext, onBack }: CourseSizeStepProps) => {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Button
-          onClick={onBack}
-          variant="glass"
-          size="lg"
-          className="w-full sm:w-auto"
-        >
+        <Button onClick={onBack} variant="glass" size="lg" className="w-full sm:w-auto">
           Back
         </Button>
         <Button

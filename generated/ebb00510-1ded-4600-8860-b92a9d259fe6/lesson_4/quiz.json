@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is one way to measure strength improvements?",
+      "options": [
+        "Body weight",
+        "One-rep max",
+        "Workout duration",
+        "Nutrition intake"
+      ],
+      "answer": "One-rep max"
+    },
+    {
+      "question": "What should you do when you can comfortably complete all sets and reps?",
+      "options": [
+        "Decrease weight",
+        "Increase weight",
+        "Change diet",
+        "Rest longer"
+      ],
+      "answer": "Increase weight"
+    },
+    {
+      "question": "What is volume in strength training?",
+      "options": [
+        "Total weight lifted",
+        "Total time spent",
+        "Number of exercises",
+        "Workout frequency"
+      ],
+      "answer": "Total weight lifted"
+    }
+  ]
+}

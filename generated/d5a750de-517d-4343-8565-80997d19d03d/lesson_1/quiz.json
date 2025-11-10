@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a comfort zone?",
+      "options": [
+        "A safe space for growth",
+        "A place of stagnation",
+        "An area of discomfort",
+        "A challenge zone"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you do when identifying comfort zones?",
+      "options": [
+        "Ignore them",
+        "Reflect on routines",
+        "Embrace them",
+        "Avoid challenges"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is the first step to breaking a comfort zone?",
+      "options": [
+        "Take a big leap",
+        "Identify it",
+        "Stay comfortable",
+        "Seek advice"
+      ],
+      "answer": "B"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step to finding activities you love?",
+      "options": [
+        "Try every class available",
+        "Reflect on past experiences",
+        "Ask friends for suggestions",
+        "Follow social media trends"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "How can you build consistency in your workouts?",
+      "options": [
+        "Workout only when you feel like it",
+        "Set realistic goals",
+        "Avoid scheduling workouts",
+        "Change activities daily"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is an effective method to track progress?",
+      "options": [
+        "Ignore results",
+        "Use a fitness app or journal",
+        "Only track weight",
+        "Focus on one workout only"
+      ],
+      "answer": "B"
+    }
+  ]
+}

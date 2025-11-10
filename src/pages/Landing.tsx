@@ -6,6 +6,7 @@ import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
 import { soundEngine } from "@/lib/sounds";
+import { testBackend, generateFromBackend } from "@/api";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -30,13 +31,12 @@ const Landing = () => {
 
       {/* Sticky Header */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? "glass py-3" : "py-6"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass py-3" : "py-6"
+          }`}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
           <Logo />
-          
+
           <nav className="hidden md:flex items-center gap-8">
             <a href="#product" className="text-foreground/80 hover:text-foreground transition-colors">
               Product
@@ -44,13 +44,13 @@ const Landing = () => {
             <a href="#learn" className="text-foreground/80 hover:text-foreground transition-colors">
               Learn
             </a>
-            <button 
+            <button
               onClick={() => navigate("/pricing")}
               className="text-foreground/80 hover:text-foreground transition-colors"
             >
               Pricing
             </button>
-            <button 
+            <button
               onClick={() => navigate("/enterprise")}
               className="text-foreground/80 hover:text-foreground transition-colors"
             >
@@ -86,14 +86,14 @@ const Landing = () => {
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 animate-slide-up max-w-3xl mx-auto" style={{ animationDelay: "0.1s" }}>
-            Coursia builds your entire course — lessons, videos, quizzes, and landing page — from your words. 
+            Coursia builds your entire course — lessons, videos, quizzes, and landing page — from your words.
             <span className="text-foreground font-medium"> Upload once. We handle the rest.</span>
           </p>
 
           <div className="flex flex-col items-center gap-4 animate-slide-up relative z-20" style={{ animationDelay: "0.2s" }}>
-            <Button 
-              variant="gradient" 
-              size="lg" 
+            <Button
+              variant="gradient"
+              size="lg"
               onClick={handleStartCreating}
               className="text-lg px-12 py-6 h-auto group shadow-glow"
             >
@@ -106,7 +106,7 @@ const Landing = () => {
           </div>
 
           {/* Interactive Creation Card */}
-          <div 
+          <div
             className="glass-strong rounded-2xl p-8 mt-16 max-w-2xl mx-auto cursor-pointer hover:scale-[1.02] transition-all duration-300 group animate-slide-up"
             style={{ animationDelay: "0.3s" }}
             onClick={handleStartCreating}
@@ -209,7 +209,7 @@ const Landing = () => {
           <div className="relative">
             {/* Connection line */}
             <div className="absolute top-12 left-0 right-0 h-0.5 bg-gradient-brand opacity-20 hidden md:block" />
-            
+
             <div className="grid md:grid-cols-4 gap-8 relative">
               {[
                 { num: "01", title: "Upload your material", icon: Upload, desc: "Drop in notes, slides, videos, or just talk" },
@@ -217,8 +217,8 @@ const Landing = () => {
                 { num: "03", title: "You review & polish", icon: Eye, desc: "Quick edits and personalization in minutes" },
                 { num: "04", title: "Launch instantly", icon: Rocket, desc: "One click to publish and start selling" },
               ].map((step, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="flex flex-col items-center text-center group"
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
@@ -247,9 +247,9 @@ const Landing = () => {
             No more editing, designing, or building. Just record and publish — in hours.
           </p>
           <div className="relative z-20">
-            <Button 
-              variant="gradient" 
-              size="lg" 
+            <Button
+              variant="gradient"
+              size="lg"
               onClick={handleStartCreating}
               className="text-lg px-12 py-6 h-auto group shadow-glow"
             >
@@ -271,7 +271,7 @@ const Landing = () => {
             <a href="#learn" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
               Learn
             </a>
-            <button 
+            <button
               onClick={() => navigate("/pricing")}
               className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >

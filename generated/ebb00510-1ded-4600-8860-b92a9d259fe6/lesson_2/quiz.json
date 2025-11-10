@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the recommended protein intake for muscle growth?",
+      "options": [
+        "0.8 grams/kg",
+        "1.2 grams/kg",
+        "1.6-2.2 grams/kg",
+        "3 grams/kg"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "Which macronutrient primarily provides energy for workouts?",
+      "options": [
+        "Proteins",
+        "Carbohydrates",
+        "Fats",
+        "Vitamins"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is a good habit for meal planning?",
+      "options": [
+        "Eating one large meal",
+        "Skipping meals",
+        "Preparing meals in advance",
+        "Only eating snacks"
+      ],
+      "answer": "C"
+    }
+  ]
+}

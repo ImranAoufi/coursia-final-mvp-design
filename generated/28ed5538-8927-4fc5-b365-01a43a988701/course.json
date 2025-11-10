@@ -1,0 +1,66 @@
+{
+  "course_title": "The Art of Whimsical Communication",
+  "course_description": "Dive into the quirky side of communication, where humor and creativity blend to enhance your connections.",
+  "lessons": [
+    {
+      "lesson_title": "Finding Humor in Everyday Conversations",
+      "videos": [
+        {
+          "title": "The Science of Laughter",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_1\\script_l1_v1.txt"
+        },
+        {
+          "title": "Injecting Wit into Dialogue",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_1\\script_l1_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Creative Storytelling Techniques",
+      "videos": [
+        {
+          "title": "Crafting Engaging Narratives",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_2\\script_l2_v1.txt"
+        },
+        {
+          "title": "Using Metaphors to Captivate",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_2\\script_l2_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "Nonverbal Cues and Playfulness",
+      "videos": [
+        {
+          "title": "Understanding Body Language",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_3\\script_l3_v1.txt"
+        },
+        {
+          "title": "Expressive Gestures to Amplify Messages",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_3\\script_l3_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Building Connections Through Play",
+      "videos": [
+        {
+          "title": "Games as a Communication Tool",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_4\\script_l4_v1.txt"
+        },
+        {
+          "title": "Fun Activities to Strengthen Bonds",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_4\\script_l4_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\28ed5538-8927-4fc5-b365-01a43a988701\\lesson_4\\workbook.txt"
+    }
+  ]
+}

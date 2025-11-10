@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary purpose of a unique value proposition?",
+      "options": [
+        "A. To confuse competitors",
+        "B. To articulate brand differentiation",
+        "C. To increase prices",
+        "D. To enhance product features"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which color is often associated with trust in branding?",
+      "options": [
+        "A. Red",
+        "B. Blue",
+        "C. Green",
+        "D. Yellow"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should a logo primarily be?",
+      "options": [
+        "A. Complex",
+        "B. Recognizable",
+        "C. Colorful",
+        "D. Trendy"
+      ],
+      "answer": "B"
+    }
+  ]
+}

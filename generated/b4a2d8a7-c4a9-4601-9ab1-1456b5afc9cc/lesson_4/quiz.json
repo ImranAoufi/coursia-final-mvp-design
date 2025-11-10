@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in finding activities you love?",
+      "options": [
+        "Try new sports",
+        "Reflect on childhood activities",
+        "Join a gym",
+        "Follow online trends"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is a good way to build consistency in workouts?",
+      "options": [
+        "Work out whenever you feel like it",
+        "Set a specific schedule",
+        "Only exercise on weekends",
+        "Skip workouts if you're tired"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is tracking progress important?",
+      "options": [
+        "It helps you compare with others",
+        "It makes workouts longer",
+        "It keeps you motivated",
+        "It allows you to skip workouts"
+      ],
+      "answer": "C"
+    }
+  ]
+}

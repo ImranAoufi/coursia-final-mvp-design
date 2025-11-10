@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is one way to incorporate prayer into family life?",
+      "options": [
+        "Ignore it",
+        "Establish a routine",
+        "Pray alone",
+        "Skip it"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is Zakat important?",
+      "options": [
+        "To show off wealth",
+        "To purify wealth",
+        "To avoid taxes",
+        "None of the above"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "How can families participate in charity together?",
+      "options": [
+        "By not discussing it",
+        "By volunteering together",
+        "By only donating money",
+        "By avoiding involvement"
+      ],
+      "answer": "B"
+    }
+  ]
+}

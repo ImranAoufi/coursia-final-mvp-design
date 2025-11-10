@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "How many Surahs are there in the Quran?",
+      "options": [
+        "108",
+        "114",
+        "120",
+        "99"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is the longest Surah in the Quran?",
+      "options": [
+        "Al-Fatiha",
+        "Al-Baqarah",
+        "Al-Imran",
+        "An-Nisa"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which theme emphasizes the oneness of God?",
+      "options": [
+        "Nubuwwah",
+        "Tawhid",
+        "Adalah",
+        "Rahmah"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What does 'Ayah' refer to?",
+      "options": [
+        "Chapter",
+        "Verse",
+        "Theme",
+        "Prophet"
+      ],
+      "answer": "B"
+    }
+  ]
+}

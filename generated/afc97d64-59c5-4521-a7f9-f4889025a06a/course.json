@@ -1,0 +1,66 @@
+{
+  "course_title": "The Art of Laughter: Unlocking Joy",
+  "course_description": "Discover the transformative power of laughter and how it can enhance your well-being and relationships.",
+  "lessons": [
+    {
+      "lesson_title": "The Science Behind Laughter",
+      "videos": [
+        {
+          "title": "Why We Laugh: A Deep Dive",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_1\\script_l1_v1.txt"
+        },
+        {
+          "title": "The Health Benefits of Laughter",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_1\\script_l1_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Finding Humor in Everyday Life",
+      "videos": [
+        {
+          "title": "Observational Humor: Seeing the Funny Side",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_2\\script_l2_v1.txt"
+        },
+        {
+          "title": "Creating Laughs from Mundane Moments",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_2\\script_l2_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "Laughter as a Social Glue",
+      "videos": [
+        {
+          "title": "Connecting Through Humor",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_3\\script_l3_v1.txt"
+        },
+        {
+          "title": "Laughter in Different Cultures",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_3\\script_l3_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Cultivating a Laughter Practice",
+      "videos": [
+        {
+          "title": "Daily Laughter Exercises",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_4\\script_l4_v1.txt"
+        },
+        {
+          "title": "Building a Supportive Laughter Community",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_4\\script_l4_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\afc97d64-59c5-4521-a7f9-f4889025a06a\\lesson_4\\workbook.txt"
+    }
+  ]
+}

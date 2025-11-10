@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a key benefit of using social media for client acquisition?",
+      "options": [
+        "A. Increased visibility",
+        "B. Higher costs",
+        "C. Less engagement",
+        "D. Limited reach"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What should you prepare before attending a networking event?",
+      "options": [
+        "A. A long presentation",
+        "B. An elevator pitch",
+        "C. A detailed report",
+        "D. A company brochure"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is it important to follow up after networking?",
+      "options": [
+        "A. To sell immediately",
+        "B. To build relationships",
+        "C. To collect contacts",
+        "D. To increase costs"
+      ],
+      "answer": "B"
+    }
+  ]
+}

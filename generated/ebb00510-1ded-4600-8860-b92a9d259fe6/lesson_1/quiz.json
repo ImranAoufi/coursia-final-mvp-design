@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary muscle group targeted during bench presses?",
+      "options": [
+        "Legs",
+        "Back",
+        "Chest",
+        "Arms"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "What principle is key to achieving strength gains?",
+      "options": [
+        "Muscle confusion",
+        "Progressive overload",
+        "High repetitions",
+        "Low weights"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which hormone is important for muscle recovery?",
+      "options": [
+        "Insulin",
+        "Cortisol",
+        "Testosterone",
+        "Adrenaline"
+      ],
+      "answer": "C"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "course_title": "The Art of Laughter: Unlocking Joy",
+  "course_description": "Discover the transformative power of laughter and how it can enhance your well-being and relationships.",
+  "lessons": [
+    {
+      "lesson_title": "The Science Behind Laughter",
+      "videos": [
+        {
+          "title": "Why We Laugh: The Biology of Humor",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_1\\script_l1_v1.txt"
+        },
+        {
+          "title": "The Psychological Benefits of Laughter",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_1\\script_l1_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Finding Humor in Everyday Life",
+      "videos": [
+        {
+          "title": "Identifying Humor in Daily Situations",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_2\\script_l2_v1.txt"
+        },
+        {
+          "title": "Cultivating a Playful Mindset",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_2\\script_l2_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "Laughter as a Tool for Connection",
+      "videos": [
+        {
+          "title": "Using Humor to Build Relationships",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_3\\script_l3_v1.txt"
+        },
+        {
+          "title": "Laughter in Team Dynamics",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_3\\script_l3_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Creating a Laughter Practice",
+      "videos": [
+        {
+          "title": "Daily Exercises for More Laughter",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_4\\script_l4_v1.txt"
+        },
+        {
+          "title": "Transforming Stress with Humor",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_4\\script_l4_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\94381b31-7518-42e0-b6de-7b0c147a3f8f\\lesson_4\\workbook.txt"
+    }
+  ]
+}

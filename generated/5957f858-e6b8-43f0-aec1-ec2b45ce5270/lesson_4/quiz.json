@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is one way to encourage Quranic learning in your community?",
+      "options": [
+        "Host a Quranic recitation competition",
+        "Avoid group discussions",
+        "Limit resources",
+        "Focus solely on online learning"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Why is mentorship important in Quranic study?",
+      "options": [
+        "It creates competition",
+        "It fosters collaboration",
+        "It limits participation",
+        "It discourages questions"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should a supportive study environment include?",
+      "options": [
+        "Distractions and noise",
+        "Comfortable and quiet space",
+        "Solo study only",
+        "No feedback"
+      ],
+      "answer": "B"
+    }
+  ]
+}

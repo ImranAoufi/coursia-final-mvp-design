@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What value does the Quran emphasize for personal growth?",
+      "options": [
+        "Patience",
+        "Anger",
+        "Jealousy",
+        "Indifference"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What should you practice during conversations?",
+      "options": [
+        "Multitasking",
+        "Active listening",
+        "Interrupting",
+        "Ignoring"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is encouraged when someone wrongs you?",
+      "options": [
+        "Revenge",
+        "Forgiveness",
+        "Indifference",
+        "Resentment"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you regularly reflect on?",
+      "options": [
+        "Others' actions",
+        "Your own actions",
+        "World events",
+        "Celebrity news"
+      ],
+      "answer": "B"
+    }
+  ]
+}

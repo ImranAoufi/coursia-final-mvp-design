@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary theme of the Quran?",
+      "options": [
+        "Oneness of God",
+        "Historical events",
+        "Poetic expressions",
+        "Cultural stories"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What does Tajweed focus on?",
+      "options": [
+        "Translation of meanings",
+        "Art of recitation",
+        "Historical context",
+        "Cultural significance"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which aspect is NOT emphasized in Quranic teachings?",
+      "options": [
+        "Compassion",
+        "Justice",
+        "Wealth accumulation",
+        "Prayer"
+      ],
+      "answer": "C"
+    }
+  ]
+}

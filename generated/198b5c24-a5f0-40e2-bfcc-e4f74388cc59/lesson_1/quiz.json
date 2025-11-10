@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is Tawheed?",
+      "options": [
+        "A. The oneness of Allah",
+        "B. The practice of prayer",
+        "C. A type of charity",
+        "D. A historical event"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "How many times a day are Muslims required to pray?",
+      "options": [
+        "A. Three",
+        "B. Five",
+        "C. Seven",
+        "D. Ten"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What does Tawheed al-Rububiyyah refer to?",
+      "options": [
+        "A. Worship of Allah",
+        "B. Allah's names",
+        "C. Allah's lordship",
+        "D. The Quran"
+      ],
+      "answer": "C"
+    }
+  ]
+}

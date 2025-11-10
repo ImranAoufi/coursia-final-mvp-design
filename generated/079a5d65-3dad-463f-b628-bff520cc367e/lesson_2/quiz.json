@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What principle does Surah Al-Baqarah, verse 42 emphasize?",
+      "options": [
+        "Honesty",
+        "Charity",
+        "Patience",
+        "Faith"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What lesson can we learn from the story of Prophet Yusuf?",
+      "options": [
+        "Generosity",
+        "Resilience",
+        "Compassion",
+        "Honesty"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which prophet taught us about forgiveness?",
+      "options": [
+        "Ibrahim",
+        "Moses",
+        "Muhammad",
+        "Noah"
+      ],
+      "answer": "C"
+    }
+  ]
+}

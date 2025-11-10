@@ -1,0 +1,81 @@
+{
+  "course_title": "Untitled Course",
+  "course_description": "",
+  "lessons": [
+    {
+      "lesson_title": "Lesson 1",
+      "videos": [
+        {
+          "title": "Video 1.1",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_1\\script_l1_v1.txt"
+        },
+        {
+          "title": "Video 1.2",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_1\\script_l1_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Lesson 2",
+      "videos": [
+        {
+          "title": "Video 2.1",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_2\\script_l2_v1.txt"
+        },
+        {
+          "title": "Video 2.2",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_2\\script_l2_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "Lesson 3",
+      "videos": [
+        {
+          "title": "Video 3.1",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_3\\script_l3_v1.txt"
+        },
+        {
+          "title": "Video 3.2",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_3\\script_l3_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Lesson 4",
+      "videos": [
+        {
+          "title": "Video 4.1",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_4\\script_l4_v1.txt"
+        },
+        {
+          "title": "Video 4.2",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_4\\script_l4_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_4\\workbook.txt"
+    },
+    {
+      "lesson_title": "Lesson 5",
+      "videos": [
+        {
+          "title": "Video 5.1",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_5\\script_l5_v1.txt"
+        },
+        {
+          "title": "Video 5.2",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_5\\script_l5_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_5\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\6d4a110d-d4ab-4b43-b00a-1f5d99c8fe95\\lesson_5\\workbook.txt"
+    }
+  ]
+}

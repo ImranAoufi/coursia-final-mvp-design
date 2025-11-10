@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a key benefit of positive thinking?",
+      "options": [
+        "Improved health",
+        "Increased stress",
+        "Less motivation",
+        "More negativity"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What does SMART stand for in goal setting?",
+      "options": [
+        "Specific, Measurable, Achievable, Relevant, Time-bound",
+        "Simple, Measurable, Actionable, Realistic, Timed",
+        "Sustainable, Motivating, Achievable, Relevant, Timed",
+        "Specific, Manageable, Achievable, Relevant, Testable"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What should you do when negative thoughts arise?",
+      "options": [
+        "Ignore them",
+        "Challenge them",
+        "Accept them",
+        "Amplify them"
+      ],
+      "answer": "B"
+    }
+  ]
+}

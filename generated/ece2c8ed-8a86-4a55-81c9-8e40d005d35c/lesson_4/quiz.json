@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in automating your freelance business?",
+      "options": [
+        "Identify repetitive tasks",
+        "Hire a virtual assistant",
+        "Create a website",
+        "Increase your rates"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which tool can help you connect apps for automation?",
+      "options": [
+        "Canva",
+        "Zapier",
+        "Slack",
+        "Trello"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you do before outsourcing a task?",
+      "options": [
+        "Identify your competitors",
+        "Create a detailed brief",
+        "Raise your prices",
+        "Take a break"
+      ],
+      "answer": "B"
+    }
+  ]
+}

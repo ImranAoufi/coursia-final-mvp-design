@@ -1,0 +1,66 @@
+{
+  "course_title": "Laughter as a Learning Tool",
+  "course_description": "Discover how humor can enhance learning, boost engagement, and create memorable educational experiences.",
+  "lessons": [
+    {
+      "lesson_title": "The Science of Laughter",
+      "videos": [
+        {
+          "title": "Why We Laugh: The Psychology Behind Humor",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_1\\script_l1_v1.txt"
+        },
+        {
+          "title": "The Benefits of Laughter in Learning",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_1\\script_l1_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Incorporating Humor into Teaching",
+      "videos": [
+        {
+          "title": "Crafting Jokes for Your Audience",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_2\\script_l2_v1.txt"
+        },
+        {
+          "title": "Using Anecdotes to Illustrate Concepts",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_2\\script_l2_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "Creating a Fun Learning Environment",
+      "videos": [
+        {
+          "title": "Setting the Stage for Laughter",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_3\\script_l3_v1.txt"
+        },
+        {
+          "title": "Encouraging Participation Through Humor",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_3\\script_l3_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Measuring the Impact of Humor",
+      "videos": [
+        {
+          "title": "Assessing Engagement Through Laughter",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_4\\script_l4_v1.txt"
+        },
+        {
+          "title": "Feedback: What Works and What Doesn't",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_4\\script_l4_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\a1b47f7d-7963-41e8-86a0-3471b9f7c994\\lesson_4\\workbook.txt"
+    }
+  ]
+}

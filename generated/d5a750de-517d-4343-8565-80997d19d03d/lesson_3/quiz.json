@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary energy source for your body?",
+      "options": [
+        "Carbohydrates",
+        "Proteins",
+        "Fats",
+        "Vitamins"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which of the following is a healthy fat?",
+      "options": [
+        "Butter",
+        "Olive oil",
+        "Lard",
+        "Margarine"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is a benefit of meal prepping?",
+      "options": [
+        "It increases food waste",
+        "It saves time",
+        "It requires expensive ingredients",
+        "It limits your diet variety"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you focus on when shopping on a budget?",
+      "options": [
+        "Impulse buys",
+        "Whole foods",
+        "Pre-packaged meals",
+        "Fast food options"
+      ],
+      "answer": "B"
+    }
+  ]
+}

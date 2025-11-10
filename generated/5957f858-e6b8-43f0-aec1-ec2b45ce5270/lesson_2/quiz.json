@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the importance of Makharij in Tajweed?",
+      "options": [
+        "A: Points of articulation",
+        "B: Types of verses",
+        "C: Historical context",
+        "D: None of the above"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What does Ghunna refer to in recitation?",
+      "options": [
+        "A: Emotional connection",
+        "B: Nasalization of letters",
+        "C: Pause without breath",
+        "D: Speed of recitation"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is setting an intention important in Quranic recitation?",
+      "options": [
+        "A: It improves pronunciation",
+        "B: It connects you with Allah",
+        "C: It speeds up learning",
+        "D: None of the above"
+      ],
+      "answer": "B"
+    }
+  ]
+}

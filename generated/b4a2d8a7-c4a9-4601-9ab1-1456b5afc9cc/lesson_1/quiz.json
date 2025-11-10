@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in breaking free from comfort zones?",
+      "options": [
+        "Identifying comfort zones",
+        "Setting big goals",
+        "Avoiding challenges",
+        "Staying in routines"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What can convenience lead to?",
+      "options": [
+        "Growth",
+        "Stagnation",
+        "Opportunities",
+        "Change"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is one way to take the first step?",
+      "options": [
+        "Set small goals",
+        "Stay comfortable",
+        "Avoid risks",
+        "Ignore your feelings"
+      ],
+      "answer": "A"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary purpose of the Quran?",
+      "options": [
+        "To provide historical accounts",
+        "To serve as a divine guide",
+        "To offer poetry",
+        "To discuss science"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which theme emphasizes the importance of social justice in the Quran?",
+      "options": [
+        "Faith",
+        "Compassion",
+        "Accountability",
+        "Knowledge"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "Who was the Quran revealed to?",
+      "options": [
+        "Moses",
+        "Jesus",
+        "Muhammad",
+        "Abraham"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "How many years ago was the Quran revealed?",
+      "options": [
+        "1000",
+        "1200",
+        "1400",
+        "1600"
+      ],
+      "answer": "C"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "course_title": "Scaling Your Freelance Empire: Path to Millionaire Status",
+  "course_description": "Unlock the secrets to scaling your freelance business and achieving financial freedom by 2030.",
+  "lessons": [
+    {
+      "lesson_title": "Identifying Your Niche and Target Market",
+      "videos": [
+        {
+          "title": "Finding Your Unique Selling Proposition",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_1\\script_l1_v1.txt"
+        },
+        {
+          "title": "Researching Your Ideal Client",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_1\\script_l1_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Building a Strong Personal Brand",
+      "videos": [
+        {
+          "title": "Crafting Your Brand Story",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_2\\script_l2_v1.txt"
+        },
+        {
+          "title": "Leveraging Social Media for Visibility",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_2\\script_l2_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "Effective Client Acquisition Strategies",
+      "videos": [
+        {
+          "title": "Networking Like a Pro",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_3\\script_l3_v1.txt"
+        },
+        {
+          "title": "Mastering Cold Outreach Techniques",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_3\\script_l3_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Scaling Operations for Maximum Profit",
+      "videos": [
+        {
+          "title": "Automating Your Workflow",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_4\\script_l4_v1.txt"
+        },
+        {
+          "title": "Outsourcing vs. Doing It Yourself",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_4\\script_l4_v2.txt"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\8c3a8bfb-75fd-4e50-ab95-3df5f61c2db7\\lesson_4\\workbook.txt"
+    }
+  ]
+}

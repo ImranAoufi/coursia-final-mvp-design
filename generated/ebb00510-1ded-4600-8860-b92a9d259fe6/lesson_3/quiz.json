@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in creating a workout schedule?",
+      "options": [
+        "Identify workout types",
+        "Assess current commitments",
+        "Choose workout times",
+        "Schedule workouts"
+      ],
+      "answer": "Assess current commitments"
+    },
+    {
+      "question": "Why is it important to celebrate small achievements?",
+      "options": [
+        "It boosts motivation",
+        "It distracts from challenges",
+        "It is unnecessary",
+        "It makes workouts longer"
+      ],
+      "answer": "It boosts motivation"
+    },
+    {
+      "question": "How can you stay accountable in your routine?",
+      "options": [
+        "Workout alone",
+        "Join a community",
+        "Skip workouts",
+        "Ignore progress"
+      ],
+      "answer": "Join a community"
+    }
+  ]
+}

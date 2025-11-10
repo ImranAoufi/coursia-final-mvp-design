@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles, ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
+import { pollJobStatus } from "@/api";
 
 interface PricingTier {
   name: string;
@@ -21,7 +22,31 @@ const Pricing = () => {
   const location = useLocation();
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
-  
+
+  useEffect(() => {
+    const jobId = sessionStorage.getItem("coursia_job_id");
+    if (!jobId) return;
+
+    console.log("📡 Found job_id in session, starting polling:", jobId);
+
+    const interval = setInterval(async () => {
+      try {
+        const status = await pollJobStatus(jobId);
+        console.log("📡 Job status:", status);
+
+        if (status === "completed") {
+          clearInterval(interval);
+          alert("🎉 Your full course is ready! Redirecting you now...");
+          navigate("/my-course");
+        }
+      } catch (e) {
+        console.error("⚠️ Error polling job status:", e);
+      }
+    }, 5000); // alle 5 Sekunden prüfen
+
+    return () => clearInterval(interval);
+  }, [navigate]);
+
   // Get wizard data from navigation state
   const wizardData = location.state?.wizardData;
   const recommended = location.state?.recommended;
@@ -86,14 +111,14 @@ const Pricing = () => {
 
   const getRecommendationReason = (tierName: string) => {
     if (!wizardData || !recommended || recommended !== tierName) return null;
-    
+
     const reasons: Record<string, string> = {
       "Free": "Great for trying out Coursia with a single course demo",
       "Starter": "Perfect for your course size and getting started with a few courses",
       "Pro": "Ideal for unlimited courses with premium features and no revenue share",
       "Enterprise": "Best for large-scale deployment with advanced features"
     };
-    
+
     return reasons[tierName];
   };
 
@@ -127,7 +152,7 @@ const Pricing = () => {
               Choose Your <span className="gradient-text">Perfect Plan</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              {fromWizard 
+              {fromWizard
                 ? "To create your complete course, please select an offer below"
                 : "Transform your expertise into beautiful courses with the plan that fits your ambitions"
               }
@@ -137,21 +162,19 @@ const Pricing = () => {
             <div className="inline-flex items-center gap-3 glass rounded-full p-1.5">
               <button
                 onClick={() => setIsAnnual(false)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                  !isAnnual
-                    ? "bg-primary text-primary-foreground shadow-glow"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${!isAnnual
+                  ? "bg-primary text-primary-foreground shadow-glow"
+                  : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 Monthly
               </button>
               <button
                 onClick={() => setIsAnnual(true)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                  isAnnual
-                    ? "bg-primary text-primary-foreground shadow-glow"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${isAnnual
+                  ? "bg-primary text-primary-foreground shadow-glow"
+                  : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 Annual
                 <span className="ml-2 text-xs bg-secondary/20 text-secondary px-2 py-0.5 rounded-full">
@@ -185,13 +208,11 @@ const Pricing = () => {
                   )}
 
                   <div
-                    className={`h-full glass rounded-2xl p-8 transition-all duration-300 hover:scale-105 cursor-pointer ${
-                      tier.highlighted
-                        ? "border-2 border-primary/50 shadow-glow"
-                        : "border border-glass-border hover:border-primary/30"
-                    } ${isRecommended ? "ring-2 ring-primary/30" : ""} ${
-                      selectedTier === tier.name ? "ring-2 ring-primary shadow-glow" : ""
-                    }`}
+                    className={`h-full glass rounded-2xl p-8 transition-all duration-300 hover:scale-105 cursor-pointer ${tier.highlighted
+                      ? "border-2 border-primary/50 shadow-glow"
+                      : "border border-glass-border hover:border-primary/30"
+                      } ${isRecommended ? "ring-2 ring-primary/30" : ""} ${selectedTier === tier.name ? "ring-2 ring-primary shadow-glow" : ""
+                      }`}
                     onClick={() => fromWizard && setSelectedTier(tier.name)}
                   >
                     {/* Tier Header */}
@@ -265,8 +286,45 @@ const Pricing = () => {
                 size="lg"
                 disabled={!selectedTier}
                 className="min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={async () => {
+                  if (!selectedTier) return;
+                  setSelectedTier("loading");
+
+                  try {
+                    console.log("🚀 Starting full course generation...");
+
+                    const previewData = JSON.parse(sessionStorage.getItem("coursia_preview") || "{}");
+
+                    const res = await fetch("http://127.0.0.1:8000/api/generate-full-course", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ course: previewData }),
+                    });
+
+                    const data = await res.json();
+
+                    if (!data.job_id) throw new Error("No job ID returned from backend");
+
+                    console.log("⏳ Job started, polling for status...", data.job_id);
+
+                    // Polling starten
+                    const fullCourse = await pollJobStatus(data.job_id, (s) =>
+                      console.log("📡 Status:", s)
+                    );
+
+                    console.log("✅ Full course ready:", fullCourse);
+
+                    // Redirect zur MyCourse Seite
+                    navigate("/my-course");
+                  } catch (err) {
+                    console.error("❌ Error generating course:", err);
+                    alert("There was a problem generating your full course. Check the console.");
+                  } finally {
+                    setSelectedTier(null);
+                  }
+                }}
               >
-                Create Course
+                {selectedTier === "loading" ? "Generating..." : "Create Course"}
               </Button>
             </div>
           )}

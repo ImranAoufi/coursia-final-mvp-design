@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What does the acronym SMART stand for in goal setting?",
+      "options": [
+        "Specific, Measurable, Achievable, Relevant, Time-bound",
+        "Simple, Manageable, Actionable, Realistic, Timed",
+        "Strategic, Meaningful, Attainable, Relevant, Tangible",
+        "Specific, Meaningful, Achievable, Relevant, Time-sensitive"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which of the following is a benefit of positive thinking?",
+      "options": [
+        "Increased stress",
+        "Improved health",
+        "Decreased motivation",
+        "Negative self-image"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is a good first step to overcome mental barriers?",
+      "options": [
+        "Ignore them",
+        "Identify and write them down",
+        "Dwell on them",
+        "Accept them as permanent"
+      ],
+      "answer": "B"
+    }
+  ]
+}
