@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary purpose of cash flow management?",
+      "options": [
+        "To maximize profit",
+        "To ensure liquidity",
+        "To increase expenses",
+        "To reduce debt"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is a key strategy for reducing investment risk?",
+      "options": [
+        "Investing in one stock",
+        "Diversification",
+        "Timing the market",
+        "Avoiding investments"
+      ],
+      "answer": "B"
+    }
+  ]
+}

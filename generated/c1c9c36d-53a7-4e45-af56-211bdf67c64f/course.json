@@ -1,0 +1,74 @@
+{
+  "course_title": "Unlocking the Quran: Arabic for Understanding Hadiths",
+  "course_description": "Dive into the Arabic language to enrich your understanding of the Quran and Hadiths, empowering your spiritual journey.",
+  "lessons": [
+    {
+      "lesson_title": "Foundations of Arabic: The Alphabet and Pronunciation",
+      "videos": [
+        {
+          "title": "Mastering the Arabic Alphabet",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_1\\script_l1_v1.txt",
+          "script_content": "Welcome to 'Mastering the Arabic Alphabet.' In this video, we will explore the 28 letters of the Arabic alphabet, their shapes, and how they connect. Let's begin with the first letter: Alif. Alif is a unique letter that can stand alone or connect to the following letters. Next, we have Ba, which sounds like 'b' in 'bat.' Notice how Ba has a dot below it. Moving on, we introduce Ta, which has two dots above it. Practice writing these letters while saying their names aloud. Repeat after me: Alif, Ba, Ta. Great! Keep practicing these three letters. Remember, the key to mastering the Arabic alphabet is consistent practice. Now, let’s move to the next set of letters. We will cover Jim, Ha, and Kha. Jim sounds like 'j' in 'jam,' while Ha and Kha have distinct throat sounds. Repeat after me: Jim, Ha, Kha. Fantastic! Continue practicing these letters, and remember to pay attention to their shapes and sounds. We will conclude this video by reviewing all the letters we’ve learned so far. Keep practicing, and in our next video, we will dive into essential pronunciation tips. See you soon!"
+        },
+        {
+          "title": "Essential Pronunciation Tips",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_1\\script_l1_v2.txt",
+          "script_content": "Welcome to 'Essential Pronunciation Tips.' In this video, we will focus on how to pronounce Arabic letters correctly. First, we will discuss the importance of articulation. Arabic has sounds that may not exist in your native language, such as the deep throat sounds of 'ع' (Ayn) and 'غ' (Ghayn). To pronounce 'ع,' try to constrict your throat slightly and produce the sound from deep within. Practice this sound multiple times. Now, let’s move to 'ق' (Qaf), which is pronounced from the back of the throat. Repeat after me: Qaf. Excellent! Next, we will cover short and long vowels in Arabic. Short vowels include Fatha, Damma, and Kasra. Long vowels are represented by letters like Alif, Waw, and Ya. Let’s practice the pronunciation of these vowels. Say after me: Fatha, Damma, Kasra. Wonderful! Finally, remember to practice speaking aloud and listening to native speakers for better pronunciation. The more you practice, the more confident you will become. Thank you for joining this lesson, and keep practicing your Arabic pronunciation!"
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_1\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_1\\workbook.txt"
+    },
+    {
+      "lesson_title": "Basic Grammar for Quranic Contexts",
+      "videos": [
+        {
+          "title": "Understanding Nouns and Verbs",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_2\\script_l2_v1.txt",
+          "script_content": "Welcome to our lesson on Basic Grammar for Quranic Contexts. In this video, we will explore the fundamental concepts of nouns and verbs in the Arabic language. Nouns, or 'اسم' (ism), are words that represent people, places, things, or ideas. For example, 'كتاب' (kitab) means 'book.' Verbs, or 'فعل' (fi'l), express actions or states of being. An example of a verb is 'كتب' (kataba), which means 'he wrote.' Understanding the distinction between these two parts of speech is crucial for interpreting Quranic text accurately. We will also look at how nouns can be definite or indefinite, and how verbs can be in different forms based on tense and subject. By the end of this video, you should be able to identify and use basic nouns and verbs effectively in Quranic contexts."
+        },
+        {
+          "title": "Sentence Structure in Arabic",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_2\\script_l2_v2.txt",
+          "script_content": "In this video, we will focus on sentence structure in Arabic, which is essential for understanding the syntax of Quranic verses. The typical structure of an Arabic sentence can be either nominal, starting with a noun, or verbal, starting with a verb. For instance, a nominal sentence might be 'الكتاب مفيد' (The book is beneficial), while a verbal sentence could be 'كتب الطالب الدرس' (The student wrote the lesson). We will discuss the importance of subject-verb agreement and how to identify the subject in different sentence types. Additionally, we will touch upon the use of conjunctions and how they can connect ideas within a sentence. By the end of this video, you will have a clearer understanding of how sentences are constructed in Arabic, particularly in the context of the Quran."
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_2\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_2\\workbook.txt"
+    },
+    {
+      "lesson_title": "Key Vocabulary for Hadiths and Quran",
+      "videos": [
+        {
+          "title": "Commonly Used Words in Islamic Texts",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_3\\script_l3_v1.txt",
+          "script_content": "Welcome to our lesson on Key Vocabulary for Hadiths and Quran. In this video, we will explore commonly used words in Islamic texts. Understanding these terms is crucial for grasping the essence of the teachings. Let's start with the word 'Hadith'. A Hadith refers to the sayings, actions, and approvals of Prophet Muhammad (peace be upon him). Next, we have 'Quran', which is the holy book of Islam, believed to be the literal word of God as revealed to Muhammad. Other important terms include 'Sunnah', which is the practice based on Hadith, and 'Sharia', referring to Islamic law derived from both the Quran and Sunnah. As we progress, keep these words in mind, as they form the foundation of Islamic knowledge. Now, let's move to the next video where we will focus on building your vocabulary toolkit."
+        },
+        {
+          "title": "Building Your Vocabulary Toolkit",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_3\\script_l3_v2.txt",
+          "script_content": "In this video, we will build your vocabulary toolkit for understanding Islamic texts better. Start by creating flashcards for the key terms we discussed: Hadith, Quran, Sunnah, and Sharia. Write the word on one side and its definition on the other. Regularly review these flashcards to enhance retention. Additionally, practice using these words in sentences. For example, you can say, 'The Hadith provides guidance on daily life.' Lastly, consider joining a study group or online forum to discuss these terms with peers. Engaging with others will reinforce your learning and provide diverse perspectives. Remember, the more you practice, the more fluent you will become in Islamic vocabulary."
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_3\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_3\\workbook.txt"
+    },
+    {
+      "lesson_title": "Reading and Comprehending Verses",
+      "videos": [
+        {
+          "title": "Techniques for Reading Arabic Texts",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_4\\script_l4_v1.txt",
+          "script_content": "Welcome to our lesson on 'Reading and Comprehending Verses'. In this video, we will explore effective techniques for reading Arabic texts. Begin by familiarizing yourself with the Arabic alphabet and its phonetics. Next, practice reading short verses aloud to enhance your pronunciation. Focus on the rhythm and intonation unique to Arabic. Use visual aids, such as flashcards with verses, to reinforce word recognition. As you read, take notes on unfamiliar vocabulary and seek their meanings. Lastly, engage with native speakers or language partners to practice your reading skills and receive constructive feedback. Let's dive into the next video where we will interpret meanings in verses."
+        },
+        {
+          "title": "Interpreting Meaning in Verses",
+          "script_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_4\\script_l4_v2.txt",
+          "script_content": "In this video, we will delve into interpreting meaning in verses. Start by identifying the main theme of the verse you are reading. Look for keywords that convey the essence of the message. Consider the context in which the verse was written, as cultural and historical backgrounds can greatly affect interpretation. Use translation tools and trusted commentaries to gain deeper insights. Engage in discussions with peers or instructors to share interpretations and broaden your understanding. Finally, reflect on how the verse relates to your own experiences and beliefs, enhancing your personal connection to the text. Thank you for joining us in this lesson."
+        }
+      ],
+      "quiz_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_4\\quiz.json",
+      "workbook_file": "C:\\Users\\Imran A\\Documents\\coursia-final-mvp-design-1\\generated\\c1c9c36d-53a7-4e45-af56-211bdf67c64f\\lesson_4\\workbook.txt"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is a key benefit of standardizing operations?",
+      "options": [
+        "Increased costs",
+        "Consistency",
+        "Less efficiency",
+        "Inflexibility"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which tool can help automate business processes?",
+      "options": [
+        "Spreadsheet",
+        "CRM system",
+        "Notebook",
+        "Whiteboard"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you assess to determine funding needs?",
+      "options": [
+        "Personal expenses",
+        "Capital requirements",
+        "Marketing strategies",
+        "Employee satisfaction"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which funding option does NOT require giving up equity?",
+      "options": [
+        "Angel investors",
+        "Crowdfunding",
+        "Bank loans",
+        "Venture capitalists"
+      ],
+      "answer": "C"
+    }
+  ]
+}

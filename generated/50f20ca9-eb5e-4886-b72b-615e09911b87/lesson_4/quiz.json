@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in leveraging social media for marketing?",
+      "options": [
+        "A) Identify your target audience",
+        "B) Create engaging content",
+        "C) Analyze performance",
+        "D) Choose the right platforms"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which aspect is crucial for a personal brand?",
+      "options": [
+        "A) High-cost advertising",
+        "B) Authenticity",
+        "C) Being vague",
+        "D) Ignoring feedback"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you use to track social media engagement?",
+      "options": [
+        "A) Personal opinions",
+        "B) Analytics tools",
+        "C) Random guesses",
+        "D) Email surveys"
+      ],
+      "answer": "B"
+    }
+  ]
+}

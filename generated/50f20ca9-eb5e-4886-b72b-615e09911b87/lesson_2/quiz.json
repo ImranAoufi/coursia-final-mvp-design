@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in identifying your ideal client?",
+      "options": [
+        "Analyze demographics",
+        "Reflect on favorite clients",
+        "Create an avatar",
+        "Research competitors"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should your offer address?",
+      "options": [
+        "Your preferences",
+        "Client pain points",
+        "Market trends",
+        "Pricing strategies"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is urgency important in an offer?",
+      "options": [
+        "To reduce costs",
+        "To increase sales",
+        "To create scarcity",
+        "To attract attention"
+      ],
+      "answer": "C"
+    }
+  ]
+}

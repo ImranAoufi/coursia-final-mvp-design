@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary focus of the warm-up for backflips?",
+      "options": [
+        "Increase heart rate",
+        "Build muscle mass",
+        "Enhance flexibility",
+        "Improve endurance"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "How long should you hold the plank for core strengthening?",
+      "options": [
+        "15 seconds",
+        "30 seconds",
+        "1 minute",
+        "2 minutes"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What exercise can help improve your oblique strength?",
+      "options": [
+        "Leg raises",
+        "Bicycle crunches",
+        "Jump squats",
+        "Lunges"
+      ],
+      "answer": "B"
+    }
+  ]
+}

@@ -1,3 +1,9 @@
+import time
+from PIL import Image, ImageDraw, ImageFont
+import hmac
+import hashlib
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
 from fastapi import BackgroundTasks
 import base64
@@ -938,3 +944,276 @@ async def upload_video(
         f.write(await video.read())
 
     return {"video_url": f"http://127.0.0.1:8000/{video_path}"}
+
+
+class CoachImproveScriptRequest(BaseModel):
+    lesson_id: str
+    script: str
+
+
+@app.post("/api/auto-improve-lesson")
+async def auto_improve_lesson(req: CoachImproveScriptRequest):
+    """
+    Takes a raw lesson script and automatically enhances it
+    using GPT-4.1 to produce a structured, motivational,
+    high-impact coaching version.
+    """
+    prompt = f"""
+You are a world-class coaching content creator.
+Improve the lesson script below with:
+
+- clearer structure
+- more emotional engagement
+- confident, motivational tone
+- short, punchy sentences
+- practical instructions
+- zero fluff
+- keep full meaning
+- no emojis
+
+Return JSON:
+{{
+  "improved_script": ""
+}}
+
+Original Script:
+{req.script}
+"""
+
+    response = client.responses.create(model="gpt-4.1", input=prompt)
+    cleaned = response.output_text.strip()
+
+    # Ensure valid JSON
+    try:
+        data = json.loads(cleaned)
+    except json.JSONDecodeError:
+        data = {"improved_script": cleaned}
+
+    out_dir = f"generated/coach/{req.lesson_id}"
+    os.makedirs(out_dir, exist_ok=True)
+
+    with open(f"{out_dir}/improved.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+    return {
+        "status": "ok",
+        "lesson_id": req.lesson_id,
+        "improved_script": data.get("improved_script", "")
+    }
+
+
+# ---------------------------------------------------------
+# --- Generate Slides (JSON structure only)
+# ---------------------------------------------------------
+@app.post("/api/generate-slides/{lesson_id}")
+async def generate_structured_slides(lesson_id: str, payload: dict):
+    """
+    Converts a lesson script into a structured set of slides
+    following Apple-style minimalism and clarity.
+    """
+    script = payload.get("script", "")
+    title = payload.get("title", "")
+
+    if not script:
+        return {"error": "No script provided"}
+
+    prompt = f"""
+You are a professional slide designer for online courses.
+Convert this lesson script into structured slides with:
+
+- Apple-level minimalism
+- Whiteboard clean aesthetic
+- Flat icons
+- Short titles
+- 3-6 bullet points
+- Very high clarity
+
+Return JSON:
+{{
+  "slides": [
+    {{
+      "SlideTitle": "",
+      "KeyPoints": [],
+      "IconDescription": "",
+      "ColorAccent": "#4A90E2"
+    }}
+  ]
+}}
+
+Lesson Title: {title}
+Script:
+{script}
+"""
+
+    response = client.responses.create(model="gpt-4.1", input=prompt)
+    raw = response.output_text.strip()
+
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        data = {"slides": []}
+
+    output_dir = f"generated/slides/{lesson_id}"
+    os.makedirs(output_dir, exist_ok=True)
+    json_path = os.path.join(output_dir, "slides.json")
+
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+    return {"status": "ok", "lesson_id": lesson_id, "slides": data}
+
+
+# ---------------------------------------------------------
+# --- Render Slides (PNG creation)
+# ---------------------------------------------------------
+def generate_slide_png(slide, out_path):
+    """Render a single slide (title + bullet points) into PNG."""
+    W, H = 1600, 900
+    img = Image.new("RGB", (W, H), "white")
+    draw = ImageDraw.Draw(img)
+
+    try:
+        title_font = ImageFont.truetype("arial.ttf", 60)
+        text_font = ImageFont.truetype("arial.ttf", 42)
+    except:
+        title_font = ImageFont.load_default()
+        text_font = ImageFont.load_default()
+
+    # Draw title
+    draw.text((80, 80), slide.get("SlideTitle", ""),
+              fill="black", font=title_font)
+
+    # Draw bullet points
+    y = 200
+    for bullet in slide.get("KeyPoints", []):
+        draw.text((120, y), f"• {bullet}", fill="black", font=text_font)
+        y += 70
+
+    img.save(out_path)
+
+
+@app.post("/api/render-slides/{lesson_id}")
+async def render_slides(lesson_id: str):
+    """
+    Reads the generated slides.json and renders all slides into PNGs.
+    """
+    slide_json = f"generated/slides/{lesson_id}/slides.json"
+    if not os.path.exists(slide_json):
+        return {"error": "Slides not generated yet"}
+
+    with open(slide_json, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    out_dir = f"generated/slides/{lesson_id}/png"
+    os.makedirs(out_dir, exist_ok=True)
+
+    for i, slide in enumerate(data.get("slides", [])):
+        out_path = os.path.join(out_dir, f"slide-{i+1}.png")
+        generate_slide_png(slide, out_path)
+
+    return {"status": "ok", "count": len(data.get("slides", []))}
+
+
+# ---------------------------------------------------------
+# --- Full Auto Pipeline: Improve + Generate + Render
+# ---------------------------------------------------------
+@app.post("/api/full-pipeline/{lesson_id}")
+async def full_pipeline(lesson_id: str, payload: dict):
+    """
+    Executes:
+      1) Auto-improves script
+      2) Generates structured slides
+      3) Renders slides to PNGs
+    Returns a list of generated PNG URLs.
+    """
+    raw_script = payload.get("script", "")
+    title = payload.get("title", "")
+
+    if not raw_script:
+        return {"error": "No script provided"}
+
+    # --- Step 1: Improve Script
+    improve_prompt = f"""
+You are a world-class coaching content creator.
+Improve this script with:
+- clarity, energy, structure, emotional depth
+Return JSON:
+{{ "improved_script": "" }}
+
+Original:
+{raw_script}
+"""
+    improved_response = client.responses.create(
+        model="gpt-4.1", input=improve_prompt)
+    improved_json = json.loads(improved_response.output_text)
+    improved_script = improved_json["improved_script"]
+
+    # --- Step 2: Generate Slides
+    slide_prompt = f"""
+Design slides in Apple-minimalist style from this improved script.
+
+Format:
+{{
+  "slides": [
+    {{
+      "SlideTitle": "",
+      "KeyPoints": [],
+      "IconDescription": "",
+      "ColorAccent": "#4A90E2"
+    }}
+  ]
+}}
+
+Improved Script:
+{improved_script}
+"""
+    slide_response = client.responses.create(
+        model="gpt-4.1", input=slide_prompt)
+    slide_json = json.loads(slide_response.output_text)
+
+    json_dir = f"generated/slides/{lesson_id}"
+    os.makedirs(json_dir, exist_ok=True)
+    with open(f"{json_dir}/slides.json", "w", encoding="utf-8") as f:
+        json.dump(slide_json, f, indent=2)
+
+    # --- Step 3: Render PNGs
+    png_dir = f"generated/slides/{lesson_id}/png"
+    os.makedirs(png_dir, exist_ok=True)
+    for i, slide in enumerate(slide_json["slides"]):
+        out = os.path.join(png_dir, f"slide-{i+1}.png")
+        generate_slide_png(slide, out)
+
+    result_urls = [
+        f"/api/slide-file/{lesson_id}/slide-{i+1}.png"
+        for i in range(len(slide_json["slides"]))
+    ]
+
+    return {
+        "status": "ok",
+        "lesson_id": lesson_id,
+        "slides": result_urls,
+        "count": len(result_urls)
+    }
+
+
+@app.get("/api/slides-signed-urls/{lesson_id}")
+async def slides_signed_urls(lesson_id: str):
+    """
+    Returns list of slide PNG URLs so the frontend SlideViewer can display them.
+    """
+    png_dir = f"generated/slides/{lesson_id}/png"
+
+    if not os.path.exists(png_dir):
+        return {"slides": []}
+
+    files = sorted([f for f in os.listdir(png_dir) if f.endswith(".png")])
+
+    slides = [
+        {
+            "filename": fname,
+            "url": f"/api/slide-file/{lesson_id}/{fname}"
+        }
+        for fname in files
+    ]
+
+    return {"slides": slides}

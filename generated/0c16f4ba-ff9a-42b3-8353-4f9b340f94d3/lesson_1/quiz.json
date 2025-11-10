@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a key trait of ultra-successful individuals?",
+      "options": [
+        "Fearlessness",
+        "Clear vision",
+        "Avoiding risks",
+        "Isolation"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "How do ultra-successful people view failure?",
+      "options": [
+        "As a setback",
+        "As a learning opportunity",
+        "As a reason to quit",
+        "As irrelevant"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you do to manage fear?",
+      "options": [
+        "Ignore it",
+        "Face it head-on",
+        "Avoid challenging situations",
+        "Doubt yourself"
+      ],
+      "answer": "B"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "How many letters are in the Arabic alphabet?",
+      "options": [
+        "28",
+        "26",
+        "30",
+        "24"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which letter has two dots above it?",
+      "options": [
+        "Ba",
+        "Ta",
+        "Jim",
+        "Ha"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What sound does the letter 'ع' (Ayn) represent?",
+      "options": [
+        "Throat sound",
+        "Nasal sound",
+        "Soft sound",
+        "Hard sound"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which of these is a long vowel in Arabic?",
+      "options": [
+        "Fatha",
+        "Damma",
+        "Alif",
+        "Kasra"
+      ],
+      "answer": "C"
+    }
+  ]
+}

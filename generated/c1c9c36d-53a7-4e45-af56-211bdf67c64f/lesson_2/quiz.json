@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What does 'اسم' mean?",
+      "options": [
+        "Verb",
+        "Noun",
+        "Sentence",
+        "Phrase"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which sentence structure starts with a verb?",
+      "options": [
+        "Nominal",
+        "Verbal",
+        "Compound",
+        "Complex"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is the Arabic word for 'book'?",
+      "options": [
+        "درس",
+        "كتاب",
+        "طالب",
+        "مفيد"
+      ],
+      "answer": "B"
+    }
+  ]
+}

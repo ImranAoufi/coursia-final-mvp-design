@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What does 'Hadith' refer to?",
+      "options": [
+        "A type of prayer",
+        "Sayings of Prophet Muhammad",
+        "A chapter of the Quran",
+        "A form of charity"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which term refers to Islamic law?",
+      "options": [
+        "Sunnah",
+        "Sharia",
+        "Hadith",
+        "Quran"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is the Quran?",
+      "options": [
+        "A collection of Hadiths",
+        "The holy book of Islam",
+        "The practice of Prophet Muhammad",
+        "A type of pilgrimage"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is 'Sunnah'?",
+      "options": [
+        "The teachings of the Quran",
+        "The practice based on Hadith",
+        "A type of prayer",
+        "A form of charity"
+      ],
+      "answer": "B"
+    }
+  ]
+}

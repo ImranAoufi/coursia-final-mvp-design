@@ -19,6 +19,8 @@ import {
 import { ChevronDown } from "lucide-react";
 import { QuizDisplay } from "@/components/QuizDisplay";
 import WorkbookDisplay from "@/components/WorkbookDisplay";
+import SlideViewer from "@/components/SlideViewer";
+import TeleprompterRecorder from "@/components/TeleprompterRecorder";
 
 
 
@@ -76,11 +78,18 @@ const MyCourse = () => {
     const [videoURL, setVideoURL] = useState<string | null>(null);
     const [activeVideoTitle, setActiveVideoTitle] = useState<string | null>(null);
 
+    const [openSlidesForLesson, setOpenSlidesForLesson] = useState<string | null>(null);
+
+    const [openSlides, setOpenSlides] = useState(false);
+    const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
+
     const handleStartRecording = async (title: string) => {
         setActiveVideoTitle(title);
         setRecordedBlob(null);
         setVideoURL(null);
         setIsRecording(true);
+
+
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -109,6 +118,7 @@ const MyCourse = () => {
             mediaRecorder.stop();
         }
         setIsRecording(false);
+        setIsTeleprompterActive(false); // 🧠 stoppe Teleprompter wenn Aufnahme endet
     };
 
     const handleSaveRecording = () => {
@@ -118,6 +128,23 @@ const MyCourse = () => {
         link.download = `${activeVideoTitle.replace(/\s+/g, "_")}.webm`;
         link.click();
         toast.success("🎬 Video saved locally!");
+    };
+
+    const handleViewSlides = async (lessonId: string, scriptText?: string) => {
+        // ensure slides generated on demand (auto)
+        try {
+            // call backend to generate (if not already)
+            await fetch(`/api/generate-slides`, {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lesson_id: lessonId, script_text: scriptText || activeScriptContent, preferred_style: "apple" })
+            });
+            // open viewer
+            setOpenSlidesForLesson(lessonId);
+        } catch (e) {
+            console.error(e);
+            alert("Could not request slides generation.");
+        }
     };
 
 
@@ -241,6 +268,7 @@ const MyCourse = () => {
 
             setActiveScriptTitle(title);
             setActiveScriptContent(text);
+            setActiveLessonId(title);
             setOpenScript(true);
         } catch (err) {
             console.error(err);
@@ -404,14 +432,16 @@ const MyCourse = () => {
                                                                 >
                                                                     View Script
                                                                 </Button>
-                                                                <Button
-                                                                    size="sm"
-                                                                    variant="outline"
-                                                                    className="mt-2 ml-2"
-                                                                    onClick={() => handleStartRecording(video.title || `Video ${vi + 1}`)}
-                                                                >
-                                                                    🎥 Record Video
-                                                                </Button>
+                                                                <div className="mt-2 ml-2">
+                                                                    <TeleprompterRecorder
+                                                                        courseId={course?.course_title || "temp-course"}
+                                                                        lessonId={`lesson-${li}`}
+                                                                        onUploadComplete={(videoUrl) => {
+                                                                            console.log("Uploaded:", videoUrl);
+                                                                            toast.success("🎬 Video uploaded successfully!");
+                                                                        }}
+                                                                    />
+                                                                </div>
                                                             </div>
                                                         );
                                                     })}
@@ -453,6 +483,16 @@ const MyCourse = () => {
                                                 )}
                                             </div>
                                         </AccordionContent>
+                                        {/* VIEW SLIDES BUTTON */}
+                                        <div className="mt-4">
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => handleViewSlides(`lesson-${li}`, lesson.script_content)}
+                                                className="w-full"
+                                            >
+                                                📊 View Slides
+                                            </Button>
+                                        </div>
                                     </AccordionItem>
                                 ))}
                             </Accordion>
@@ -497,80 +537,149 @@ const MyCourse = () => {
                 </section>
             </div>
             <Dialog open={openScript} onOpenChange={setOpenScript}>
-                <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+                <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col gap-6 rounded-3xl backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-white/20 shadow-2xl">
                     <DialogHeader>
-                        <DialogTitle>{activeScriptTitle}</DialogTitle>
+                        <DialogTitle className="text-2xl font-semibold tracking-tight bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                            {activeScriptTitle}
+                        </DialogTitle>
                     </DialogHeader>
 
-                    {/* Controls */}
-                    <div className="flex items-center justify-between gap-3 mt-2 mb-3">
-                        <div className="flex gap-2">
-                            <Button
-                                variant={isTeleprompterActive ? "destructive" : "default"}
-                                onClick={() => setIsTeleprompterActive((s) => !s)}
-                            >
-                                {isTeleprompterActive ? "⏸ Pause" : "▶ Start Teleprompter"}
-                            </Button>
-
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" className="text-sm">
-                                        Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
-                                        <ChevronDown className="ml-2 h-4 w-4 opacity-70" />
+                    <div className="flex flex-row gap-6 w-full h-full">
+                        {/* LEFT PANEL */}
+                        <div className="w-[260px] flex flex-col gap-6">
+                            {/* TELEPROMPTER CONTROLS */}
+                            <Card className="p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm">
+                                <h3 className="font-semibold text-lg mb-3">Teleprompter</h3>
+                                <div className="flex flex-col gap-3">
+                                    <Button
+                                        variant={isTeleprompterActive ? "destructive" : "default"}
+                                        onClick={() => setIsTeleprompterActive(s => !s)}
+                                        className="rounded-full"
+                                    >
+                                        {isTeleprompterActive ? "⏸ Pause" : "▶ Start"}
                                     </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuItem onClick={() => setScrollSpeed(1)}>Slow</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setScrollSpeed(2)}>Medium</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setScrollSpeed(3)}>Fast</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="outline" className="justify-between rounded-full">
+                                                Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
+                                                <ChevronDown className="w-4 h-4 opacity-70" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(1)}>Slow</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(2)}>Medium</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(3)}>Fast</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            </Card>
+
+                            {/* RECORDING CONTROLS */}
+                            <Card className="p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm">
+                                <h3 className="font-semibold text-lg mb-3">Recording</h3>
+                                <div className="flex flex-col gap-3">
+                                    {!isRecording && !recordedBlob && (
+                                        <Button
+                                            onClick={() => handleStartRecording(activeScriptTitle || "video")}
+                                            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full"
+                                        >
+                                            🎥 Start Recording
+                                        </Button>
+                                    )}
+                                    {isRecording && (
+                                        <Button
+                                            variant="destructive"
+                                            onClick={handleStopRecording}
+                                            className="rounded-full"
+                                        >
+                                            ⏹ Stop Recording
+                                        </Button>
+                                    )}
+                                    {!isRecording && recordedBlob && (
+                                        <>
+                                            <Button
+                                                onClick={handleSaveRecording}
+                                                className="rounded-full bg-green-500 hover:bg-green-600 text-white"
+                                            >
+                                                💾 Save Video
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => {
+                                                    setRecordedBlob(null);
+                                                    setVideoURL(null);
+                                                }}
+                                                className="rounded-full"
+                                            >
+                                                🔁 Record Again
+                                            </Button>
+                                        </>
+                                    )}
+                                </div>
+                            </Card>
                         </div>
 
-                        <div className="text-sm text-muted-foreground">Tip: close dialog to stop</div>
-                    </div>
+                        {/* RIGHT PANEL — VIDEO + TELEPROMPTER */}
+                        <div className="flex-1 relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-black">
+                            {isRecording ? (
+                                <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
+                            ) : recordedBlob ? (
+                                <video src={videoURL || ""} controls className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                    Ready to record
+                                </div>
+                            )}
 
-                    {/* Teleprompter viewport: mask + inner scroll */}
-                    <div
-                        id="script-scroll-viewport"
-                        style={{
-                            height: "124px", // small viewport height — roughly 1–2 lines depending on font-size
-                            // Make it visually nice with soft fades (mask)
-                            WebkitMaskImage:
-                                "linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)",
-                            maskImage:
-                                "linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)",
-                        }}
-                    >
+                            {/* --- Neuer Recorder mit Upload (unterhalb Video/Teleprompter) --- */}
+                            <div className="mt-6">
+                                <TeleprompterRecorder
+                                    courseId={course?.course_title || "default-course"}
+                                    lessonId={activeScriptTitle || "lesson-1"}
+                                    onUploadComplete={(url) => {
+                                        console.log("✅ Upload complete:", url);
+                                        toast.success("Video uploaded successfully!");
+                                    }}
+                                />
+                            </div>
 
-                        {/* inner scrollable container (this is what we scroll programmatically) */}
-                        <div
-                            id="script-scroll-inner"
-                            className="p-4 whitespace-pre-wrap text-4xl leading-relaxed tracking-wide"
-                            style={{
-                                overflowY: "scroll", // ✅ explizit scrollfähig
-                                maxHeight: "124px",   // ✅ exakt gleich groß wie der Viewport
-                                scrollbarWidth: "none", // optional: hide scrollbar
-                            }}
-                        >
-                            {activeScriptContent ? (
-                                // render each line in its own block so the "reveal one line at a time" looks natural
-                                activeScriptContent.split("\n").map((line, idx) => (
+                            {/* FLOATING TELEPROMPTER */}
+                            {activeScriptContent && isTeleprompterActive && (
+                                <div
+                                    className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[80%]
+                                    bg-black/60 backdrop-blur-md text-white
+                                    rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.4)]
+                                    border border-white/10 transition-all duration-500 ease-in-out
+                                    flex items-center justify-center"
+                                    style={{
+                                        maxHeight: "160px",
+                                        overflow: "hidden",
+                                        WebkitMaskImage:
+                                            "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
+                                        maskImage:
+                                            "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
+                                    }}
+                                >
                                     <div
-                                        key={idx}
-                                        className="tele-line py-1"
+                                        id="script-scroll-inner"
+                                        className="text-[2.1rem] leading-relaxed tracking-wide font-light
+                                        whitespace-pre-wrap px-8 text-center select-none"
                                         style={{
-                                            minHeight: "1.2em",
-                                            display: "block",
-                                            color: "var(--foreground)", // respect theme
+                                            overflowY: "scroll",
+                                            maxHeight: "160px",
+                                            scrollbarWidth: "none",
                                         }}
                                     >
-                                        {line || " "}
+                                        {activeScriptContent.split("\n").map((line, idx) => (
+                                            <div key={idx} className="py-1.5">
+                                                {line || " "}
+                                            </div>
+                                        ))}
                                     </div>
-                                ))
-                            ) : (
-                                <div className="text-sm text-muted-foreground">Loading script...</div>
+                                </div>
                             )}
+
                         </div>
                     </div>
                 </DialogContent>
@@ -610,42 +719,30 @@ const MyCourse = () => {
                     </div>
                 </DialogContent>
             </Dialog>
-            {/* 🎥 Video Recording Dialog */}
-            <Dialog open={isRecording || !!recordedBlob} onOpenChange={() => {
-                if (isRecording) handleStopRecording();
-                setRecordedBlob(null);
-                setVideoURL(null);
-            }}>
-                <DialogContent className="max-w-xl">
+
+            {/* --- Slide Viewer Modal (korrekt: open + onOpenChange übergeben) --- */}
+            <Dialog
+                open={!!openSlidesForLesson}
+                onOpenChange={(open) => {
+                    if (!open) setOpenSlidesForLesson(null);
+                }}
+            >
+                <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden rounded-2xl">
                     <DialogHeader>
-                        <DialogTitle>🎥 {activeVideoTitle || "Recording..."}</DialogTitle>
+                        <DialogTitle className="text-lg font-semibold">
+                            Slides {openSlidesForLesson ? `for ${openSlidesForLesson}` : ""}
+                        </DialogTitle>
                     </DialogHeader>
 
-                    {isRecording && (
-                        <div className="text-center space-y-4">
-                            <p className="text-sm text-muted-foreground">Recording... Press stop when done.</p>
-                            <Button variant="destructive" onClick={handleStopRecording}>⏹ Stop Recording</Button>
-                        </div>
-                    )}
-
-                    {!isRecording && recordedBlob && (
-                        <div className="flex flex-col items-center space-y-4">
-                            <video
-                                src={videoURL || ""}
-                                controls
-                                className="w-full rounded-lg border border-gray-300 shadow-md"
-                            />
-                            <div className="flex gap-3">
-                                <Button onClick={handleSaveRecording}>💾 Save Video</Button>
-                                <Button variant="secondary" onClick={() => {
-                                    setRecordedBlob(null);
-                                    setVideoURL(null);
-                                }}>
-                                    🔁 Record Again
-                                </Button>
-                            </div>
-                        </div>
-                    )}
+                    <div className="p-4 h-[75vh]">
+                        {/* SlideViewer erwartet jetzt open + onOpenChange + lessonId */}
+                        <SlideViewer
+                            open={!!openSlidesForLesson}
+                            onOpenChange={(v) => { if (!v) setOpenSlidesForLesson(null); }}
+                            lessonId={openSlidesForLesson}
+                            apiBase={""}
+                        />
+                    </div>
                 </DialogContent>
             </Dialog>
         </div >

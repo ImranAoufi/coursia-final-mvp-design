@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the most important aspect of networking?",
+      "options": [
+        "Authenticity",
+        "Quantity of Contacts",
+        "Social Media Presence",
+        "Follow-up"
+      ],
+      "answer": "Authenticity"
+    },
+    {
+      "question": "What should you focus on when building relationships?",
+      "options": [
+        "Networking Events",
+        "Quality",
+        "Business Cards",
+        "Social Media"
+      ],
+      "answer": "Quality"
+    },
+    {
+      "question": "What is essential when forming strategic partnerships?",
+      "options": [
+        "Clear Offer",
+        "Aggressive Marketing",
+        "Formal Contracts",
+        "Frequent Meetings"
+      ],
+      "answer": "Clear Offer"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is crucial for successful hiring?",
+      "options": [
+        "Cultural fit",
+        "Salary",
+        "Location",
+        "Job title"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What should be included in the interview process?",
+      "options": [
+        "Standard questions",
+        "Behavioral questions",
+        "Only technical questions",
+        "No questions"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "How can you foster innovation in a team?",
+      "options": [
+        "Ignoring feedback",
+        "Promoting open communication",
+        "Limiting brainstorming",
+        "Restricting new ideas"
+      ],
+      "answer": "B"
+    }
+  ]
+}

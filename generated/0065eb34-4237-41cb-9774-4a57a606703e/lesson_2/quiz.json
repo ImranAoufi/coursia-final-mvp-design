@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in initiating a backflip?",
+      "options": [
+        "Tuck your head",
+        "Swing your arms",
+        "Push off the ground",
+        "Pull your knees"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Why is body position important in a backflip?",
+      "options": [
+        "It increases speed",
+        "It helps with rotation",
+        "It prevents injury",
+        "It makes it look good"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you focus on during the takeoff?",
+      "options": [
+        "Arms swinging",
+        "Legs pushing",
+        "Core tightness",
+        "All of the above"
+      ],
+      "answer": "D"
+    }
+  ]
+}

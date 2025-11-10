@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle, Video, Upload } from "lucide-react";
+import { Loader2, CheckCircle, Video } from "lucide-react";
 
 interface TeleprompterRecorderProps {
     courseId: string;
@@ -65,25 +65,35 @@ export default function TeleprompterRecorder({
     };
 
     return (
-        <div className="flex flex-col items-center gap-4 mt-6">
-            <video ref={videoRef} autoPlay muted className="rounded-xl shadow-lg w-[480px] h-[270px]" />
+        <div className="flex flex-col items-center gap-6 mt-6">
+            {/* Kamera */}
+            <video
+                ref={videoRef}
+                autoPlay
+                muted
+                className="rounded-xl shadow-2xl w-[500px] h-[350px] object-cover border-2 border-white"
+            />
 
-            <div className="flex gap-3">
+            {/* Aufnahme Buttons */}
+            <div className="flex gap-3 mt-4">
                 {!isRecording && !recordedBlob && (
                     <Button onClick={startRecording} className="bg-blue-600 text-white">
                         <Video className="mr-2 w-4 h-4" /> Start Recording
                     </Button>
                 )}
+
                 {isRecording && (
                     <Button onClick={stopRecording} className="bg-red-500 text-white">
                         Stop Recording
                     </Button>
                 )}
+
                 {recordedBlob && !isUploading && (
                     <Button onClick={uploadVideo} className="bg-green-600 text-white">
-                        <Upload className="mr-2 w-4 h-4" /> Upload Video
+                        <Loader2 className="mr-2 w-4 h-4" /> Upload Video
                     </Button>
                 )}
+
                 {isUploading && (
                     <Button disabled className="bg-gray-400 text-white">
                         <Loader2 className="mr-2 animate-spin w-4 h-4" /> Uploading...
@@ -99,3 +109,4 @@ export default function TeleprompterRecorder({
         </div>
     );
 }
+

@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in identifying your ideal client?",
+      "options": [
+        "Crafting an offer",
+        "Creating a client persona",
+        "Analyzing competitors",
+        "Setting a price point"
+      ],
+      "answer": "Creating a client persona"
+    },
+    {
+      "question": "What should your irresistible offer primarily focus on?",
+      "options": [
+        "Price",
+        "Competitors",
+        "Client transformation",
+        "Features of the service"
+      ],
+      "answer": "Client transformation"
+    },
+    {
+      "question": "Which element can enhance your offer's appeal?",
+      "options": [
+        "Adding bonuses",
+        "Increasing prices",
+        "Making it vague",
+        "Limiting client access"
+      ],
+      "answer": "Adding bonuses"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in creating scalable service packages?",
+      "options": [
+        "Identify popular services",
+        "Set pricing",
+        "Promote packages",
+        "Create templates"
+      ],
+      "answer": "Identify popular services"
+    },
+    {
+      "question": "Which tool can help automate client communications?",
+      "options": [
+        "Email",
+        "CRM system",
+        "Spreadsheet",
+        "Word processor"
+      ],
+      "answer": "CRM system"
+    },
+    {
+      "question": "What should you regularly do with your automated processes?",
+      "options": [
+        "Ignore them",
+        "Review and refine",
+        "Add more tasks",
+        "Change pricing"
+      ],
+      "answer": "Review and refine"
+    }
+  ]
+}

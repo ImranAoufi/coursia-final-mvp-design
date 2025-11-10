@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a key characteristic of a scalable business model?",
+      "options": [
+        "Increased costs with growth",
+        "Fixed costs",
+        "Ability to grow revenue without proportional costs",
+        "Limited market reach"
+      ],
+      "answer": "Ability to grow revenue without proportional costs"
+    },
+    {
+      "question": "Which revenue model involves charging customers a recurring fee?",
+      "options": [
+        "Transaction-based",
+        "Subscription-based",
+        "Freemium",
+        "Ad-based"
+      ],
+      "answer": "Subscription-based"
+    },
+    {
+      "question": "What should you analyze to optimize your revenue streams?",
+      "options": [
+        "Customer feedback",
+        "Market trends",
+        "Competitor pricing",
+        "All of the above"
+      ],
+      "answer": "All of the above"
+    }
+  ]
+}

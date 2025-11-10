@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in leveraging social media?",
+      "options": [
+        "Identify your audience",
+        "Post daily",
+        "Use hashtags",
+        "Engage with influencers"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What should you develop consistently in your personal brand?",
+      "options": [
+        "Visual identity",
+        "Content variety",
+        "Sales tactics",
+        "Networking strategies"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What is an effective way to increase social media engagement?",
+      "options": [
+        "Post once a week",
+        "Encourage user-generated content",
+        "Limit hashtags",
+        "Avoid analytics"
+      ],
+      "answer": "B"
+    }
+  ]
+}

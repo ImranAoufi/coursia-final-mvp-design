@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is a key method to identify market opportunities?",
+      "options": [
+        "SWOT analysis",
+        "Social media marketing",
+        "Brand loyalty",
+        "Product diversification"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which technology helps analyze customer behavior?",
+      "options": [
+        "Data analytics",
+        "Paper surveys",
+        "Traditional advertising",
+        "In-person meetings"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What can automation improve in a business?",
+      "options": [
+        "Customer relationships",
+        "Operational efficiency",
+        "Brand recognition",
+        "Market share"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is a benefit of cloud solutions?",
+      "options": [
+        "Increased physical storage",
+        "Scalability",
+        "Higher costs",
+        "Less flexibility"
+      ],
+      "answer": "B"
+    }
+  ]
+}

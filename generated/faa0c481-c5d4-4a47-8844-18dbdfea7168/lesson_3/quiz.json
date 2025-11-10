@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a key benefit of creating scalable service packages?",
+      "options": [
+        "A) Increased client satisfaction",
+        "B) Higher operational costs",
+        "C) Limited service offerings",
+        "D) Increased complexity"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which tool can help automate your tasks?",
+      "options": [
+        "A) Microsoft Word",
+        "B) Zapier",
+        "C) Google Sheets",
+        "D) Adobe Photoshop"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you do before pricing your service packages?",
+      "options": [
+        "A) Ask your friends",
+        "B) Conduct market research",
+        "C) Guess based on expenses",
+        "D) Set a random price"
+      ],
+      "answer": "B"
+    }
+  ]
+}

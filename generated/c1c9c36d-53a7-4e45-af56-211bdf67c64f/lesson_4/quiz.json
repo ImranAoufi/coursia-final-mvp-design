@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in reading Arabic texts?",
+      "options": [
+        "Understand cultural context",
+        "Familiarize with the Arabic alphabet",
+        "Use translation tools",
+        "Engage with native speakers"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is it important to identify keywords in verses?",
+      "options": [
+        "To memorize the verse",
+        "To convey the main message",
+        "To practice pronunciation",
+        "To discuss with peers"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "How can visual aids help in reading Arabic texts?",
+      "options": [
+        "By making reading easier",
+        "By enhancing vocabulary recognition",
+        "By improving grammar skills",
+        "By providing translations"
+      ],
+      "answer": "B"
+    }
+  ]
+}

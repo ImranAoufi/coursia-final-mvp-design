@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step to cultivating an entrepreneurial mindset?",
+      "options": [
+        "Setting clear goals",
+        "Reading books",
+        "Finding a mentor",
+        "Practicing gratitude"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which of the following is a way to challenge limiting beliefs?",
+      "options": [
+        "Ignore them",
+        "Identify them",
+        "Accept them",
+        "Doubt them"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you replace limiting beliefs with?",
+      "options": [
+        "Negative thoughts",
+        "Empowering affirmations",
+        "Doubtful statements",
+        "Indifference"
+      ],
+      "answer": "B"
+    }
+  ]
+}
