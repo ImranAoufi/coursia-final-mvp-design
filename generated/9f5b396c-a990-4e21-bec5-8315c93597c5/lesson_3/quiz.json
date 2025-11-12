@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is the most critical factor investors consider when evaluating startups?",
+      "options": [
+        "The team",
+        "The product",
+        "The market",
+        "The funding"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What should your application narrative highlight?",
+      "options": [
+        "Financials",
+        "The problem being solved",
+        "Market size",
+        "Competitor analysis"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What does YCombinator value in a product demonstration?",
+      "options": [
+        "A fully developed product",
+        "A working prototype or MVP",
+        "A detailed business plan",
+        "A market analysis"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is essential to show in your YCombinator application?",
+      "options": [
+        "User growth and traction",
+        "Funding goals",
+        "Marketing strategies",
+        "Team bios"
+      ],
+      "answer": "A"
+    }
+  ]
+}

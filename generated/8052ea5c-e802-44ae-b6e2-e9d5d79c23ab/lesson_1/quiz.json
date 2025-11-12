@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What year was Y Combinator founded?",
+      "options": [
+        "2000",
+        "2005",
+        "2010",
+        "2015"
+      ],
+      "answer": "2005"
+    },
+    {
+      "question": "Which of the following companies is NOT a Y Combinator graduate?",
+      "options": [
+        "Airbnb",
+        "Dropbox",
+        "Reddit",
+        "Twitter"
+      ],
+      "answer": "Twitter"
+    },
+    {
+      "question": "What is one key benefit of participating in Y Combinator?",
+      "options": [
+        "Free office space",
+        "Seed funding",
+        "Tax breaks",
+        "Legal advice"
+      ],
+      "answer": "Seed funding"
+    }
+  ]
+}

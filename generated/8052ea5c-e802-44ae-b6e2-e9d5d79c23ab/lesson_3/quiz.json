@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in crafting a pitch?",
+      "options": [
+        "Engage with visuals",
+        "Understand your audience",
+        "Practice delivery",
+        "Start with a hook"
+      ],
+      "answer": "Understand your audience"
+    },
+    {
+      "question": "Which element is vital for building trust in your pitch?",
+      "options": [
+        "Data analysis",
+        "Personal journey",
+        "Market trends",
+        "Product features"
+      ],
+      "answer": "Personal journey"
+    },
+    {
+      "question": "What should you end your pitch with?",
+      "options": [
+        "A summary",
+        "A strong call to action",
+        "More data",
+        "A detailed explanation"
+      ],
+      "answer": "A strong call to action"
+    }
+  ]
+}

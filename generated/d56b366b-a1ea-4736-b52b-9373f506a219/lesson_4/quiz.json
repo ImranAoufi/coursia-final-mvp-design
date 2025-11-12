@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a common mistake to avoid when applying?",
+      "options": [
+        "Not tailoring the application",
+        "Using simple language",
+        "Submitting on time",
+        "Including references"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Why is it important to have someone review your application?",
+      "options": [
+        "To boost your confidence",
+        "To catch mistakes",
+        "To rewrite it for you",
+        "To add more content"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you focus on when finalizing your application?",
+      "options": [
+        "Formatting",
+        "Length",
+        "Achievements",
+        "All of the above"
+      ],
+      "answer": "D"
+    }
+  ]
+}

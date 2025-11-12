@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in creating a pitch?",
+      "options": [
+        "A. Present your solution",
+        "B. Start with a compelling hook",
+        "C. Conclude with a call to action",
+        "D. Use visuals"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is storytelling important in pitching?",
+      "options": [
+        "A. It adds length to the pitch",
+        "B. It makes the pitch more memorable",
+        "C. It is a requirement",
+        "D. It confuses the audience"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you tailor your message to?",
+      "options": [
+        "A. Your personal preferences",
+        "B. Your audience's interests",
+        "C. Random facts",
+        "D. Industry standards"
+      ],
+      "answer": "B"
+    }
+  ]
+}

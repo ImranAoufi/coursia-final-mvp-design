@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the most important part of a personal statement?",
+      "options": [
+        "Your GPA",
+        "Your personality",
+        "Your resume",
+        "Your references"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is proofreading important?",
+      "options": [
+        "To impress the reader",
+        "To avoid typos",
+        "To add length",
+        "To confuse the reader"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you avoid when submitting your application?",
+      "options": [
+        "Personalizing your application",
+        "Including all required documents",
+        "Submitting a generic application",
+        "Customizing your resume"
+      ],
+      "answer": "C"
+    }
+  ]
+}

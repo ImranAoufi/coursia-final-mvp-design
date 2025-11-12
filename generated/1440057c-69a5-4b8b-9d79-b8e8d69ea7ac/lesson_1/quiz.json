@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in storytelling for pitches?",
+      "options": [
+        "Identify your audience",
+        "Create a conflict",
+        "Develop a resolution",
+        "Use emotional triggers"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What should a winning pitch start with?",
+      "options": [
+        "Data analysis",
+        "Strong opening statement",
+        "Emotional appeal",
+        "Market research"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is it important to rehearse your pitch?",
+      "options": [
+        "To memorize it",
+        "To improve clarity and engagement",
+        "To shorten it",
+        "To impress investors"
+      ],
+      "answer": "B"
+    }
+  ]
+}

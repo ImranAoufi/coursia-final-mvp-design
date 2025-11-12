@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in identifying growth opportunities?",
+      "options": [
+        "Analyze competitors",
+        "Conduct market research",
+        "Look for trends",
+        "Leverage existing customers"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which strategy can help reduce manual tasks?",
+      "options": [
+        "Outsourcing",
+        "Market research",
+        "Upselling",
+        "Networking"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What should you focus on when streamlining operations?",
+      "options": [
+        "Increasing staff",
+        "Evaluating processes",
+        "Expanding product lines",
+        "Enhancing marketing"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is training your team important for efficiency?",
+      "options": [
+        "It increases staff turnover",
+        "It improves productivity",
+        "It complicates processes",
+        "It reduces costs"
+      ],
+      "answer": "B"
+    }
+  ]
+}

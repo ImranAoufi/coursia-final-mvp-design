@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary goal of achieving market fit?",
+      "options": [
+        "To increase product prices",
+        "To meet customer needs",
+        "To expand globally",
+        "To reduce costs"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which revenue model is most attractive to investors?",
+      "options": [
+        "One-time sales",
+        "Subscription model",
+        "Freemium model",
+        "Pay-per-use"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is an MVP?",
+      "options": [
+        "Minimum Viable Product",
+        "Maximum Valuable Product",
+        "Most Valuable Proposal",
+        "Minimum Viable Pricing"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Why is continuous customer engagement important?",
+      "options": [
+        "For marketing purposes",
+        "To increase sales",
+        "To adapt to changing needs",
+        "To enhance product features"
+      ],
+      "answer": "C"
+    }
+  ]
+}

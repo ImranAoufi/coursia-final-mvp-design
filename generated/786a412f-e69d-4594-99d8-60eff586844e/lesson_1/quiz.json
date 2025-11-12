@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in identifying a market gap?",
+      "options": [
+        "Conduct market research",
+        "Analyze competitors",
+        "Assess your interests",
+        "Survey customers"
+      ],
+      "answer": "Assess your interests"
+    },
+    {
+      "question": "Which tool can help you find trending topics?",
+      "options": [
+        "Google Trends",
+        "Facebook Ads",
+        "LinkedIn",
+        "Instagram"
+      ],
+      "answer": "Google Trends"
+    },
+    {
+      "question": "What should you do after testing your niche idea?",
+      "options": [
+        "Launch a full product",
+        "Ignore feedback",
+        "Refine your offerings",
+        "Stop testing"
+      ],
+      "answer": "Refine your offerings"
+    }
+  ]
+}

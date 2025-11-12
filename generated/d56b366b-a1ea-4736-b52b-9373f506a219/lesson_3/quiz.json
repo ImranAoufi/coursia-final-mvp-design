@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary purpose of showcasing your founding team?",
+      "options": [
+        "To list their qualifications",
+        "To build credibility and trust",
+        "To fill time",
+        "To impress investors"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is storytelling important in team narratives?",
+      "options": [
+        "It makes the narrative longer",
+        "It engages the audience emotionally",
+        "It complicates the message",
+        "It is a trend"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you emphasize about your team members' experiences?",
+      "options": [
+        "Their hobbies",
+        "Their previous successes",
+        "Their failures",
+        "Their education only"
+      ],
+      "answer": "B"
+    }
+  ]
+}

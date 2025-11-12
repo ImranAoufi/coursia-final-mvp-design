@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a crucial element of a strong personal statement?",
+      "options": [
+        "Generic description",
+        "Unique experiences",
+        "List of skills",
+        "No personal touch"
+      ],
+      "answer": "Unique experiences"
+    },
+    {
+      "question": "Why is it important to customize your application?",
+      "options": [
+        "To save time",
+        "To stand out",
+        "To confuse reviewers",
+        "To meet deadlines"
+      ],
+      "answer": "To stand out"
+    },
+    {
+      "question": "What should you always do before submitting your application?",
+      "options": [
+        "Ignore guidelines",
+        "Proofread",
+        "Add irrelevant information",
+        "Submit early"
+      ],
+      "answer": "Proofread"
+    }
+  ]
+}

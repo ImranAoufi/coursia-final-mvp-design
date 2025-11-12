@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in creating a brand identity?",
+      "options": [
+        "Choosing a color palette",
+        "Designing a logo",
+        "Defining target audience",
+        "Establishing tone of voice"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which marketing strategy focuses on creating valuable content?",
+      "options": [
+        "Social media marketing",
+        "Content marketing",
+        "Email marketing",
+        "Paid advertising"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you track to measure the effectiveness of your marketing?",
+      "options": [
+        "Customer feedback",
+        "Sales numbers",
+        "Analytics",
+        "All of the above"
+      ],
+      "answer": "D"
+    }
+  ]
+}

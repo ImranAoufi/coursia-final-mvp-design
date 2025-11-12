@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary focus of resilience?",
+      "options": [
+        "Bouncing back from setbacks",
+        "Creating a vision",
+        "Inspiring others",
+        "Avoiding challenges"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which trait allows leaders to adjust strategies in response to change?",
+      "options": [
+        "Resilience",
+        "Vision",
+        "Adaptability",
+        "Motivation"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "What should you do when faced with a setback?",
+      "options": [
+        "Give up",
+        "Reflect and learn",
+        "Ignore it",
+        "Blame others"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Visionary leadership primarily involves which of the following?",
+      "options": [
+        "Managing tasks",
+        "Inspiring a clear vision",
+        "Focusing on details",
+        "Avoiding risks"
+      ],
+      "answer": "B"
+    }
+  ]
+}

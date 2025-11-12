@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the typical duration of a Y Combinator interview?",
+      "options": [
+        "5 minutes",
+        "10 minutes",
+        "15 minutes",
+        "30 minutes"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What method can help structure answers to tough questions?",
+      "options": [
+        "PRACTICE",
+        "STAR",
+        "FOCUS",
+        "CLEAR"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you emphasize when answering about your weaknesses?",
+      "options": [
+        "Avoiding weaknesses",
+        "Honesty and improvement",
+        "Strengths instead",
+        "Irrelevant experiences"
+      ],
+      "answer": "B"
+    }
+  ]
+}

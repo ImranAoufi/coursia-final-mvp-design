@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What does the STAR method stand for?",
+      "options": [
+        "Situation, Task, Action, Result",
+        "Summary, Task, Action, Result",
+        "Situation, Time, Action, Result",
+        "Situation, Task, Achievement, Result"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "When showcasing team strengths, which pronoun should you use?",
+      "options": [
+        "I",
+        "We",
+        "They",
+        "You"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you focus on when discussing a failure?",
+      "options": [
+        "Blaming others",
+        "The lessons learned",
+        "Avoiding the topic",
+        "Making excuses"
+      ],
+      "answer": "B"
+    }
+  ]
+}

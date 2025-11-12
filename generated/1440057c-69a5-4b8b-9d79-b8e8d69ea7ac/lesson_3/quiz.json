@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the most important aspect to emphasize in your application?",
+      "options": [
+        "Your idea",
+        "Your team",
+        "Market trends",
+        "Funding needs"
+      ],
+      "answer": "Your team"
+    },
+    {
+      "question": "What should you avoid when describing your startup's growth?",
+      "options": [
+        "Being specific",
+        "Using metrics",
+        "Being vague",
+        "Providing examples"
+      ],
+      "answer": "Being vague"
+    },
+    {
+      "question": "Why is storytelling important in the application?",
+      "options": [
+        "It entertains the reviewers",
+        "It helps to convey the vision",
+        "It adds length to the application",
+        "It distracts from weaknesses"
+      ],
+      "answer": "It helps to convey the vision"
+    }
+  ]
+}

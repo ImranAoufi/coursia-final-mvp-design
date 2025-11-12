@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What should you include in your pitch's closing statement?",
+      "options": [
+        "A call to action",
+        "A summary of your financials",
+        "Your team member's bios",
+        "A list of competitors"
+      ],
+      "answer": "A call to action"
+    },
+    {
+      "question": "What method can help structure your responses to tough questions?",
+      "options": [
+        "PEST analysis",
+        "SWOT analysis",
+        "STAR method",
+        "Lean canvas"
+      ],
+      "answer": "STAR method"
+    },
+    {
+      "question": "How should you handle a question you don't know the answer to?",
+      "options": [
+        "Make up an answer",
+        "Change the subject",
+        "Admit it and offer to follow up",
+        "Ignore the question"
+      ],
+      "answer": "Admit it and offer to follow up"
+    }
+  ]
+}

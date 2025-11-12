@@ -31,6 +31,16 @@ export default function TeleprompterRecorder({
             const blob = new Blob(chunks, { type: "video/webm" });
             setRecordedBlob(blob);
             stream.getTracks().forEach((t) => t.stop());
+
+            // Video bleibt in gleicher Größe & Form
+            if (videoRef.current) {
+                videoRef.current.srcObject = null;
+                videoRef.current.src = URL.createObjectURL(blob);
+                videoRef.current.controls = true;
+                videoRef.current.style.objectFit = "cover";
+                videoRef.current.style.width = "500px";
+                videoRef.current.style.height = "350px";
+            }
         };
 
         recorder.start();
@@ -65,13 +75,13 @@ export default function TeleprompterRecorder({
     };
 
     return (
-        <div className="flex flex-col items-center gap-6 mt-6">
+        <div className="flex flex-col items-center justify-center gap-6 mt-6 w-full h-full">
             {/* Kamera */}
             <video
                 ref={videoRef}
                 autoPlay
                 muted
-                className="rounded-xl shadow-2xl w-[500px] h-[350px] object-cover border-2 border-white"
+                className="rounded-xl shadow-2xl w-[500px] h-[350px] object-cover border-2 border-white bg-black"
             />
 
             {/* Aufnahme Buttons */}

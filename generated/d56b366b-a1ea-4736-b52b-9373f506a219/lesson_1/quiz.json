@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the most important factor Y Combinator looks for?",
+      "options": [
+        "The idea",
+        "The founding team",
+        "Market potential",
+        "Traction"
+      ],
+      "answer": "The founding team"
+    },
+    {
+      "question": "How should your application be structured?",
+      "options": [
+        "Detailed and lengthy",
+        "Concise and clear",
+        "Vague and broad",
+        "Technical and complex"
+      ],
+      "answer": "Concise and clear"
+    },
+    {
+      "question": "What quality does Y Combinator value during interviews?",
+      "options": [
+        "Authenticity",
+        "Confidence",
+        "Aggressiveness",
+        "Nervousness"
+      ],
+      "answer": "Authenticity"
+    }
+  ]
+}

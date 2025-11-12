@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in building a scalable team?",
+      "options": [
+        "Hire for cultural fit",
+        "Identify key roles",
+        "Implement training programs",
+        "Establish communication channels"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What tool can help automate repetitive tasks?",
+      "options": [
+        "Manual processes",
+        "Technology",
+        "In-person meetings",
+        "Paperwork"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should be created to ensure consistency across teams?",
+      "options": [
+        "Feedback forms",
+        "Standard operating procedures",
+        "Weekly meetings",
+        "Hiring plans"
+      ],
+      "answer": "B"
+    }
+  ]
+}

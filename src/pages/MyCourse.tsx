@@ -20,7 +20,10 @@ import { ChevronDown } from "lucide-react";
 import { QuizDisplay } from "@/components/QuizDisplay";
 import WorkbookDisplay from "@/components/WorkbookDisplay";
 import SlideViewer from "@/components/SlideViewer";
-import TeleprompterRecorder from "@/components/TeleprompterRecorder";
+
+
+
+
 
 
 
@@ -34,6 +37,7 @@ interface Lesson {
     script_content?: string;
 }
 
+
 interface FullCourse {
     course_title?: string;
     course_description?: string;
@@ -45,10 +49,12 @@ interface FullCourse {
     zip?: string;
 }
 
+
 const MyCourse = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const jobIdFromState = (location.state as any)?.jobId as string | undefined;
+
 
     const [course, setCourse] = useState<FullCourse | null>(() => {
         const saved = sessionStorage.getItem("coursia_full_course");
@@ -59,18 +65,23 @@ const MyCourse = () => {
     const [progressMsg, setProgressMsg] = useState<string>("Waiting...");
     const [downloading, setDownloading] = useState(false);
 
+
     const [openScript, setOpenScript] = useState(false);
     const [activeScriptTitle, setActiveScriptTitle] = useState<string | null>(null);
     const [activeScriptContent, setActiveScriptContent] = useState<string | null>(null);
 
+
     const [activeWorkbookTitle, setActiveWorkbookTitle] = useState<string | null>(null);
     const [activeWorkbookContent, setActiveWorkbookContent] = useState<string | null>(null);
+
 
     const [activeQuizTitle, setActiveQuizTitle] = useState<string | null>(null);
     const [activeQuizContent, setActiveQuizContent] = useState<string | null>(null);
 
+
     const [isTeleprompterActive, setIsTeleprompterActive] = useState(false);
     const [scrollSpeed, setScrollSpeed] = useState(1); // 1 = langsam, 3 = schnell
+
 
     const [isRecording, setIsRecording] = useState(false);
     const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
@@ -78,10 +89,13 @@ const MyCourse = () => {
     const [videoURL, setVideoURL] = useState<string | null>(null);
     const [activeVideoTitle, setActiveVideoTitle] = useState<string | null>(null);
 
+
     const [openSlidesForLesson, setOpenSlidesForLesson] = useState<string | null>(null);
+
 
     const [openSlides, setOpenSlides] = useState(false);
     const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
+
 
     const handleStartRecording = async (title: string) => {
         setActiveVideoTitle(title);
@@ -91,10 +105,14 @@ const MyCourse = () => {
 
 
 
+
+
+
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             const recorder = new MediaRecorder(stream);
             const chunks: BlobPart[] = [];
+
 
             recorder.ondataavailable = (e) => chunks.push(e.data);
             recorder.onstop = () => {
@@ -103,6 +121,7 @@ const MyCourse = () => {
                 setVideoURL(URL.createObjectURL(blob));
                 stream.getTracks().forEach((track) => track.stop());
             };
+
 
             setMediaRecorder(recorder);
             recorder.start();
@@ -113,6 +132,7 @@ const MyCourse = () => {
         }
     };
 
+
     const handleStopRecording = () => {
         if (mediaRecorder && mediaRecorder.state !== "inactive") {
             mediaRecorder.stop();
@@ -120,6 +140,7 @@ const MyCourse = () => {
         setIsRecording(false);
         setIsTeleprompterActive(false); // 🧠 stoppe Teleprompter wenn Aufnahme endet
     };
+
 
     const handleSaveRecording = () => {
         if (!recordedBlob || !activeVideoTitle) return;
@@ -129,6 +150,7 @@ const MyCourse = () => {
         link.click();
         toast.success("🎬 Video saved locally!");
     };
+
 
     const handleViewSlides = async (lessonId: string, scriptText?: string) => {
         // ensure slides generated on demand (auto)
@@ -149,6 +171,9 @@ const MyCourse = () => {
 
 
 
+
+
+
     const toURL = (path?: string) => {
         if (!path) return "";
         return path
@@ -156,11 +181,13 @@ const MyCourse = () => {
             .replace(/\\/g, "/");
     };
 
+
     useEffect(() => {
         if (course) {
             setStatus("done");
             return;
         }
+
 
         let cancelled = false;
         if (jobId) {
@@ -172,6 +199,7 @@ const MyCourse = () => {
                         setStatus(s);
                         setProgressMsg(s);
                     });
+
 
                     if (full) {
                         sessionStorage.setItem("coursia_full_course", JSON.stringify(full));
@@ -189,28 +217,36 @@ const MyCourse = () => {
             })();
         }
 
+
         return () => {
             cancelled = true;
         };
     }, [jobId]);
 
+
     useEffect(() => {
         const getInner = () => document.getElementById("script-scroll-inner");
+
 
         const tickMs = 30; // alle 20ms (smooth)
         const baseSpeed = 0.4; // Basisgeschwindigkeit
 
+
         let interval: ReturnType<typeof setInterval> | null = null;
+
 
         if (isTeleprompterActive) {
             interval = setInterval(() => {
                 const inner = document.getElementById("script-scroll-inner");
                 if (!inner) return;
 
+
                 const scrollStep = baseSpeed * scrollSpeed;
+
 
                 // Scroll um den Wert nach unten
                 inner.scrollTop += scrollStep;
+
 
                 // 🚀 NEU: nur stoppen, wenn wirklich "sichtbar unten angekommen"
                 if (inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 5) {
@@ -221,16 +257,19 @@ const MyCourse = () => {
             }, tickMs);
         }
 
+
         return () => {
             if (interval) clearInterval(interval);
         };
     }, [isTeleprompterActive, scrollSpeed]);
+
 
     useEffect(() => {
         if (!openScript && isTeleprompterActive) {
             setIsTeleprompterActive(false);
         }
     }, [openScript, isTeleprompterActive]);
+
 
     const handleDownloadZip = async () => {
         if (!course?.zip) {
@@ -258,17 +297,19 @@ const MyCourse = () => {
         }
     };
 
+
     const handleViewScript = async (title: string, path?: string) => {
         if (!path) return alert("No script file found.");
+
 
         try {
             const res = await fetch(toURL(path));
             if (!res.ok) throw new Error("Failed to load script file");
             const text = await res.text();
 
+
             setActiveScriptTitle(title);
             setActiveScriptContent(text);
-            setActiveLessonId(title);
             setOpenScript(true);
         } catch (err) {
             console.error(err);
@@ -276,12 +317,14 @@ const MyCourse = () => {
         }
     };
 
+
     const handleViewQuiz = async (title: string, path?: string) => {
         if (!path) return alert("No quiz file found.");
         try {
             const res = await fetch(toURL(path));
             if (!res.ok) throw new Error("Failed to load quiz file");
             const text = await res.text();
+
 
             setActiveQuizTitle(title);
             setActiveQuizContent(text);
@@ -291,12 +334,14 @@ const MyCourse = () => {
         }
     };
 
+
     const handleViewWorkbook = async (title: string, path?: string) => {
         if (!path) return alert("No workbook file found.");
         try {
             const res = await fetch(toURL(path));
             if (!res.ok) throw new Error("Failed to load workbook file");
             const text = await res.text();
+
 
             setActiveWorkbookTitle(title);
             setActiveWorkbookContent(text);
@@ -306,9 +351,11 @@ const MyCourse = () => {
         }
     };
 
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-slate-50 to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 py-16 px-4">
             <div className="max-w-7xl mx-auto space-y-10">
+
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -320,6 +367,7 @@ const MyCourse = () => {
                             {course?.course_description ?? "Your full AI-generated course will appear here once ready."}
                         </p>
                     </div>
+
 
                     <div className="flex flex-wrap gap-3">
                         <Button variant="ghost" onClick={() => navigate("/preview")}>
@@ -353,6 +401,7 @@ const MyCourse = () => {
                     </div>
                 </div>
 
+
                 {/* Banner */}
                 {course?.banner_url && (
                     <div className="rounded-3xl overflow-hidden shadow-xl border border-white/10">
@@ -363,6 +412,7 @@ const MyCourse = () => {
                         />
                     </div>
                 )}
+
 
                 {/* Status Box */}
                 <Card className="glass border border-indigo-100/40 shadow-sm">
@@ -383,6 +433,7 @@ const MyCourse = () => {
                         <div className="text-xs text-muted-foreground">Job ID: {jobId ?? "—"}</div>
                     </CardContent>
                 </Card>
+
 
                 {/* Main Section */}
                 <section className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -406,7 +457,9 @@ const MyCourse = () => {
                                             </div>
                                         </AccordionTrigger>
 
+
                                         <AccordionContent className="p-4 space-y-6 bg-white/30 dark:bg-white/5 rounded-b-2xl">
+
 
                                             {/* Videos */}
                                             {lesson.videos?.length ? (
@@ -414,6 +467,7 @@ const MyCourse = () => {
                                                     {lesson.videos.map((v, vi) => {
                                                         const video =
                                                             typeof v === "string" ? { title: `Video ${vi + 1}`, script_file: v } : v;
+
 
                                                         return (
                                                             <div
@@ -424,6 +478,7 @@ const MyCourse = () => {
                                                                     <Film className="w-4 h-4 text-primary" /> {video.title || `Video ${vi + 1}`}
                                                                 </div>
 
+
                                                                 <Button
                                                                     size="sm"
                                                                     variant="ghost"
@@ -432,16 +487,7 @@ const MyCourse = () => {
                                                                 >
                                                                     View Script
                                                                 </Button>
-                                                                <div className="mt-2 ml-2">
-                                                                    <TeleprompterRecorder
-                                                                        courseId={course?.course_title || "temp-course"}
-                                                                        lessonId={`lesson-${li}`}
-                                                                        onUploadComplete={(videoUrl) => {
-                                                                            console.log("Uploaded:", videoUrl);
-                                                                            toast.success("🎬 Video uploaded successfully!");
-                                                                        }}
-                                                                    />
-                                                                </div>
+
                                                             </div>
                                                         );
                                                     })}
@@ -449,6 +495,7 @@ const MyCourse = () => {
                                             ) : (
                                                 <div className="text-sm text-muted-foreground">No videos available.</div>
                                             )}
+
 
                                             {/* Quiz & Workbook */}
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -467,6 +514,7 @@ const MyCourse = () => {
                                                     </div>
                                                 )}
 
+
                                                 {lesson.workbook_file && (
                                                     <div className="p-3 rounded-lg bg-secondary/5 border border-secondary/20">
                                                         <div className="font-semibold text-sm flex items-center gap-2">
@@ -483,16 +531,6 @@ const MyCourse = () => {
                                                 )}
                                             </div>
                                         </AccordionContent>
-                                        {/* VIEW SLIDES BUTTON */}
-                                        <div className="mt-4">
-                                            <Button
-                                                variant="secondary"
-                                                onClick={() => handleViewSlides(`lesson-${li}`, lesson.script_content)}
-                                                className="w-full"
-                                            >
-                                                📊 View Slides
-                                            </Button>
-                                        </div>
                                     </AccordionItem>
                                 ))}
                             </Accordion>
@@ -502,6 +540,10 @@ const MyCourse = () => {
                             </div>
                         )}
                     </main>
+
+
+
+
 
                     {/* Sidebar */}
                     <aside className="space-y-6">
@@ -525,6 +567,7 @@ const MyCourse = () => {
                             </Button>
                         </Card>
 
+
                         <Card className="p-5">
                             <div className="text-sm text-muted-foreground space-y-2">
                                 <div><strong>Tips</strong></div>
@@ -544,6 +587,7 @@ const MyCourse = () => {
                         </DialogTitle>
                     </DialogHeader>
 
+
                     <div className="flex flex-row gap-6 w-full h-full">
                         {/* LEFT PANEL */}
                         <div className="w-[260px] flex flex-col gap-6">
@@ -558,6 +602,7 @@ const MyCourse = () => {
                                     >
                                         {isTeleprompterActive ? "⏸ Pause" : "▶ Start"}
                                     </Button>
+
 
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
@@ -574,6 +619,7 @@ const MyCourse = () => {
                                     </DropdownMenu>
                                 </div>
                             </Card>
+
 
                             {/* RECORDING CONTROLS */}
                             <Card className="p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm">
@@ -620,6 +666,7 @@ const MyCourse = () => {
                             </Card>
                         </div>
 
+
                         {/* RIGHT PANEL — VIDEO + TELEPROMPTER */}
                         <div className="flex-1 relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-black">
                             {isRecording ? (
@@ -632,17 +679,6 @@ const MyCourse = () => {
                                 </div>
                             )}
 
-                            {/* --- Neuer Recorder mit Upload (unterhalb Video/Teleprompter) --- */}
-                            <div className="mt-6">
-                                <TeleprompterRecorder
-                                    courseId={course?.course_title || "default-course"}
-                                    lessonId={activeScriptTitle || "lesson-1"}
-                                    onUploadComplete={(url) => {
-                                        console.log("✅ Upload complete:", url);
-                                        toast.success("Video uploaded successfully!");
-                                    }}
-                                />
-                            </div>
 
                             {/* FLOATING TELEPROMPTER */}
                             {activeScriptContent && isTeleprompterActive && (
@@ -680,10 +716,13 @@ const MyCourse = () => {
                                 </div>
                             )}
 
+
                         </div>
                     </div>
                 </DialogContent>
             </Dialog>
+
+
 
 
             {/* Quiz Modal (sibling) */}
@@ -695,6 +734,7 @@ const MyCourse = () => {
                         </DialogTitle>
                     </DialogHeader>
 
+
                     {activeQuizContent ? (
                         <QuizDisplay quizData={JSON.parse(activeQuizContent)} />
                     ) : (
@@ -703,12 +743,14 @@ const MyCourse = () => {
                 </DialogContent>
             </Dialog>
 
+
             {/* Workbook Modal (sibling) */}
             <Dialog open={!!activeWorkbookTitle} onOpenChange={() => setActiveWorkbookTitle(null)}>
                 <DialogContent className="max-w-3xl max-h-[80vh]">
                     <DialogHeader>
                         <DialogTitle>{activeWorkbookTitle}</DialogTitle>
                     </DialogHeader>
+
 
                     <div className="mt-2 max-h-[65vh] overflow-y-auto">
                         {activeWorkbookContent ? (
@@ -719,6 +761,7 @@ const MyCourse = () => {
                     </div>
                 </DialogContent>
             </Dialog>
+
 
             {/* --- Slide Viewer Modal (korrekt: open + onOpenChange übergeben) --- */}
             <Dialog
@@ -734,6 +777,7 @@ const MyCourse = () => {
                         </DialogTitle>
                     </DialogHeader>
 
+
                     <div className="p-4 h-[75vh]">
                         {/* SlideViewer erwartet jetzt open + onOpenChange + lessonId */}
                         <SlideViewer
@@ -748,5 +792,6 @@ const MyCourse = () => {
         </div >
     );
 };
+
 
 export default MyCourse;

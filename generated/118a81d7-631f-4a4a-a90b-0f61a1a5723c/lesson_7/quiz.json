@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is a key component of investor relations?",
+      "options": [
+        "Transparency",
+        "Secrecy",
+        "Avoiding updates",
+        "No communication"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which funding source is NOT typically mentioned in funding strategies?",
+      "options": [
+        "Crowdfunding",
+        "Angel investors",
+        "Bank loans",
+        "Trade credit"
+      ],
+      "answer": "D"
+    },
+    {
+      "question": "What should you tailor when approaching different investors?",
+      "options": [
+        "Funding amount",
+        "Communication style",
+        "Business model",
+        "Team size"
+      ],
+      "answer": "B"
+    }
+  ]
+}

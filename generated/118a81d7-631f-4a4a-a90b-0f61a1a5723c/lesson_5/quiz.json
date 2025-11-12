@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in identifying your target market?",
+      "options": [
+        "Analyze demographics",
+        "Create a marketing budget",
+        "Develop a product prototype",
+        "Launch a campaign"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Which marketing tactic is considered cost-effective?",
+      "options": [
+        "Television ads",
+        "Billboard marketing",
+        "Content marketing",
+        "Direct mail"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "What should be developed after gathering customer insights?",
+      "options": [
+        "A customer persona",
+        "A product catalog",
+        "A pricing strategy",
+        "A sales team"
+      ],
+      "answer": "A"
+    }
+  ]
+}

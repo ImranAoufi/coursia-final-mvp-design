@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the purpose of an executive summary?",
+      "options": [
+        "To provide a detailed financial analysis",
+        "To summarize what your business does",
+        "To outline marketing strategies",
+        "To describe product features"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What does SMART stand for in goal setting?",
+      "options": [
+        "Simple, Measurable, Achievable, Relevant, Time-bound",
+        "Specific, Measurable, Achievable, Relevant, Time-bound",
+        "Specific, Manageable, Attainable, Relevant, Timed",
+        "Simple, Manageable, Achievable, Realistic, Timed"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which of the following is a long-term financial goal?",
+      "options": [
+        "Achieving first-year revenue",
+        "Launching a product",
+        "Expanding your product line in five years",
+        "Securing initial funding"
+      ],
+      "answer": "C"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is Y Combinator?",
+      "options": [
+        "A startup accelerator",
+        "A tech company",
+        "A venture capital firm",
+        "A government program"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What major event do YC startups participate in at the end of the program?",
+      "options": [
+        "Investor Pitch",
+        "Demo Day",
+        "Networking Event",
+        "Graduation Ceremony"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which of these companies was launched with YC support?",
+      "options": [
+        "Facebook",
+        "Airbnb",
+        "Twitter",
+        "Uber"
+      ],
+      "answer": "B"
+    }
+  ]
+}

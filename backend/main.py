@@ -716,19 +716,28 @@ async def generate_banner(payload: dict):
     job_folder.mkdir(exist_ok=True)
 
     banner_prompt = f"""
-    Create a cinematic, elegant hero banner for an online course.
-    Title: '{course_title}'
-    Description: '{course_description}'
-    Style: Apple keynote aesthetic, soft gradients, elegant typography,
-           16:9 aspect ratio, modern flat lighting, ultra high-quality.
-    """
+Create a cinematic, premium hero banner for an online course.
+Title: "{course_title}"
+Description: "{course_description}"
+
+Style:
+- Apple.com hero section
+- ultra-clean modern gradients
+- elegant lighting
+- minimalistic composition
+- no text in the image
+- 16:9 aspect ratio
+- perfect for a website header
+
+Output: ultra-wide 2048x1152 pixels.
+"""
 
     try:
         dalle = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         result = dalle.images.generate(
             model="gpt-image-1",
             prompt=banner_prompt,
-            size="1792x1024",
+            size="2048x1152",
             n=1
         )
         image_b64 = result.data[0].b64_json

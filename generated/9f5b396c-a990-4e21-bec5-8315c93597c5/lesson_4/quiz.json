@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step to maximizing your time in YCombinator?",
+      "options": [
+        "Set clear goals",
+        "Attend every meeting",
+        "Network with alumni",
+        "Focus solely on product development"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Why is it important to document your journey?",
+      "options": [
+        "To share with investors",
+        "For personal reflection",
+        "To impress your mentors",
+        "It's not important"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you do after networking with someone?",
+      "options": [
+        "Forget about them",
+        "Send a follow-up message",
+        "Only contact them when you need something",
+        "Avoid contacting them again"
+      ],
+      "answer": "B"
+    }
+  ]
+}

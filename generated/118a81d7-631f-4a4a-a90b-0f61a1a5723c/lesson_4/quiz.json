@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the primary goal of an MVP?",
+      "options": [
+        "To launch a fully developed product",
+        "To validate a business idea",
+        "To gather extensive user data",
+        "To eliminate all risks"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Which method is NOT recommended for gathering user feedback?",
+      "options": [
+        "Surveys",
+        "Interviews",
+        "Ignoring user input",
+        "Analytics"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "What is iteration in the context of MVP?",
+      "options": [
+        "Launching multiple products",
+        "Making incremental improvements",
+        "Finalizing the product",
+        "Discontinuing the project"
+      ],
+      "answer": "B"
+    }
+  ]
+}

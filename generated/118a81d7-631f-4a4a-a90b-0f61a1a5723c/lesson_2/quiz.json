@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "What is the first key component of a compelling application?",
+      "options": [
+        "Personal statement",
+        "Resume",
+        "References",
+        "Transcripts"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "Why is it important to tailor your application?",
+      "options": [
+        "To fill space",
+        "To reflect your unique experiences",
+        "To impress with jargon",
+        "To follow trends"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What should you do before submitting your application?",
+      "options": [
+        "Ignore feedback",
+        "Proofread thoroughly",
+        "Submit immediately",
+        "Skip the guidelines"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "What is a common mistake to avoid in applications?",
+      "options": [
+        "Being too specific",
+        "Generic responses",
+        "Using bullet points",
+        "Highlighting achievements"
+      ],
+      "answer": "B"
+    }
+  ]
+}

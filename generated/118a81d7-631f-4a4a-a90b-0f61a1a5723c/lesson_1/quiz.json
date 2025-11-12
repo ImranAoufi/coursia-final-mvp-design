@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {
+      "question": "What is Y Combinator?",
+      "options": [
+        "A startup accelerator",
+        "A venture capital firm",
+        "A government program",
+        "An incubator"
+      ],
+      "answer": "A"
+    },
+    {
+      "question": "What is one benefit of joining YC?",
+      "options": [
+        "Access to free office space",
+        "Access to funding",
+        "Guaranteed success",
+        "No mentorship"
+      ],
+      "answer": "B"
+    }
+  ]
+}

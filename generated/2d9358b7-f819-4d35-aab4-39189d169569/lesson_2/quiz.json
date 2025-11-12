@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "What is the most important part of a personal statement?",
+      "options": [
+        "Generic statements",
+        "Specific examples",
+        "Vague language",
+        "Lengthy descriptions"
+      ],
+      "answer": "B"
+    },
+    {
+      "question": "Why is it important to tailor your application?",
+      "options": [
+        "To save time",
+        "To avoid errors",
+        "To show relevance",
+        "To impress recommenders"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "What should you do before submitting your application?",
+      "options": [
+        "Ignore deadlines",
+        "Proofread your documents",
+        "Ask everyone for feedback",
+        "Use a template"
+      ],
+      "answer": "B"
+    }
+  ]
+}

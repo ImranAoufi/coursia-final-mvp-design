@@ -1,0 +1,5 @@
+Reflect on your own MVP idea:
+- Identify your target users and their main pain points.
+- List 3 core features that your MVP must have.
+- Describe how you will gather user feedback after launching your MVP.
+- Plan your first iteration based on potential feedback you anticipate receiving.

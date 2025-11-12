@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {
+      "question": "What is the first step in defining your startup's mission?",
+      "options": [
+        "Identify your target audience",
+        "Articulate your mission statement",
+        "Determine core values",
+        "Analyze competitors"
+      ],
+      "answer": "C"
+    },
+    {
+      "question": "Why is consistency important in communicating value?",
+      "options": [
+        "It makes the message longer",
+        "It builds trust",
+        "It confuses the audience",
+        "It is less important"
+      ],
+      "answer": "B"
+    }
+  ]
+}
