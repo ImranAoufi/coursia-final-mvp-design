@@ -154,8 +154,8 @@ export default function Marketplace() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-24 pb-16 px-6">
-        <div className="container mx-auto max-w-6xl text-center">
+      <section className="relative z-10 pt-16 pb-12 px-6">
+        <div className="container mx-auto max-w-5xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -165,12 +165,12 @@ export default function Marketplace() {
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium">10,000+ Premium Courses</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text leading-tight">
               Discover Your Next
               <br />
               Learning Journey
             </h1>
-            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto">
               World-class courses from industry experts. Transform your career with cutting-edge skills.
             </p>
 
@@ -303,10 +303,10 @@ export default function Marketplace() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="glass-strong px-4 py-2 rounded-xl border border-white/10 bg-transparent focus:outline-none focus:border-primary/50"
+              className="glass-strong px-6 py-3 rounded-xl border border-white/10 bg-background/50 backdrop-blur-xl text-foreground font-medium focus:outline-none focus:border-primary/50 hover:border-primary/30 transition-all duration-300 cursor-pointer shadow-lg"
             >
               {sortOptions.map((option) => (
-                <option key={option} value={option} className="bg-background">
+                <option key={option} value={option} className="bg-background text-foreground">
                   {option}
                 </option>
               ))}
@@ -401,7 +401,7 @@ export default function Marketplace() {
         <div className="container mx-auto max-w-7xl">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h3 className="font-bold text-lg mb-4 gradient-text">CourseHub</h3>
+              <Logo className="h-10 mb-4 object-contain" />
               <p className="text-sm text-muted-foreground">
                 Empowering learners worldwide with premium education.
               </p>
@@ -432,7 +432,7 @@ export default function Marketplace() {
             </div>
           </div>
           <div className="pt-8 border-t border-white/10 text-center text-sm text-muted-foreground">
-            <p>© 2024 CourseHub. All rights reserved.</p>
+            <p>© 2025 Coursera. All rights reserved.</p>
           </div>
         </div>
       </footer>
