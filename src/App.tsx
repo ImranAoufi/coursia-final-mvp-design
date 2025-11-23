@@ -12,6 +12,7 @@ import Enterprise from "./pages/Enterprise";
 import NotFound from "./pages/NotFound";
 import Preview from "./pages/Preview";
 import MyCourse from "@/pages/MyCourse";
+import Marketplace from "@/pages/Marketplace";
 
 // ✅ Hier kommt dein Wizard aus src/components/
 import IntakeWizard from "./components/IntakeWizard";
@@ -33,6 +34,9 @@ const App = () => (
             <Route path="/preview" element={<Preview />} />
 
             <Route path="/my-course" element={<MyCourse />} />
+            
+            {/* ✅ Marketplace */}
+            <Route path="/marketplace" element={<Marketplace />} />
 
             {/* ✅ Normale Seiten */}
             <Route path="/" element={<Landing />} />
