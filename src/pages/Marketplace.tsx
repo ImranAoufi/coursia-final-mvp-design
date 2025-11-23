@@ -4,8 +4,8 @@ import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
 interface Course {
@@ -116,6 +116,7 @@ export default function Marketplace() {
   const [selectedLevel, setSelectedLevel] = useState("All Levels");
   const [sortBy, setSortBy] = useState("Popular");
   const [showFilters, setShowFilters] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
 
   const filteredCourses = mockCourses.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -300,17 +301,62 @@ export default function Marketplace() {
               <h2 className="text-3xl font-bold mb-2">All Courses</h2>
               <p className="text-muted-foreground">{filteredCourses.length} courses available</p>
             </div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-6 py-3 rounded-xl font-medium focus:outline-none transition-all duration-300 cursor-pointer shadow-lg bg-gradient-to-r from-primary via-secondary to-accent text-primary-foreground border border-primary/20 hover:shadow-xl hover:scale-105 backdrop-blur-xl"
-            >
-              {sortOptions.map((option) => (
-                <option key={option} value={option} className="bg-background text-foreground">
-                  {option}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <button
+                onClick={() => setIsSortOpen(!isSortOpen)}
+                className="px-6 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer shadow-lg glass-strong border border-white/20 hover:border-primary/40 hover:shadow-xl hover:scale-105 backdrop-blur-xl text-foreground flex items-center gap-3 min-w-[200px] justify-between group"
+              >
+                <span>{sortBy}</span>
+                <motion.div
+                  animate={{ rotate: isSortOpen ? 180 : 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <ChevronDown className="w-5 h-5 text-primary group-hover:text-accent transition-colors" />
+                </motion.div>
+              </button>
+              
+              <AnimatePresence>
+                {isSortOpen && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="fixed inset-0 z-40"
+                      onClick={() => setIsSortOpen(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute top-full mt-2 w-full glass-strong border border-white/20 rounded-xl shadow-2xl backdrop-blur-xl overflow-hidden z-50"
+                    >
+                      {sortOptions.map((option, index) => (
+                        <motion.button
+                          key={option}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.2, delay: index * 0.05 }}
+                          onClick={() => {
+                            setSortBy(option);
+                            setIsSortOpen(false);
+                          }}
+                          className={`w-full px-6 py-3 text-left transition-all duration-200 ${
+                            sortBy === option
+                              ? "bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 text-primary font-semibold"
+                              : "text-foreground hover:bg-primary/10"
+                          } ${index !== sortOptions.length - 1 ? "border-b border-white/10" : ""}`}
+                        >
+                          {option}
+                        </motion.button>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
