@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
+import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles } from "lucide-react";
@@ -132,8 +134,8 @@ export default function Marketplace() {
       {/* Header */}
       <header className="relative z-10 glass-strong border-b border-white/10">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="text-2xl font-bold gradient-text">
-            CourseHub
+          <Link to="/">
+            <Logo className="h-12 md:h-14 object-contain" />
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -145,6 +147,7 @@ export default function Marketplace() {
             <Link to="/my-course" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               My Courses
             </Link>
+            <ThemeToggle />
             <Button variant="gradient" size="sm">Sign In</Button>
           </nav>
         </div>
@@ -194,7 +197,7 @@ export default function Marketplace() {
                 variant="glass"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className="gap-2"
+                className="gap-2 glass-strong hover:scale-105 transition-all duration-300"
               >
                 <Filter className="w-4 h-4" />
                 Filters
@@ -205,6 +208,11 @@ export default function Marketplace() {
                   variant={selectedCategory === cat ? "gradient" : "glass"}
                   size="sm"
                   onClick={() => setSelectedCategory(cat)}
+                  className={`glass-strong hover:scale-105 transition-all duration-300 ${
+                    selectedCategory === cat 
+                      ? "shadow-lg shadow-primary/25 border-primary/50" 
+                      : "hover:border-primary/30"
+                  }`}
                 >
                   {cat}
                 </Button>
