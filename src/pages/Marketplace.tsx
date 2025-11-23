@@ -303,7 +303,7 @@ export default function Marketplace() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="glass-strong px-6 py-3 rounded-xl border border-white/10 bg-background/50 backdrop-blur-xl text-foreground font-medium focus:outline-none focus:border-primary/50 hover:border-primary/30 transition-all duration-300 cursor-pointer shadow-lg"
+              className="px-6 py-3 rounded-xl font-medium focus:outline-none transition-all duration-300 cursor-pointer shadow-lg bg-gradient-to-r from-primary via-secondary to-accent text-primary-foreground border border-primary/20 hover:shadow-xl hover:scale-105 backdrop-blur-xl"
             >
               {sortOptions.map((option) => (
                 <option key={option} value={option} className="bg-background text-foreground">
@@ -432,7 +432,7 @@ export default function Marketplace() {
             </div>
           </div>
           <div className="pt-8 border-t border-white/10 text-center text-sm text-muted-foreground">
-            <p>© 2025 Coursera. All rights reserved.</p>
+            <p>© 2025 Coursia. All rights reserved.</p>
           </div>
         </div>
       </footer>
