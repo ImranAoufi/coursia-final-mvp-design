@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { UserMenu } from "@/components/UserMenu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles, ChevronDown } from "lucide-react";
@@ -149,7 +150,7 @@ export default function Marketplace() {
               My Courses
             </Link>
             <ThemeToggle />
-            <Button variant="gradient" size="sm">Sign In</Button>
+            <UserMenu />
           </nav>
         </div>
       </header>

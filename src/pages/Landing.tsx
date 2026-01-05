@@ -5,6 +5,7 @@ import { ArrowRight, Sparkles, Zap, Rocket, Upload, Wand2, Eye, Check } from "lu
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
+import { UserMenu } from "@/components/UserMenu";
 import { soundEngine } from "@/lib/sounds";
 import { testBackend, generateFromBackend } from "@/api";
 
@@ -60,9 +61,7 @@ const Landing = () => {
 
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <button className="text-foreground/80 hover:text-foreground transition-colors">
-              Login
-            </button>
+            <UserMenu />
             <Button variant="gradient" onClick={handleStartCreating} className="group">
               Start Creating
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
