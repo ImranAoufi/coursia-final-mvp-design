@@ -1,4 +1,5 @@
 import time
+import httpx
 from PIL import Image, ImageDraw, ImageFont
 import hmac
 import hashlib
@@ -700,10 +701,39 @@ Keep scripts actionable and specific to the lesson title. Keep quiz questions sh
 # 🖼️ Zusatz: Automatische Banner-Erzeugung (nachträglich)
 # ============================================================
 
+# ============================================================
+# 🎨 Hugging Face Image Generation (FREE)
+# ============================================================
+
+HF_API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
+
+async def generate_image_hf(prompt: str, hf_token: str = None) -> bytes:
+    """
+    Generates an image using Hugging Face's free FLUX.1-schnell model.
+    """
+    token = hf_token or os.getenv("HUGGING_FACE_ACCESS_TOKEN")
+    if not token:
+        raise ValueError("HUGGING_FACE_ACCESS_TOKEN is required")
+    
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        response = await client.post(
+            HF_API_URL,
+            headers=headers,
+            json={"inputs": prompt}
+        )
+        
+        if response.status_code != 200:
+            raise Exception(f"HuggingFace API error: {response.status_code} - {response.text}")
+        
+        return response.content
+
+
 @app.post("/api/generate-banner")
 async def generate_banner(payload: dict):
     """
-    Generiert ein hero-style Bannerbild für den Kurs (querformatig, Apple-like).
+    Generiert ein hero-style Bannerbild für den Kurs mit Hugging Face FLUX.1-schnell (FREE).
     """
     job_id = payload.get("job_id")
     course_title = payload.get("course_title", "Unnamed Course")
@@ -716,33 +746,14 @@ async def generate_banner(payload: dict):
     job_folder.mkdir(exist_ok=True)
 
     banner_prompt = f"""
-Create a cinematic, premium hero banner for an online course.
-Title: "{course_title}"
-Description: "{course_description}"
-
-Style:
-- Apple.com hero section
-- ultra-clean modern gradients
-- elegant lighting
-- minimalistic composition
-- no text in the image
-- 16:9 aspect ratio
-- perfect for a website header
-
-Output: ultra-wide 2048x1152 pixels.
+A cinematic, premium hero banner for an online course about "{course_title}".
+{course_description}
+Style: Apple.com hero section, ultra-clean modern gradients, elegant lighting, minimalistic composition, no text, perfect for website header, 16:9 aspect ratio, ultra high resolution.
 """
 
     try:
-        dalle = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        result = dalle.images.generate(
-            model="gpt-image-1",
-            prompt=banner_prompt,
-            size="2048x1152",
-            n=1
-        )
-        image_b64 = result.data[0].b64_json
-        image_bytes = base64.b64decode(image_b64)
-
+        image_bytes = await generate_image_hf(banner_prompt)
+        
         banner_path = job_folder / "banner.png"
         with open(banner_path, "wb") as f:
             f.write(image_bytes)
@@ -756,14 +767,13 @@ Output: ultra-wide 2048x1152 pixels.
 
 
 # ============================================================
-# 🎨 Logo-Erzeugung
+# 🎨 Logo-Erzeugung (FREE with Hugging Face)
 # ============================================================
 
 @app.post("/api/generate-logo")
 async def generate_logo(payload: dict):
     """
-    Generiert ein einzigartiges Logo für den Kurs mit DALL·E.
-    Speichert es im generated/<job_id>/ Ordner.
+    Generiert ein einzigartiges Logo für den Kurs mit Hugging Face FLUX.1-schnell (FREE).
     """
     job_id = payload.get("job_id")
     course_title = payload.get("course_title", "Unnamed Course")
@@ -775,23 +785,13 @@ async def generate_logo(payload: dict):
     job_folder.mkdir(exist_ok=True)
 
     logo_prompt = f"""
-    Create a high-end, minimalist course logo in flat modern style.
-    The course title is: '{course_title}'.
-    Style: Apple aesthetic, soft gradients, elegant typography, white background, subtle 3D depth.
-    Output should be square 1024x1024, focus on the essence of the title.
-    """
+A high-end, minimalist course logo in flat modern style for "{course_title}".
+Style: Apple aesthetic, soft gradients, elegant, white background, subtle 3D depth, square format, professional brand icon, ultra high resolution.
+"""
 
     try:
-        dalle = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        result = dalle.images.generate(
-            model="gpt-image-1",
-            prompt=logo_prompt,
-            size="1024x1024",
-            n=1
-        )
-        image_b64 = result.data[0].b64_json
-        image_bytes = base64.b64decode(image_b64)
-
+        image_bytes = await generate_image_hf(logo_prompt)
+        
         logo_path = job_folder / "logo.png"
         with open(logo_path, "wb") as f:
             f.write(image_bytes)
