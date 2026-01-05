@@ -56,6 +56,9 @@ const Landing = () => {
             >
               Enterprise
             </button>
+            <a href="#careers" className="text-foreground/80 hover:text-foreground transition-colors">
+              Career
+            </a>
           </nav>
 
           <div className="flex items-center gap-4">
