@@ -17,6 +17,7 @@ import {
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
+import { UserMenu } from "@/components/UserMenu";
 import logoFull from "@/assets/logo-full.png";
 
 const Enterprise = () => {
@@ -78,9 +79,7 @@ const Enterprise = () => {
 
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <button className="text-foreground/80 hover:text-foreground transition-colors">
-              Login
-            </button>
+            <UserMenu />
             <Button variant="gradient" onClick={handleBookDemo} className="group">
               Book a Demo
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
