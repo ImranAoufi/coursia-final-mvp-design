@@ -28,14 +28,12 @@ export function UserMenu({ variant = "gradient" }: UserMenuProps) {
 
   if (!user) {
     return (
-      <Button 
-        variant={variant} 
-        size="sm" 
+      <button
         onClick={() => navigate("/auth")}
-        className="group"
+        className="text-foreground/80 hover:text-foreground transition-colors font-medium"
       >
-        Sign In
-      </Button>
+        Login
+      </button>
     );
   }
 
