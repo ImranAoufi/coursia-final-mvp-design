@@ -816,226 +816,194 @@ const MyCourse = () => {
                 </motion.section>
             </div>
             <Dialog open={openScript} onOpenChange={setOpenScript}>
-                <DialogContent className="max-w-[95vw] max-h-[90vh] flex flex-col gap-6 rounded-3xl backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-white/20 shadow-2xl">
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl font-semibold tracking-tight bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col gap-4 rounded-2xl backdrop-blur-xl bg-background/95 border border-border shadow-2xl overflow-hidden">
+                    <DialogHeader className="pb-2 border-b border-border/50">
+                        <DialogTitle className="text-xl font-semibold tracking-tight">
                             {activeScriptTitle}
                         </DialogTitle>
                     </DialogHeader>
 
+                    {/* Controls Row */}
+                    <div className="flex items-center justify-between gap-4 px-1">
+                        <div className="flex items-center gap-3">
+                            <Button
+                                variant={isTeleprompterActive ? "destructive" : "default"}
+                                onClick={() => setIsTeleprompterActive(s => !s)}
+                                size="sm"
+                                className="gap-2"
+                            >
+                                {isTeleprompterActive ? <><span>⏸</span> Pause</> : <><Play className="w-4 h-4" /> Start</>}
+                            </Button>
 
-                    <div className="flex flex-row gap-6 w-full h-full">
-                        {/* LEFT PANEL - CONTROLS */}
-                        <div className="w-[200px] flex flex-col gap-4 shrink-0">
-                            {/* TELEPROMPTER CONTROLS */}
-                            <Card className="p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm">
-                                <h3 className="font-semibold text-sm mb-3">Teleprompter</h3>
-                                <div className="flex flex-col gap-2">
-                                    <Button
-                                        variant={isTeleprompterActive ? "destructive" : "default"}
-                                        onClick={() => setIsTeleprompterActive(s => !s)}
-                                        className="rounded-full text-sm"
-                                        size="sm"
-                                    >
-                                        {isTeleprompterActive ? "⏸ Pause" : "▶ Start"}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" size="sm" className="gap-2">
+                                        Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
+                                        <ChevronDown className="w-3 h-3" />
                                     </Button>
-
-
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="outline" className="justify-between rounded-full text-xs" size="sm">
-                                                Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
-                                                <ChevronDown className="w-3 h-3 opacity-70" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(1)}>Slow</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(2)}>Medium</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(3)}>Fast</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-                            </Card>
-
-
-                            {/* RECORDING CONTROLS */}
-                            <Card className="p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm">
-                                <h3 className="font-semibold text-sm mb-3">Recording</h3>
-                                <div className="flex flex-col gap-2">
-                                    {!isRecording && !recordedBlob && (
-                                        <Button
-                                            onClick={() => handleStartRecording(activeScriptTitle || "video")}
-                                            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full text-xs"
-                                            size="sm"
-                                        >
-                                            🎥 Start Recording
-                                        </Button>
-                                    )}
-                                    {isRecording && (
-                                        <Button
-                                            variant="destructive"
-                                            onClick={handleStopRecording}
-                                            className="rounded-full text-xs"
-                                            size="sm"
-                                        >
-                                            ⏹ Stop Recording
-                                        </Button>
-                                    )}
-                                    {!isRecording && recordedBlob && (
-                                        <>
-                                            <Button
-                                                onClick={handleSaveRecording}
-                                                className="rounded-full bg-green-500 hover:bg-green-600 text-white text-xs"
-                                                size="sm"
-                                            >
-                                                💾 Save Video
-                                            </Button>
-                                            <Button
-                                                variant="secondary"
-                                                onClick={() => {
-                                                    setRecordedBlob(null);
-                                                    setVideoURL(null);
-                                                }}
-                                                className="rounded-full text-xs"
-                                                size="sm"
-                                            >
-                                                🔁 Record Again
-                                            </Button>
-                                        </>
-                                    )}
-                                </div>
-                            </Card>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuItem onClick={() => setScrollSpeed(1)}>Slow</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setScrollSpeed(2)}>Medium</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setScrollSpeed(3)}>Fast</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
 
-
-                        {/* CENTER PANEL — VIDEO + TELEPROMPTER */}
-                        <div className="flex-1 relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-black min-h-[400px]">
-                            {isRecording ? (
-                                <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
-                            ) : recordedBlob ? (
-                                <video src={videoURL || ""} controls className="w-full h-full object-cover" />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                                    Ready to record
-                                </div>
-                            )}
-
-
-                            {/* FLOATING TELEPROMPTER */}
-                            {activeScriptContent && isTeleprompterActive && (
-                                <div
-                                    className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[80%]
-                                    bg-black/60 backdrop-blur-md text-white
-                                    rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.4)]
-                                    border border-white/10 transition-all duration-500 ease-in-out
-                                    flex items-center justify-center"
-                                    style={{
-                                        maxHeight: "160px",
-                                        overflow: "hidden",
-                                        WebkitMaskImage:
-                                            "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
-                                        maskImage:
-                                            "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
-                                    }}
+                        <div className="flex items-center gap-2">
+                            {!isRecording && !recordedBlob && (
+                                <Button
+                                    onClick={() => handleStartRecording(activeScriptTitle || "video")}
+                                    size="sm"
+                                    className="gap-2"
                                 >
-                                    <div
-                                        id="script-scroll-inner"
-                                        className="text-[1.8rem] leading-relaxed tracking-wide font-light
-                                        whitespace-pre-wrap px-8 text-center select-none"
-                                        style={{
-                                            overflowY: "scroll",
-                                            maxHeight: "160px",
-                                            scrollbarWidth: "none",
+                                    <Film className="w-4 h-4" /> Record
+                                </Button>
+                            )}
+                            {isRecording && (
+                                <Button variant="destructive" onClick={handleStopRecording} size="sm" className="gap-2">
+                                    <span>⏹</span> Stop
+                                </Button>
+                            )}
+                            {!isRecording && recordedBlob && (
+                                <>
+                                    <Button onClick={handleSaveRecording} size="sm" variant="default" className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+                                        <Download className="w-4 h-4" /> Save
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                            setRecordedBlob(null);
+                                            setVideoURL(null);
                                         }}
                                     >
-                                        {activeScriptContent.split("\n").map((line, idx) => (
-                                            <div key={idx} className="py-1.5">
-                                                {line || " "}
-                                            </div>
+                                        New
+                                    </Button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Teleprompter */}
+                    <div className="relative flex-1 min-h-[200px] rounded-xl bg-gradient-to-b from-slate-900 to-slate-800 border border-white/10 overflow-hidden">
+                        {/* Video preview when recording */}
+                        {isRecording && (
+                            <video id="liveVideo" autoPlay muted className="absolute inset-0 w-full h-full object-cover opacity-30" />
+                        )}
+                        {!isRecording && recordedBlob && (
+                            <video src={videoURL || ""} controls className="absolute inset-0 w-full h-full object-cover opacity-30" />
+                        )}
+
+                        {/* Script text */}
+                        <div
+                            className="relative z-10 h-full flex items-center justify-center"
+                            style={{
+                                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
+                                maskImage: "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
+                            }}
+                        >
+                            <div
+                                id="script-scroll-inner"
+                                className="text-white text-2xl md:text-3xl leading-relaxed font-light text-center px-8 py-12 whitespace-pre-wrap select-none overflow-y-auto h-full max-h-[280px]"
+                                style={{ scrollbarWidth: "none" }}
+                            >
+                                {activeScriptContent?.split("\n").map((line, idx) => (
+                                    <div key={idx} className="py-1">
+                                        {line || " "}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Recording indicator */}
+                        {isRecording && (
+                            <div className="absolute top-4 right-4 flex items-center gap-2 bg-red-500/90 text-white px-3 py-1.5 rounded-full text-sm font-medium">
+                                <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                Recording
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Slides Section */}
+                    <div className="border-t border-border/50 pt-4">
+                        <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-medium text-sm flex items-center gap-2">
+                                <Layers className="w-4 h-4" /> Presentation Slides
+                            </h4>
+                            {scriptSlides.length > 0 && (
+                                <span className="text-xs text-muted-foreground">
+                                    {currentSlideIndex + 1} / {scriptSlides.length}
+                                </span>
+                            )}
+                        </div>
+
+                        {slidesLoading ? (
+                            <div className="flex items-center justify-center py-8">
+                                <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent"></div>
+                                <span className="ml-3 text-sm text-muted-foreground">Generating slides...</span>
+                            </div>
+                        ) : scriptSlides.length > 0 ? (
+                            <div className="space-y-3">
+                                {/* Current slide large view */}
+                                <div className="relative aspect-video max-h-[200px] mx-auto rounded-lg overflow-hidden bg-muted/20 border border-border flex items-center justify-center">
+                                    <img
+                                        src={scriptSlides[currentSlideIndex].url}
+                                        alt={`Slide ${currentSlideIndex + 1}`}
+                                        className="max-w-full max-h-full object-contain"
+                                        draggable={false}
+                                    />
+                                </div>
+
+                                {/* Thumbnails row */}
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setCurrentSlideIndex(i => Math.max(0, i - 1))}
+                                        disabled={currentSlideIndex === 0}
+                                        className="shrink-0"
+                                    >
+                                        ←
+                                    </Button>
+                                    
+                                    <div className="flex-1 flex gap-2 overflow-x-auto py-1 px-1">
+                                        {scriptSlides.map((slide, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => setCurrentSlideIndex(i)}
+                                                className={`shrink-0 w-20 h-12 rounded-md overflow-hidden border-2 transition-all ${
+                                                    i === currentSlideIndex
+                                                        ? "border-primary ring-2 ring-primary/30"
+                                                        : "border-border hover:border-primary/50"
+                                                }`}
+                                            >
+                                                <img
+                                                    src={slide.url}
+                                                    alt={`Thumbnail ${i + 1}`}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </button>
                                         ))}
                                     </div>
+
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setCurrentSlideIndex(i => Math.min(scriptSlides.length - 1, i + 1))}
+                                        disabled={currentSlideIndex === scriptSlides.length - 1}
+                                        className="shrink-0"
+                                    >
+                                        →
+                                    </Button>
                                 </div>
-                            )}
-
-
-                        </div>
-
-                        {/* RIGHT PANEL — SLIDES */}
-                        <div className="w-[320px] shrink-0 flex flex-col gap-4">
-                            <Card className="flex-1 p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm flex flex-col">
-                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                                    <Film className="w-4 h-4" /> Slides
-                                </h3>
-
-                                {slidesLoading ? (
-                                    <div className="flex-1 flex items-center justify-center">
-                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                                    </div>
-                                ) : scriptSlides.length > 0 ? (
-                                    <div className="flex-1 flex flex-col gap-3">
-                                        {/* Current slide */}
-                                        <div className="relative flex-1 rounded-xl overflow-hidden bg-black/10 border border-white/20 flex items-center justify-center">
-                                            <img
-                                                src={scriptSlides[currentSlideIndex].url}
-                                                alt={`Slide ${currentSlideIndex + 1}`}
-                                                className="max-w-full max-h-full object-contain"
-                                                draggable={false}
-                                            />
-                                        </div>
-
-                                        {/* Navigation */}
-                                        <div className="flex items-center justify-between gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => setCurrentSlideIndex(i => Math.max(0, i - 1))}
-                                                disabled={currentSlideIndex === 0}
-                                                className="rounded-full"
-                                            >
-                                                ← Prev
-                                            </Button>
-                                            <span className="text-sm text-muted-foreground">
-                                                {currentSlideIndex + 1} / {scriptSlides.length}
-                                            </span>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => setCurrentSlideIndex(i => Math.min(scriptSlides.length - 1, i + 1))}
-                                                disabled={currentSlideIndex === scriptSlides.length - 1}
-                                                className="rounded-full"
-                                            >
-                                                Next →
-                                            </Button>
-                                        </div>
-
-                                        {/* Thumbnails */}
-                                        <div className="flex gap-2 overflow-x-auto pb-2">
-                                            {scriptSlides.map((slide, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={() => setCurrentSlideIndex(i)}
-                                                    className={`shrink-0 w-16 h-10 rounded-md overflow-hidden border-2 transition-all ${i === currentSlideIndex
-                                                        ? "border-primary shadow-md"
-                                                        : "border-transparent hover:border-primary/50"
-                                                        }`}
-                                                >
-                                                    <img
-                                                        src={slide.url}
-                                                        alt={`Thumbnail ${i + 1}`}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm text-center p-4">
-                                        No slides available yet.<br />
-                                        Slides will appear here once generated.
-                                    </div>
-                                )}
-                            </Card>
-                        </div>
+                            </div>
+                        ) : (
+                            <div className="text-center py-6 text-muted-foreground text-sm">
+                                <Layers className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                                Slides will appear here once generated
+                            </div>
+                        )}
                     </div>
                 </DialogContent>
             </Dialog>
