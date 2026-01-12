@@ -816,116 +816,153 @@ const MyCourse = () => {
                 </motion.section>
             </div>
             <Dialog open={openScript} onOpenChange={setOpenScript}>
-                <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col gap-4 rounded-2xl backdrop-blur-xl bg-background/95 border border-border shadow-2xl overflow-hidden">
+                <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col gap-4 rounded-2xl backdrop-blur-xl bg-background/95 border border-border shadow-2xl overflow-y-auto">
                     <DialogHeader className="pb-2 border-b border-border/50">
                         <DialogTitle className="text-xl font-semibold tracking-tight">
                             {activeScriptTitle}
                         </DialogTitle>
                     </DialogHeader>
 
-                    {/* Controls Row */}
-                    <div className="flex items-center justify-between gap-4 px-1">
-                        <div className="flex items-center gap-3">
-                            <Button
-                                variant={isTeleprompterActive ? "destructive" : "default"}
-                                onClick={() => setIsTeleprompterActive(s => !s)}
-                                size="sm"
-                                className="gap-2"
-                            >
-                                {isTeleprompterActive ? <><span>⏸</span> Pause</> : <><Play className="w-4 h-4" /> Start</>}
-                            </Button>
-
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="sm" className="gap-2">
-                                        Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
-                                        <ChevronDown className="w-3 h-3" />
+                    <div className="flex flex-row gap-4">
+                        {/* LEFT PANEL - CONTROLS */}
+                        <div className="w-[180px] flex flex-col gap-3 shrink-0">
+                            {/* TELEPROMPTER CONTROLS */}
+                            <Card className="p-4 bg-muted/30 border border-border">
+                                <h3 className="font-semibold text-sm mb-3">Teleprompter</h3>
+                                <div className="flex flex-col gap-2">
+                                    <Button
+                                        variant={isTeleprompterActive ? "destructive" : "default"}
+                                        onClick={() => setIsTeleprompterActive(s => !s)}
+                                        className="text-sm"
+                                        size="sm"
+                                    >
+                                        {isTeleprompterActive ? "⏸ Pause" : "▶ Start"}
                                     </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuItem onClick={() => setScrollSpeed(1)}>Slow</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setScrollSpeed(2)}>Medium</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setScrollSpeed(3)}>Fast</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="outline" className="justify-between text-xs" size="sm">
+                                                Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
+                                                <ChevronDown className="w-3 h-3 opacity-70" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(1)}>Slow</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(2)}>Medium</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(3)}>Fast</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            </Card>
+
+                            {/* RECORDING CONTROLS */}
+                            <Card className="p-4 bg-muted/30 border border-border">
+                                <h3 className="font-semibold text-sm mb-3">Recording</h3>
+                                <div className="flex flex-col gap-2">
+                                    {!isRecording && !recordedBlob && (
+                                        <Button
+                                            onClick={() => handleStartRecording(activeScriptTitle || "video")}
+                                            className="text-xs"
+                                            size="sm"
+                                        >
+                                            🎥 Start Recording
+                                        </Button>
+                                    )}
+                                    {isRecording && (
+                                        <Button
+                                            variant="destructive"
+                                            onClick={handleStopRecording}
+                                            className="text-xs"
+                                            size="sm"
+                                        >
+                                            ⏹ Stop Recording
+                                        </Button>
+                                    )}
+                                    {!isRecording && recordedBlob && (
+                                        <>
+                                            <Button
+                                                onClick={handleSaveRecording}
+                                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs"
+                                                size="sm"
+                                            >
+                                                💾 Save Video
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => {
+                                                    setRecordedBlob(null);
+                                                    setVideoURL(null);
+                                                }}
+                                                className="text-xs"
+                                                size="sm"
+                                            >
+                                                🔁 Record Again
+                                            </Button>
+                                        </>
+                                    )}
+                                </div>
+                            </Card>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            {!isRecording && !recordedBlob && (
-                                <Button
-                                    onClick={() => handleStartRecording(activeScriptTitle || "video")}
-                                    size="sm"
-                                    className="gap-2"
+                        {/* CENTER PANEL — VIDEO + FLOATING TELEPROMPTER */}
+                        <div className="flex-1 relative rounded-xl overflow-hidden border border-border shadow-lg bg-black min-h-[350px]">
+                            {isRecording ? (
+                                <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
+                            ) : recordedBlob ? (
+                                <video src={videoURL || ""} controls className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                    Ready to record
+                                </div>
+                            )}
+
+                            {/* FLOATING TELEPROMPTER OVERLAY */}
+                            {activeScriptContent && isTeleprompterActive && (
+                                <div
+                                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%]
+                                    bg-black/70 backdrop-blur-md text-white
+                                    rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.5)]
+                                    border border-white/10 transition-all duration-500 ease-in-out
+                                    flex items-center justify-center"
+                                    style={{
+                                        maxHeight: "140px",
+                                        overflow: "hidden",
+                                        WebkitMaskImage:
+                                            "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
+                                        maskImage:
+                                            "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
+                                    }}
                                 >
-                                    <Film className="w-4 h-4" /> Record
-                                </Button>
-                            )}
-                            {isRecording && (
-                                <Button variant="destructive" onClick={handleStopRecording} size="sm" className="gap-2">
-                                    <span>⏹</span> Stop
-                                </Button>
-                            )}
-                            {!isRecording && recordedBlob && (
-                                <>
-                                    <Button onClick={handleSaveRecording} size="sm" variant="default" className="gap-2 bg-emerald-600 hover:bg-emerald-700">
-                                        <Download className="w-4 h-4" /> Save
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => {
-                                            setRecordedBlob(null);
-                                            setVideoURL(null);
+                                    <div
+                                        id="script-scroll-inner"
+                                        className="text-2xl leading-relaxed tracking-wide font-light
+                                        whitespace-pre-wrap px-6 text-center select-none"
+                                        style={{
+                                            overflowY: "scroll",
+                                            maxHeight: "140px",
+                                            scrollbarWidth: "none",
                                         }}
                                     >
-                                        New
-                                    </Button>
-                                </>
+                                        {activeScriptContent.split("\n").map((line, idx) => (
+                                            <div key={idx} className="py-1">
+                                                {line || " "}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Recording indicator */}
+                            {isRecording && (
+                                <div className="absolute top-3 right-3 flex items-center gap-2 bg-red-500/90 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                    <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                    REC
+                                </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Teleprompter */}
-                    <div className="relative flex-1 min-h-[200px] rounded-xl bg-gradient-to-b from-slate-900 to-slate-800 border border-white/10 overflow-hidden">
-                        {/* Video preview when recording */}
-                        {isRecording && (
-                            <video id="liveVideo" autoPlay muted className="absolute inset-0 w-full h-full object-cover opacity-30" />
-                        )}
-                        {!isRecording && recordedBlob && (
-                            <video src={videoURL || ""} controls className="absolute inset-0 w-full h-full object-cover opacity-30" />
-                        )}
-
-                        {/* Script text */}
-                        <div
-                            className="relative z-10 h-full flex items-center justify-center"
-                            style={{
-                                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
-                                maskImage: "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
-                            }}
-                        >
-                            <div
-                                id="script-scroll-inner"
-                                className="text-white text-2xl md:text-3xl leading-relaxed font-light text-center px-8 py-12 whitespace-pre-wrap select-none overflow-y-auto h-full max-h-[280px]"
-                                style={{ scrollbarWidth: "none" }}
-                            >
-                                {activeScriptContent?.split("\n").map((line, idx) => (
-                                    <div key={idx} className="py-1">
-                                        {line || " "}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Recording indicator */}
-                        {isRecording && (
-                            <div className="absolute top-4 right-4 flex items-center gap-2 bg-red-500/90 text-white px-3 py-1.5 rounded-full text-sm font-medium">
-                                <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                                Recording
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Slides Section */}
+                    {/* SLIDES SECTION - Below teleprompter */}
                     <div className="border-t border-border/50 pt-4">
                         <div className="flex items-center justify-between mb-3">
                             <h4 className="font-medium text-sm flex items-center gap-2">
@@ -939,14 +976,14 @@ const MyCourse = () => {
                         </div>
 
                         {slidesLoading ? (
-                            <div className="flex items-center justify-center py-8">
-                                <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent"></div>
+                            <div className="flex items-center justify-center py-6">
+                                <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent"></div>
                                 <span className="ml-3 text-sm text-muted-foreground">Generating slides...</span>
                             </div>
                         ) : scriptSlides.length > 0 ? (
                             <div className="space-y-3">
-                                {/* Current slide large view */}
-                                <div className="relative aspect-video max-h-[200px] mx-auto rounded-lg overflow-hidden bg-muted/20 border border-border flex items-center justify-center">
+                                {/* Current slide */}
+                                <div className="relative aspect-video max-h-[180px] mx-auto rounded-lg overflow-hidden bg-muted/20 border border-border flex items-center justify-center">
                                     <img
                                         src={scriptSlides[currentSlideIndex].url}
                                         alt={`Slide ${currentSlideIndex + 1}`}
@@ -955,7 +992,7 @@ const MyCourse = () => {
                                     />
                                 </div>
 
-                                {/* Thumbnails row */}
+                                {/* Thumbnails with navigation */}
                                 <div className="flex items-center gap-2">
                                     <Button
                                         variant="ghost"
@@ -972,7 +1009,7 @@ const MyCourse = () => {
                                             <button
                                                 key={i}
                                                 onClick={() => setCurrentSlideIndex(i)}
-                                                className={`shrink-0 w-20 h-12 rounded-md overflow-hidden border-2 transition-all ${
+                                                className={`shrink-0 w-16 h-10 rounded overflow-hidden border-2 transition-all ${
                                                     i === currentSlideIndex
                                                         ? "border-primary ring-2 ring-primary/30"
                                                         : "border-border hover:border-primary/50"
@@ -999,8 +1036,8 @@ const MyCourse = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center py-6 text-muted-foreground text-sm">
-                                <Layers className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                            <div className="text-center py-4 text-muted-foreground text-sm">
+                                <Layers className="w-6 h-6 mx-auto mb-2 opacity-40" />
                                 Slides will appear here once generated
                             </div>
                         )}
