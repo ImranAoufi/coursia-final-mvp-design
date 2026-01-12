@@ -22,3 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# Generated course output
+generated/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Env
+.env
+
+# Build
+dist/

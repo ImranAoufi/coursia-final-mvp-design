@@ -819,11 +819,10 @@ const MyCourse = () => {
                                                 <button
                                                     key={i}
                                                     onClick={() => setCurrentSlideIndex(i)}
-                                                    className={`shrink-0 w-16 h-10 rounded-md overflow-hidden border-2 transition-all ${
-                                                        i === currentSlideIndex 
-                                                            ? "border-primary shadow-md" 
-                                                            : "border-transparent hover:border-primary/50"
-                                                    }`}
+                                                    className={`shrink-0 w-16 h-10 rounded-md overflow-hidden border-2 transition-all ${i === currentSlideIndex
+                                                        ? "border-primary shadow-md"
+                                                        : "border-transparent hover:border-primary/50"
+                                                        }`}
                                                 >
                                                     <img
                                                         src={slide.url}
