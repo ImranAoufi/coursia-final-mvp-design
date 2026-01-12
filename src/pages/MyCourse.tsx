@@ -163,11 +163,13 @@ const MyCourse = () => {
     };
 
 
+    const API_BASE = "http://127.0.0.1:8000";
+    
     const handleViewSlides = async (lessonId: string, scriptText?: string) => {
         // ensure slides generated on demand (auto)
         try {
             // call backend to generate (if not already)
-            await fetch(`/api/generate-slides`, {
+            await fetch(`${API_BASE}/api/generate-slides`, {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ lesson_id: lessonId, script_text: scriptText || activeScriptContent, preferred_style: "apple" })
@@ -332,18 +334,20 @@ const MyCourse = () => {
                 try {
                     const lessonId = `lesson_${lessonIndex + 1}`;
                     // Try to generate slides on demand
-                    await fetch(`/api/generate-slides`, {
+                    await fetch(`${API_BASE}/api/generate-slides`, {
                         method: "POST",
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ lesson_id: lessonId, script_text: text, preferred_style: "apple" })
                     });
+                    // Render slides to PNGs
+                    await fetch(`${API_BASE}/api/render-slides/${lessonId}`, { method: "POST" });
                     // Then fetch the slides
-                    const slidesRes = await fetch(`/api/slides-signed-urls/${lessonId}`);
+                    const slidesRes = await fetch(`${API_BASE}/api/slides-signed-urls/${lessonId}`);
                     if (slidesRes.ok) {
                         const data = await slidesRes.json();
                         const slides = data.slides?.map((s: any) => ({
                             filename: s.filename,
-                            url: s.url.startsWith("/") ? s.url : s.url
+                            url: s.url.startsWith("http") ? s.url : `${API_BASE}${s.url}`
                         })) || [];
                         setScriptSlides(slides);
                     }
