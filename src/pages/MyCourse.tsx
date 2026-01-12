@@ -4,7 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Download, RefreshCw, Edit, CheckCircle, Film, BookOpen, Brain } from "lucide-react";
+import { Download, RefreshCw, Edit, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, GraduationCap, Layers, Palette } from "lucide-react";
+import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -394,231 +395,421 @@ const MyCourse = () => {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-slate-50 to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 py-16 px-4">
-            <div className="max-w-7xl mx-auto space-y-10">
+        <div className="min-h-screen bg-background">
+            {/* Animated background orbs */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float" />
+                <div className="absolute top-1/2 -left-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />
+                <div className="absolute -bottom-20 right-1/3 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
+            </div>
 
-
-                {/* Header */}
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div className="space-y-2">
-                        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
-                            {course?.course_title ?? "Your Course"}
-                        </h1>
-                        <p className="text-muted-foreground text-base max-w-2xl">
-                            {course?.course_description ?? "Your full AI-generated course will appear here once ready."}
-                        </p>
-                    </div>
-
-
-                    <div className="flex flex-wrap gap-3">
-                        <Button variant="ghost" onClick={() => navigate("/preview")}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit
-                        </Button>
-                        <Button variant="outline" onClick={() => window.location.reload()}>
-                            <RefreshCw className="mr-2 h-4 w-4" /> Refresh
-                        </Button>
-                        <Button
-                            variant="gradient"
-                            onClick={handleDownloadZip}
-                            disabled={!course?.zip || downloading}
-                        >
-                            <Download className="mr-2 h-4 w-4" />
-                            {downloading ? "Preparing..." : "Download ZIP"}
-                        </Button>
-                        <Button
-                            variant="secondary"
-                            onClick={() => {
-                                if (!course) {
-                                    alert("No course data yet to publish.");
-                                    return;
-                                }
-                                const slug = encodeURIComponent(course.course_title || "my-course");
-                                navigate(`/public/${slug}`, { state: { course } });
-                            }}
-                        >
-                            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                            Publish
-                        </Button>
-                    </div>
-                </div>
-
-
-                {/* Banner */}
-                {course?.banner_url && (
-                    <div className="rounded-3xl overflow-hidden shadow-xl border border-white/10">
-                        <img
-                            src={course.banner_url}
-                            alt="Course banner"
-                            className="w-full h-64 object-cover"
-                        />
-                    </div>
-                )}
-
-
-                {/* Status Box */}
-                <Card className="glass border border-indigo-100/40 shadow-sm">
-                    <CardContent className="flex items-center justify-between py-4">
-                        <div className="flex items-center gap-3">
-                            {status === "done" ? (
-                                <CheckCircle className="text-green-500 w-6 h-6" />
-                            ) : (
-                                <div className="w-6 h-6 rounded-full bg-primary/20 animate-pulse" />
-                            )}
-                            <div>
-                                <div className="font-medium">
-                                    {status === "done" ? "Generation complete" : "Generating your course..."}
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+                {/* Hero Section with Banner & Logo */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="relative"
+                >
+                    {/* Banner with Glassmorphic Overlay */}
+                    <div className="relative rounded-3xl overflow-hidden shadow-elevated">
+                        {course?.banner_url ? (
+                            <img
+                                src={course.banner_url}
+                                alt="Course banner"
+                                className="w-full h-72 sm:h-80 lg:h-96 object-cover"
+                            />
+                        ) : (
+                            <div className="w-full h-72 sm:h-80 lg:h-96 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center">
+                                <div className="text-center space-y-4">
+                                    <div className="w-20 h-20 mx-auto rounded-2xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+                                        <GraduationCap className="w-10 h-10 text-primary" />
+                                    </div>
+                                    <p className="text-muted-foreground">Your course banner will appear here</p>
                                 </div>
-                                <div className="text-xs text-muted-foreground">{progressMsg}</div>
+                            </div>
+                        )}
+                        
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+                        
+                        {/* Content overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                            <div className="flex flex-col lg:flex-row items-start lg:items-end gap-6">
+                                {/* Logo */}
+                                <motion.div 
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ delay: 0.2, duration: 0.5 }}
+                                    className="shrink-0"
+                                >
+                                    {course?.logo_url || course?.logo_path ? (
+                                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden glass border-2 border-white/20 shadow-glass">
+                                            <img
+                                                src={course.logo_url || course.logo_path}
+                                                alt="Course logo"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl glass border-2 border-white/20 flex items-center justify-center">
+                                            <Sparkles className="w-10 h-10 text-primary" />
+                                        </div>
+                                    )}
+                                </motion.div>
+                                
+                                {/* Title & Description */}
+                                <div className="flex-1 min-w-0">
+                                    <motion.h1 
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.3, duration: 0.5 }}
+                                        className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight gradient-text mb-2"
+                                    >
+                                        {course?.course_title ?? "Your Course"}
+                                    </motion.h1>
+                                    <motion.p 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.4, duration: 0.5 }}
+                                        className="text-muted-foreground text-sm sm:text-base max-w-2xl line-clamp-2"
+                                    >
+                                        {course?.course_description ?? "Your full AI-generated course will appear here once ready."}
+                                    </motion.p>
+                                </div>
+                                
+                                {/* Action buttons */}
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.5, duration: 0.5 }}
+                                    className="flex flex-wrap gap-2 sm:gap-3 shrink-0"
+                                >
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm"
+                                        className="glass border border-white/10 hover:bg-white/10"
+                                        onClick={() => navigate("/preview")}
+                                    >
+                                        <Edit className="mr-2 h-4 w-4" /> Edit
+                                    </Button>
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm"
+                                        className="glass border border-white/10 hover:bg-white/10"
+                                        onClick={() => window.location.reload()}
+                                    >
+                                        <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+                                    </Button>
+                                    <Button
+                                        variant="gradient"
+                                        size="sm"
+                                        onClick={handleDownloadZip}
+                                        disabled={!course?.zip || downloading}
+                                        className="shadow-glow"
+                                    >
+                                        <Download className="mr-2 h-4 w-4" />
+                                        {downloading ? "Preparing..." : "Download"}
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600"
+                                        onClick={() => {
+                                            if (!course) {
+                                                alert("No course data yet to publish.");
+                                                return;
+                                            }
+                                            const slug = encodeURIComponent(course.course_title || "my-course");
+                                            navigate(`/public/${slug}`, { state: { course } });
+                                        }}
+                                    >
+                                        <CheckCircle className="mr-2 h-4 w-4" />
+                                        Publish
+                                    </Button>
+                                </motion.div>
                             </div>
                         </div>
-                        <div className="text-xs text-muted-foreground">Job ID: {jobId ?? "—"}</div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </motion.div>
+
+                {/* Status Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                >
+                    <Card className="glass-strong border border-white/10 overflow-hidden">
+                        <CardContent className="flex items-center justify-between py-4 px-6">
+                            <div className="flex items-center gap-4">
+                                {status === "done" ? (
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center border border-emerald-500/30">
+                                        <CheckCircle className="text-emerald-500 w-5 h-5" />
+                                    </div>
+                                ) : (
+                                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 animate-pulse">
+                                        <Sparkles className="text-primary w-5 h-5" />
+                                    </div>
+                                )}
+                                <div>
+                                    <div className="font-semibold text-foreground">
+                                        {status === "done" ? "Generation Complete" : "Generating Your Course..."}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">{progressMsg}</div>
+                                </div>
+                            </div>
+                            <div className="hidden sm:block text-xs text-muted-foreground font-mono bg-muted/50 px-3 py-1.5 rounded-full">
+                                {jobId ? `#${jobId.slice(0, 8)}` : "—"}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
 
 
-                {/* Main Section */}
-                <section className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    <main className="lg:col-span-2 space-y-6">
+                {/* Main Content Section */}
+                <motion.section 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                    className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+                >
+                    {/* Lessons Column */}
+                    <main className="lg:col-span-2 space-y-4">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center border border-primary/20">
+                                <Layers className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-semibold">Course Content</h2>
+                                <p className="text-sm text-muted-foreground">{course?.lessons?.length || 0} lessons available</p>
+                            </div>
+                        </div>
+
                         {course?.lessons?.length ? (
                             <Accordion type="single" collapsible className="w-full space-y-3">
                                 {course.lessons.map((lesson, li) => (
-                                    <AccordionItem
+                                    <motion.div
                                         key={li}
-                                        value={`lesson-${li}`}
-                                        className="border border-gray-200/20 dark:border-white/10 rounded-2xl bg-white/50 dark:bg-white/5 backdrop-blur-sm shadow-sm hover:shadow-md transition-all"
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.1 * li, duration: 0.4 }}
                                     >
-                                        <AccordionTrigger className="px-4 py-3 text-lg font-semibold">
-                                            <div className="flex flex-col text-left">
-                                                <span>{lesson.lesson_title || `Lesson ${li + 1}`}</span>
-                                                <span className="text-sm text-muted-foreground">
-                                                    {(lesson.videos?.length || 0)} Videos •{" "}
-                                                    {lesson.quiz_file ? "Quiz ✓" : "No Quiz"} •{" "}
-                                                    {lesson.workbook_file ? "Workbook ✓" : "No Workbook"}
-                                                </span>
-                                            </div>
-                                        </AccordionTrigger>
-
-
-                                        <AccordionContent className="p-4 space-y-6 bg-white/30 dark:bg-white/5 rounded-b-2xl">
-
-
-                                            {/* Videos */}
-                                            {lesson.videos?.length ? (
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                    {lesson.videos.map((v, vi) => {
-                                                        const video =
-                                                            typeof v === "string" ? { title: `Video ${vi + 1}`, script_file: v } : v;
-
-
-                                                        return (
-                                                            <div
-                                                                key={vi}
-                                                                className="p-3 rounded-xl border border-gray-200/20 dark:border-white/10 bg-primary/5 hover:bg-primary/10 transition-all"
-                                                            >
-                                                                <div className="font-medium flex items-center gap-2">
-                                                                    <Film className="w-4 h-4 text-primary" /> {video.title || `Video ${vi + 1}`}
-                                                                </div>
-
-
-                                                                <Button
-                                                                    size="sm"
-                                                                    variant="ghost"
-                                                                    className="mt-2"
-                                                                    onClick={() => handleViewScript(video.title || `Video ${vi + 1}`, video.script_file, li)}
-                                                                >
-                                                                    View Script
-                                                                </Button>
-
-                                                            </div>
-                                                        );
-                                                    })}
+                                        <AccordionItem
+                                            value={`lesson-${li}`}
+                                            className="glass-strong border border-white/10 rounded-2xl overflow-hidden hover:shadow-glass transition-all duration-300"
+                                        >
+                                            <AccordionTrigger className="px-5 py-4 hover:no-underline group">
+                                                <div className="flex items-center gap-4 text-left w-full">
+                                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center border border-primary/20 shrink-0 group-hover:scale-105 transition-transform">
+                                                        <span className="text-lg font-bold gradient-text">{li + 1}</span>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <span className="font-semibold text-base block truncate">{lesson.lesson_title || `Lesson ${li + 1}`}</span>
+                                                        <div className="flex items-center gap-3 mt-1">
+                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                                                <Film className="w-3 h-3" /> {lesson.videos?.length || 0} Videos
+                                                            </span>
+                                                            {lesson.quiz_file && (
+                                                                <span className="text-xs text-emerald-500 flex items-center gap-1">
+                                                                    <Brain className="w-3 h-3" /> Quiz
+                                                                </span>
+                                                            )}
+                                                            {lesson.workbook_file && (
+                                                                <span className="text-xs text-secondary flex items-center gap-1">
+                                                                    <BookOpen className="w-3 h-3" /> Workbook
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            ) : (
-                                                <div className="text-sm text-muted-foreground">No videos available.</div>
-                                            )}
+                                            </AccordionTrigger>
 
+                                            <AccordionContent className="px-5 pb-5 pt-2 space-y-5">
+                                                {/* Videos Grid */}
+                                                {lesson.videos?.length ? (
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                        {lesson.videos.map((v, vi) => {
+                                                            const video = typeof v === "string" 
+                                                                ? { title: `Video ${vi + 1}`, script_file: v } 
+                                                                : v;
 
-                                            {/* Quiz & Workbook */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {lesson.quiz_file && (
-                                                    <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
-                                                        <div className="font-semibold text-sm flex items-center gap-2">
-                                                            <Brain className="w-4 h-4 text-primary" /> Quiz
-                                                        </div>
-                                                        <Button
-                                                            size="sm"
-                                                            className="mt-2"
-                                                            onClick={() => handleViewQuiz(lesson.lesson_title || "Quiz", lesson.quiz_file)}
-                                                        >
-                                                            View Quiz
-                                                        </Button>
+                                                            return (
+                                                                <div
+                                                                    key={vi}
+                                                                    className="group p-4 rounded-xl glass border border-white/10 hover:border-primary/30 transition-all duration-300 hover:shadow-md"
+                                                                >
+                                                                    <div className="flex items-start gap-3">
+                                                                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                                                                            <Play className="w-4 h-4 text-primary" />
+                                                                        </div>
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <div className="font-medium text-sm truncate">{video.title || `Video ${vi + 1}`}</div>
+                                                                            <Button
+                                                                                size="sm"
+                                                                                variant="ghost"
+                                                                                className="mt-2 h-7 text-xs px-2 hover:bg-primary/10"
+                                                                                onClick={() => handleViewScript(video.title || `Video ${vi + 1}`, video.script_file, li)}
+                                                                            >
+                                                                                <Film className="w-3 h-3 mr-1" /> View Script
+                                                                            </Button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
                                                     </div>
+                                                ) : (
+                                                    <div className="text-sm text-muted-foreground text-center py-4">No videos available.</div>
                                                 )}
 
-
-                                                {lesson.workbook_file && (
-                                                    <div className="p-3 rounded-lg bg-secondary/5 border border-secondary/20">
-                                                        <div className="font-semibold text-sm flex items-center gap-2">
-                                                            <BookOpen className="w-4 h-4 text-secondary" /> Workbook
+                                                {/* Quiz & Workbook */}
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                    {lesson.quiz_file && (
+                                                        <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
+                                                            <div className="flex items-center gap-2 mb-3">
+                                                                <Brain className="w-5 h-5 text-emerald-500" />
+                                                                <span className="font-semibold text-sm">Quiz</span>
+                                                            </div>
+                                                            <Button
+                                                                size="sm"
+                                                                className="w-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
+                                                                onClick={() => handleViewQuiz(lesson.lesson_title || "Quiz", lesson.quiz_file)}
+                                                            >
+                                                                Take Quiz
+                                                            </Button>
                                                         </div>
-                                                        <Button
-                                                            size="sm"
-                                                            className="mt-2"
-                                                            onClick={() => handleViewWorkbook(lesson.lesson_title || "Workbook", lesson.workbook_file)}
-                                                        >
-                                                            View Workbook
-                                                        </Button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
+                                                    )}
+
+                                                    {lesson.workbook_file && (
+                                                        <div className="p-4 rounded-xl bg-gradient-to-br from-secondary/10 to-purple-500/10 border border-secondary/20">
+                                                            <div className="flex items-center gap-2 mb-3">
+                                                                <BookOpen className="w-5 h-5 text-secondary" />
+                                                                <span className="font-semibold text-sm">Workbook</span>
+                                                            </div>
+                                                            <Button
+                                                                size="sm"
+                                                                className="w-full bg-secondary/20 hover:bg-secondary/30 text-secondary-foreground border border-secondary/30"
+                                                                onClick={() => handleViewWorkbook(lesson.lesson_title || "Workbook", lesson.workbook_file)}
+                                                            >
+                                                                Open Workbook
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    </motion.div>
                                 ))}
                             </Accordion>
                         ) : (
-                            <div className="text-center text-muted-foreground py-20 text-lg">
-                                🚀 Your course is being generated — please wait a few moments...
+                            <div className="glass-strong border border-white/10 rounded-2xl p-12 text-center">
+                                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center animate-pulse">
+                                    <Sparkles className="w-8 h-8 text-primary" />
+                                </div>
+                                <h3 className="text-lg font-semibold mb-2">Generating Your Course</h3>
+                                <p className="text-muted-foreground">Please wait while we create your content...</p>
                             </div>
                         )}
                     </main>
 
-
-
-
-
                     {/* Sidebar */}
-                    <aside className="space-y-6">
-                        <Card className="p-5 text-center">
-                            {course?.logo_url || course?.logo_path ? (
-                                <img
-                                    src={course.logo_url || course.logo_path}
-                                    alt="Course logo"
-                                    className="w-32 h-32 object-contain mx-auto mb-3 rounded-lg shadow-md border border-gray-200/30"
-                                />
-                            ) : (
-                                <div className="w-32 h-32 mx-auto mb-3 rounded-lg bg-muted/20 flex items-center justify-center">
-                                    Logo
+                    <aside className="space-y-4">
+                        {/* Branding Card */}
+                        <Card className="glass-strong border border-white/10 p-5 overflow-hidden">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                                    <Palette className="w-4 h-4 text-primary" />
                                 </div>
-                            )}
-                            <div className="text-sm text-muted-foreground mb-3">
-                                Branded assets & visuals are automatically generated.
+                                <h3 className="font-semibold">Branding</h3>
                             </div>
-                            <Button variant="ghost" onClick={() => alert("Open Branding editor (future)")}>
-                                Edit Branding
-                            </Button>
+                            
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-4">
+                                    {course?.logo_url || course?.logo_path ? (
+                                        <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/20 shadow-md shrink-0">
+                                            <img
+                                                src={course.logo_url || course.logo_path}
+                                                alt="Course logo"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-xl bg-muted/30 flex items-center justify-center shrink-0 border border-white/10">
+                                            <Sparkles className="w-6 h-6 text-muted-foreground" />
+                                        </div>
+                                    )}
+                                    <div className="flex-1">
+                                        <p className="text-xs text-muted-foreground">Logo & banner are AI-generated based on your course content.</p>
+                                    </div>
+                                </div>
+                                
+                                <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    className="w-full glass border border-white/10"
+                                    onClick={() => alert("Open Branding editor (future)")}
+                                >
+                                    <Palette className="w-4 h-4 mr-2" /> Customize Branding
+                                </Button>
+                            </div>
                         </Card>
 
-
-                        <Card className="p-5">
-                            <div className="text-sm text-muted-foreground space-y-2">
-                                <div><strong>Tips</strong></div>
-                                <div>• Download ZIP for your full course package.</div>
-                                <div>• Publish to share your course online.</div>
-                                <div>• Use Edit to adjust and regenerate content anytime.</div>
+                        {/* Tips Card */}
+                        <Card className="glass-strong border border-white/10 p-5">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                                    <Sparkles className="w-4 h-4 text-amber-500" />
+                                </div>
+                                <h3 className="font-semibold">Quick Tips</h3>
+                            </div>
+                            
+                            <div className="space-y-3">
+                                <div className="flex items-start gap-3 text-sm">
+                                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                                        <Download className="w-3 h-3 text-primary" />
+                                    </div>
+                                    <span className="text-muted-foreground">Download ZIP for your complete course package</span>
+                                </div>
+                                <div className="flex items-start gap-3 text-sm">
+                                    <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                                        <CheckCircle className="w-3 h-3 text-emerald-500" />
+                                    </div>
+                                    <span className="text-muted-foreground">Publish to share your course online</span>
+                                </div>
+                                <div className="flex items-start gap-3 text-sm">
+                                    <div className="w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center shrink-0 mt-0.5">
+                                        <Edit className="w-3 h-3 text-secondary" />
+                                    </div>
+                                    <span className="text-muted-foreground">Use Edit to adjust and regenerate content</span>
+                                </div>
                             </div>
                         </Card>
+
+                        {/* Stats Card */}
+                        {course?.lessons?.length && (
+                            <Card className="glass-strong border border-white/10 p-5">
+                                <h3 className="font-semibold mb-4">Course Overview</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="text-center p-3 rounded-xl bg-primary/5 border border-primary/10">
+                                        <div className="text-2xl font-bold gradient-text">{course.lessons.length}</div>
+                                        <div className="text-xs text-muted-foreground">Lessons</div>
+                                    </div>
+                                    <div className="text-center p-3 rounded-xl bg-secondary/5 border border-secondary/10">
+                                        <div className="text-2xl font-bold text-secondary">{course.lessons.reduce((acc, l) => acc + (l.videos?.length || 0), 0)}</div>
+                                        <div className="text-xs text-muted-foreground">Videos</div>
+                                    </div>
+                                    <div className="text-center p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                                        <div className="text-2xl font-bold text-emerald-500">{course.lessons.filter(l => l.quiz_file).length}</div>
+                                        <div className="text-xs text-muted-foreground">Quizzes</div>
+                                    </div>
+                                    <div className="text-center p-3 rounded-xl bg-amber-500/5 border border-amber-500/10">
+                                        <div className="text-2xl font-bold text-amber-500">{course.lessons.filter(l => l.workbook_file).length}</div>
+                                        <div className="text-xs text-muted-foreground">Workbooks</div>
+                                    </div>
+                                </div>
+                            </Card>
+                        )}
                     </aside>
-                </section>
+                </motion.section>
             </div>
             <Dialog open={openScript} onOpenChange={setOpenScript}>
                 <DialogContent className="max-w-[95vw] max-h-[90vh] flex flex-col gap-6 rounded-3xl backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-white/20 shadow-2xl">
