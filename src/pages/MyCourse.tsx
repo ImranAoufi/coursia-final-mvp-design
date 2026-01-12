@@ -69,6 +69,7 @@ const MyCourse = () => {
     const [openScript, setOpenScript] = useState(false);
     const [activeScriptTitle, setActiveScriptTitle] = useState<string | null>(null);
     const [activeScriptContent, setActiveScriptContent] = useState<string | null>(null);
+    const [activeScriptLessonIndex, setActiveScriptLessonIndex] = useState<number | null>(null);
 
 
     const [activeWorkbookTitle, setActiveWorkbookTitle] = useState<string | null>(null);
@@ -95,6 +96,15 @@ const MyCourse = () => {
 
     const [openSlides, setOpenSlides] = useState(false);
     const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
+
+    // Slides in script modal
+    interface Slide {
+        filename: string;
+        url: string;
+    }
+    const [scriptSlides, setScriptSlides] = useState<Slide[]>([]);
+    const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+    const [slidesLoading, setSlidesLoading] = useState(false);
 
 
     const handleStartRecording = async (title: string) => {
@@ -298,7 +308,7 @@ const MyCourse = () => {
     };
 
 
-    const handleViewScript = async (title: string, path?: string) => {
+    const handleViewScript = async (title: string, path?: string, lessonIndex?: number) => {
         if (!path) return alert("No script file found.");
 
 
@@ -310,7 +320,38 @@ const MyCourse = () => {
 
             setActiveScriptTitle(title);
             setActiveScriptContent(text);
+            setActiveScriptLessonIndex(lessonIndex ?? null);
             setOpenScript(true);
+            setCurrentSlideIndex(0);
+            setScriptSlides([]);
+
+            // Load slides for this lesson
+            if (lessonIndex !== undefined) {
+                setSlidesLoading(true);
+                try {
+                    const lessonId = `lesson_${lessonIndex + 1}`;
+                    // Try to generate slides on demand
+                    await fetch(`/api/generate-slides`, {
+                        method: "POST",
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ lesson_id: lessonId, script_text: text, preferred_style: "apple" })
+                    });
+                    // Then fetch the slides
+                    const slidesRes = await fetch(`/api/slides-signed-urls/${lessonId}`);
+                    if (slidesRes.ok) {
+                        const data = await slidesRes.json();
+                        const slides = data.slides?.map((s: any) => ({
+                            filename: s.filename,
+                            url: s.url.startsWith("/") ? s.url : s.url
+                        })) || [];
+                        setScriptSlides(slides);
+                    }
+                } catch (e) {
+                    console.error("Could not load slides:", e);
+                } finally {
+                    setSlidesLoading(false);
+                }
+            }
         } catch (err) {
             console.error(err);
             alert("Failed to load script — check console.");
@@ -483,7 +524,7 @@ const MyCourse = () => {
                                                                     size="sm"
                                                                     variant="ghost"
                                                                     className="mt-2"
-                                                                    onClick={() => handleViewScript(video.title || `Video ${vi + 1}`, video.script_file)}
+                                                                    onClick={() => handleViewScript(video.title || `Video ${vi + 1}`, video.script_file, li)}
                                                                 >
                                                                     View Script
                                                                 </Button>
@@ -580,7 +621,7 @@ const MyCourse = () => {
                 </section>
             </div>
             <Dialog open={openScript} onOpenChange={setOpenScript}>
-                <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col gap-6 rounded-3xl backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-white/20 shadow-2xl">
+                <DialogContent className="max-w-[95vw] max-h-[90vh] flex flex-col gap-6 rounded-3xl backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-white/20 shadow-2xl">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-semibold tracking-tight bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
                             {activeScriptTitle}
@@ -589,16 +630,17 @@ const MyCourse = () => {
 
 
                     <div className="flex flex-row gap-6 w-full h-full">
-                        {/* LEFT PANEL */}
-                        <div className="w-[260px] flex flex-col gap-6">
+                        {/* LEFT PANEL - CONTROLS */}
+                        <div className="w-[200px] flex flex-col gap-4 shrink-0">
                             {/* TELEPROMPTER CONTROLS */}
                             <Card className="p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm">
-                                <h3 className="font-semibold text-lg mb-3">Teleprompter</h3>
-                                <div className="flex flex-col gap-3">
+                                <h3 className="font-semibold text-sm mb-3">Teleprompter</h3>
+                                <div className="flex flex-col gap-2">
                                     <Button
                                         variant={isTeleprompterActive ? "destructive" : "default"}
                                         onClick={() => setIsTeleprompterActive(s => !s)}
-                                        className="rounded-full"
+                                        className="rounded-full text-sm"
+                                        size="sm"
                                     >
                                         {isTeleprompterActive ? "⏸ Pause" : "▶ Start"}
                                     </Button>
@@ -606,9 +648,9 @@ const MyCourse = () => {
 
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button variant="outline" className="justify-between rounded-full">
+                                            <Button variant="outline" className="justify-between rounded-full text-xs" size="sm">
                                                 Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
-                                                <ChevronDown className="w-4 h-4 opacity-70" />
+                                                <ChevronDown className="w-3 h-3 opacity-70" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
@@ -623,12 +665,13 @@ const MyCourse = () => {
 
                             {/* RECORDING CONTROLS */}
                             <Card className="p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm">
-                                <h3 className="font-semibold text-lg mb-3">Recording</h3>
-                                <div className="flex flex-col gap-3">
+                                <h3 className="font-semibold text-sm mb-3">Recording</h3>
+                                <div className="flex flex-col gap-2">
                                     {!isRecording && !recordedBlob && (
                                         <Button
                                             onClick={() => handleStartRecording(activeScriptTitle || "video")}
-                                            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full"
+                                            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full text-xs"
+                                            size="sm"
                                         >
                                             🎥 Start Recording
                                         </Button>
@@ -637,7 +680,8 @@ const MyCourse = () => {
                                         <Button
                                             variant="destructive"
                                             onClick={handleStopRecording}
-                                            className="rounded-full"
+                                            className="rounded-full text-xs"
+                                            size="sm"
                                         >
                                             ⏹ Stop Recording
                                         </Button>
@@ -646,7 +690,8 @@ const MyCourse = () => {
                                         <>
                                             <Button
                                                 onClick={handleSaveRecording}
-                                                className="rounded-full bg-green-500 hover:bg-green-600 text-white"
+                                                className="rounded-full bg-green-500 hover:bg-green-600 text-white text-xs"
+                                                size="sm"
                                             >
                                                 💾 Save Video
                                             </Button>
@@ -656,7 +701,8 @@ const MyCourse = () => {
                                                     setRecordedBlob(null);
                                                     setVideoURL(null);
                                                 }}
-                                                className="rounded-full"
+                                                className="rounded-full text-xs"
+                                                size="sm"
                                             >
                                                 🔁 Record Again
                                             </Button>
@@ -667,8 +713,8 @@ const MyCourse = () => {
                         </div>
 
 
-                        {/* RIGHT PANEL — VIDEO + TELEPROMPTER */}
-                        <div className="flex-1 relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-black">
+                        {/* CENTER PANEL — VIDEO + TELEPROMPTER */}
+                        <div className="flex-1 relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-black min-h-[400px]">
                             {isRecording ? (
                                 <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
                             ) : recordedBlob ? (
@@ -699,7 +745,7 @@ const MyCourse = () => {
                                 >
                                     <div
                                         id="script-scroll-inner"
-                                        className="text-[2.1rem] leading-relaxed tracking-wide font-light
+                                        className="text-[1.8rem] leading-relaxed tracking-wide font-light
                                         whitespace-pre-wrap px-8 text-center select-none"
                                         style={{
                                             overflowY: "scroll",
@@ -717,6 +763,84 @@ const MyCourse = () => {
                             )}
 
 
+                        </div>
+
+                        {/* RIGHT PANEL — SLIDES */}
+                        <div className="w-[320px] shrink-0 flex flex-col gap-4">
+                            <Card className="flex-1 p-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm flex flex-col">
+                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                                    <Film className="w-4 h-4" /> Slides
+                                </h3>
+
+                                {slidesLoading ? (
+                                    <div className="flex-1 flex items-center justify-center">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                                    </div>
+                                ) : scriptSlides.length > 0 ? (
+                                    <div className="flex-1 flex flex-col gap-3">
+                                        {/* Current slide */}
+                                        <div className="relative flex-1 rounded-xl overflow-hidden bg-black/10 border border-white/20 flex items-center justify-center">
+                                            <img
+                                                src={scriptSlides[currentSlideIndex].url}
+                                                alt={`Slide ${currentSlideIndex + 1}`}
+                                                className="max-w-full max-h-full object-contain"
+                                                draggable={false}
+                                            />
+                                        </div>
+
+                                        {/* Navigation */}
+                                        <div className="flex items-center justify-between gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setCurrentSlideIndex(i => Math.max(0, i - 1))}
+                                                disabled={currentSlideIndex === 0}
+                                                className="rounded-full"
+                                            >
+                                                ← Prev
+                                            </Button>
+                                            <span className="text-sm text-muted-foreground">
+                                                {currentSlideIndex + 1} / {scriptSlides.length}
+                                            </span>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setCurrentSlideIndex(i => Math.min(scriptSlides.length - 1, i + 1))}
+                                                disabled={currentSlideIndex === scriptSlides.length - 1}
+                                                className="rounded-full"
+                                            >
+                                                Next →
+                                            </Button>
+                                        </div>
+
+                                        {/* Thumbnails */}
+                                        <div className="flex gap-2 overflow-x-auto pb-2">
+                                            {scriptSlides.map((slide, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => setCurrentSlideIndex(i)}
+                                                    className={`shrink-0 w-16 h-10 rounded-md overflow-hidden border-2 transition-all ${
+                                                        i === currentSlideIndex 
+                                                            ? "border-primary shadow-md" 
+                                                            : "border-transparent hover:border-primary/50"
+                                                    }`}
+                                                >
+                                                    <img
+                                                        src={slide.url}
+                                                        alt={`Thumbnail ${i + 1}`}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm text-center p-4">
+                                        No slides available yet.<br />
+                                        Slides will appear here once generated.
+                                    </div>
+                                )}
+                            </Card>
                         </div>
                     </div>
                 </DialogContent>
