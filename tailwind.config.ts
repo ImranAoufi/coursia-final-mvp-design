@@ -76,6 +76,16 @@ export default {
             height: "0",
           },
         },
+        "gradient-x": {
+          "0%, 100%": {
+            "background-size": "200% 200%",
+            "background-position": "left center",
+          },
+          "50%": {
+            "background-size": "200% 200%",
+            "background-position": "right center",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -83,6 +93,7 @@ export default {
         "glow": "glow 2s ease-in-out infinite alternate",
         "float": "float 3s ease-in-out infinite",
         "slide-up": "slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+        "gradient-x": "gradient-x 3s ease infinite",
       },
       backgroundImage: {
         'gradient-brand': 'var(--gradient-brand)',
