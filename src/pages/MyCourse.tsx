@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Download, RefreshCw, Edit, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, GraduationCap, Layers, Palette } from "lucide-react";
+import { Download, RefreshCw, Edit, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, GraduationCap, Layers, Palette, Rocket, Store, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
 import { toast } from "sonner";
@@ -65,6 +65,7 @@ const MyCourse = () => {
     const [status, setStatus] = useState<string | null>(course ? "done" : jobId ? "queued" : null);
     const [progressMsg, setProgressMsg] = useState<string>("Waiting...");
     const [downloading, setDownloading] = useState(false);
+    const [publishing, setPublishing] = useState(false);
 
 
     const [openScript, setOpenScript] = useState(false);
@@ -505,31 +506,54 @@ const MyCourse = () => {
                                     >
                                         <RefreshCw className="mr-2 h-4 w-4" /> Refresh
                                     </Button>
-                                    <Button
-                                        variant="gradient"
-                                        size="sm"
-                                        onClick={handleDownloadZip}
-                                        disabled={!course?.zip || downloading}
-                                        className="shadow-glow"
-                                    >
-                                        <Download className="mr-2 h-4 w-4" />
-                                        {downloading ? "Preparing..." : "Download"}
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600"
+                                    <motion.button
+                                        whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(139, 92, 246, 0.5), 0 0 80px rgba(236, 72, 153, 0.3)" }}
+                                        whileTap={{ scale: 0.98 }}
                                         onClick={() => {
                                             if (!course) {
                                                 alert("No course data yet to publish.");
                                                 return;
                                             }
-                                            const slug = encodeURIComponent(course.course_title || "my-course");
-                                            navigate(`/public/${slug}`, { state: { course } });
+                                            setPublishing(true);
+                                            setTimeout(() => {
+                                                const slug = encodeURIComponent(course.course_title || "my-course");
+                                                navigate(`/public/${slug}`, { state: { course } });
+                                            }, 500);
                                         }}
+                                        disabled={!course || publishing}
+                                        className="relative group px-6 py-3 rounded-xl font-semibold text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        <CheckCircle className="mr-2 h-4 w-4" />
-                                        Publish
-                                    </Button>
+                                        {/* Animated gradient background */}
+                                        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 animate-gradient-x" />
+                                        
+                                        {/* Shimmer effect */}
+                                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                                        </div>
+                                        
+                                        {/* Glow ring */}
+                                        <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 rounded-xl blur-lg opacity-40 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
+                                        
+                                        {/* Inner content */}
+                                        <span className="relative flex items-center gap-2">
+                                            {publishing ? (
+                                                <>
+                                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                    <span>Publishing...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Store className="w-5 h-5" />
+                                                    <span>Launch to Marketplace</span>
+                                                    <Rocket className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                                                </>
+                                            )}
+                                        </span>
+                                        
+                                        {/* Sparkle decorations */}
+                                        <div className="absolute top-1 right-2 w-2 h-2 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping" />
+                                        <div className="absolute bottom-1 left-3 w-1.5 h-1.5 bg-cyan-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping" style={{ animationDelay: "0.2s" }} />
+                                    </motion.button>
                                 </motion.div>
                             </div>
                         </div>
