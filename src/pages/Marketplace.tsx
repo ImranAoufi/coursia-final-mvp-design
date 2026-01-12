@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles, ChevronDown } from "lucide-react";
+import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles, ChevronDown, Crown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 interface Course {
   id: string;
@@ -22,6 +23,8 @@ interface Course {
   level: "Beginner" | "Intermediate" | "Advanced";
   image: string;
   featured?: boolean;
+  isUserCourse?: boolean;
+  courseData?: any;
 }
 
 const mockCourses: Course[] = [
@@ -118,8 +121,23 @@ export default function Marketplace() {
   const [sortBy, setSortBy] = useState("Popular");
   const [showFilters, setShowFilters] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [allCourses, setAllCourses] = useState<Course[]>(mockCourses);
 
-  const filteredCourses = mockCourses.filter((course) => {
+  // Load user-published courses from localStorage
+  useEffect(() => {
+    const published = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
+    if (published.length > 0) {
+      setAllCourses([...published, ...mockCourses]);
+      // Show toast if just published
+      const justPublished = sessionStorage.getItem("just_published");
+      if (!justPublished && published.length > 0) {
+        sessionStorage.setItem("just_published", "true");
+        toast.success("🎉 Your course is now live on the marketplace!");
+      }
+    }
+  }, []);
+
+  const filteredCourses = allCourses.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          course.instructor.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
@@ -127,7 +145,7 @@ export default function Marketplace() {
     return matchesSearch && matchesCategory && matchesLevel;
   });
 
-  const featuredCourses = mockCourses.filter(c => c.featured);
+  const featuredCourses = allCourses.filter(c => c.featured);
 
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
@@ -250,10 +268,17 @@ export default function Marketplace() {
                     alt={course.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute top-4 right-4 glass px-3 py-1 rounded-full">
-                    <Award className="w-4 h-4 text-primary inline mr-1" />
-                    <span className="text-sm font-semibold">Featured</span>
-                  </div>
+                  {course.isUserCourse ? (
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-3 py-1 rounded-full shadow-lg">
+                      <Crown className="w-4 h-4 text-white inline mr-1" />
+                      <span className="text-sm font-semibold text-white">Your Course</span>
+                    </div>
+                  ) : (
+                    <div className="absolute top-4 right-4 glass px-3 py-1 rounded-full">
+                      <Award className="w-4 h-4 text-primary inline mr-1" />
+                      <span className="text-sm font-semibold">Featured</span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
@@ -378,6 +403,12 @@ export default function Marketplace() {
                   <div className="absolute top-3 left-3 glass px-2 py-1 rounded-lg text-xs font-medium">
                     {course.level}
                   </div>
+                  {course.isUserCourse && (
+                    <div className="absolute top-3 right-3 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-2 py-1 rounded-lg shadow-lg">
+                      <Crown className="w-3 h-3 text-white inline mr-1" />
+                      <span className="text-xs font-semibold text-white">Yours</span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-5">
                   <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">

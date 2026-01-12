@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Download, RefreshCw, Edit, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, GraduationCap, Layers, Palette, Rocket, Store, Crown } from "lucide-react";
+import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, GraduationCap, Layers, Palette, Rocket, Store, Edit } from "lucide-react";
 import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
 import { toast } from "sonner";
@@ -490,22 +490,6 @@ const MyCourse = () => {
                                     transition={{ delay: 0.5, duration: 0.5 }}
                                     className="flex flex-wrap gap-2 sm:gap-3 shrink-0"
                                 >
-                                    <Button 
-                                        variant="ghost" 
-                                        size="sm"
-                                        className="glass border border-white/10 hover:bg-white/10"
-                                        onClick={() => navigate("/preview")}
-                                    >
-                                        <Edit className="mr-2 h-4 w-4" /> Edit
-                                    </Button>
-                                    <Button 
-                                        variant="ghost" 
-                                        size="sm"
-                                        className="glass border border-white/10 hover:bg-white/10"
-                                        onClick={() => window.location.reload()}
-                                    >
-                                        <RefreshCw className="mr-2 h-4 w-4" /> Refresh
-                                    </Button>
                                     <motion.button
                                         whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(139, 92, 246, 0.5), 0 0 80px rgba(236, 72, 153, 0.3)" }}
                                         whileTap={{ scale: 0.98 }}
@@ -515,10 +499,33 @@ const MyCourse = () => {
                                                 return;
                                             }
                                             setPublishing(true);
+                                            
+                                            // Create marketplace-compatible course object
+                                            const publishedCourse = {
+                                                id: `user-${Date.now()}`,
+                                                title: course.course_title || "Untitled Course",
+                                                instructor: "You",
+                                                rating: 5.0,
+                                                reviews: 0,
+                                                price: 99,
+                                                duration: `${course.lessons?.length || 1} lessons`,
+                                                students: 0,
+                                                category: "Technology",
+                                                level: "Intermediate" as const,
+                                                image: course.banner_url || course.banner_path || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
+                                                featured: true,
+                                                isUserCourse: true,
+                                                courseData: course,
+                                            };
+                                            
+                                            // Save to localStorage
+                                            const existing = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
+                                            existing.unshift(publishedCourse);
+                                            localStorage.setItem("coursia_published_courses", JSON.stringify(existing));
+                                            
                                             setTimeout(() => {
-                                                const slug = encodeURIComponent(course.course_title || "my-course");
-                                                navigate(`/public/${slug}`, { state: { course } });
-                                            }, 500);
+                                                navigate("/marketplace");
+                                            }, 800);
                                         }}
                                         disabled={!course || publishing}
                                         className="relative group px-6 py-3 rounded-xl font-semibold text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
