@@ -449,11 +449,11 @@ const MyCourse = () => {
                                     className="shrink-0"
                                 >
                                     {course?.logo_url || course?.logo_path ? (
-                                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden glass border-2 border-white/20 shadow-glass">
+                                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-lg shrink-0">
                                             <img
                                                 src={course.logo_url || course.logo_path}
                                                 alt="Course logo"
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-contain"
                                             />
                                         </div>
                                     ) : (
@@ -760,11 +760,11 @@ const MyCourse = () => {
                             <div className="space-y-4">
                                 <div className="flex items-center gap-4">
                                     {course?.logo_url || course?.logo_path ? (
-                                        <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/20 shadow-md shrink-0">
+                                        <div className="w-16 h-16 rounded-xl overflow-hidden shadow-md shrink-0">
                                             <img
                                                 src={course.logo_url || course.logo_path}
                                                 alt="Course logo"
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-contain"
                                             />
                                         </div>
                                     ) : (
