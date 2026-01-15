@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      workbook_responses: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          lesson_id: string
+          prompt_index: number
+          prompt_text: string
+          response: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          lesson_id: string
+          prompt_index: number
+          prompt_text: string
+          response?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          lesson_id?: string
+          prompt_index?: number
+          prompt_text?: string
+          response?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

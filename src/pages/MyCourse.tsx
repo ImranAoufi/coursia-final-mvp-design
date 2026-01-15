@@ -76,6 +76,7 @@ const MyCourse = () => {
 
     const [activeWorkbookTitle, setActiveWorkbookTitle] = useState<string | null>(null);
     const [activeWorkbookContent, setActiveWorkbookContent] = useState<string | null>(null);
+    const [activeWorkbookLessonIndex, setActiveWorkbookLessonIndex] = useState<number | null>(null);
 
 
     const [activeQuizTitle, setActiveQuizTitle] = useState<string | null>(null);
@@ -382,16 +383,16 @@ const MyCourse = () => {
     };
 
 
-    const handleViewWorkbook = async (title: string, path?: string) => {
+    const handleViewWorkbook = async (title: string, path?: string, lessonIndex?: number) => {
         if (!path) return alert("No workbook file found.");
         try {
             const res = await fetch(toURL(path));
             if (!res.ok) throw new Error("Failed to load workbook file");
             const text = await res.text();
 
-
             setActiveWorkbookTitle(title);
             setActiveWorkbookContent(text);
+            setActiveWorkbookLessonIndex(lessonIndex ?? null);
         } catch (err) {
             console.error(err);
             alert("Failed to load workbook — check console.");
@@ -723,7 +724,7 @@ const MyCourse = () => {
                                                             <Button
                                                                 size="sm"
                                                                 className="w-full bg-secondary/20 hover:bg-secondary/30 text-secondary-foreground border border-secondary/30"
-                                                                onClick={() => handleViewWorkbook(lesson.lesson_title || "Workbook", lesson.workbook_file)}
+                                                                onClick={() => handleViewWorkbook(lesson.lesson_title || "Workbook", lesson.workbook_file, li)}
                                                             >
                                                                 Open Workbook
                                                             </Button>
@@ -1099,16 +1100,25 @@ const MyCourse = () => {
 
 
             {/* Workbook Modal (sibling) */}
-            <Dialog open={!!activeWorkbookTitle} onOpenChange={() => setActiveWorkbookTitle(null)}>
-                <DialogContent className="max-w-3xl max-h-[80vh]">
+            <Dialog open={!!activeWorkbookTitle} onOpenChange={() => {
+                setActiveWorkbookTitle(null);
+                setActiveWorkbookLessonIndex(null);
+            }}>
+                <DialogContent className="max-w-3xl max-h-[85vh]">
                     <DialogHeader>
-                        <DialogTitle>{activeWorkbookTitle}</DialogTitle>
+                        <DialogTitle className="flex items-center gap-2">
+                            <BookOpen className="w-5 h-5 text-secondary" />
+                            {activeWorkbookTitle}
+                        </DialogTitle>
                     </DialogHeader>
 
-
-                    <div className="mt-2 max-h-[65vh] overflow-y-auto">
+                    <div className="mt-2 max-h-[70vh] overflow-y-auto pr-2">
                         {activeWorkbookContent ? (
-                            <WorkbookDisplay workbook={activeWorkbookContent} />
+                            <WorkbookDisplay 
+                                workbook={activeWorkbookContent} 
+                                courseId={jobId || undefined}
+                                lessonId={activeWorkbookLessonIndex !== null ? `lesson_${activeWorkbookLessonIndex + 1}` : undefined}
+                            />
                         ) : (
                             <p className="text-sm text-muted-foreground">Loading workbook...</p>
                         )}
