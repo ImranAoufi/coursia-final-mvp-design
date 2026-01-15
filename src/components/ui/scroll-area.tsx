@@ -23,21 +23,15 @@ const ScrollBar = React.forwardRef<
     ref={ref}
     orientation={orientation}
     className={cn(
-      "flex touch-none select-none transition-all duration-300",
-      orientation === "vertical" && "h-full w-3 border-l border-l-transparent p-[2px] hover:w-4",
-      orientation === "horizontal" && "h-3 flex-col border-t border-t-transparent p-[2px] hover:h-4",
+      "flex touch-none select-none transition-opacity duration-300 opacity-60 hover:opacity-100",
+      orientation === "vertical" && "h-full w-2 border-l border-l-transparent p-[1px]",
+      orientation === "horizontal" && "h-2 flex-col border-t border-t-transparent p-[1px]",
       className,
     )}
     {...props}
   >
     <ScrollAreaPrimitive.ScrollAreaThumb 
-      className={cn(
-        "relative flex-1 rounded-full",
-        "bg-gradient-to-b from-primary/40 via-primary/30 to-primary/40",
-        "hover:from-primary/60 hover:via-primary/50 hover:to-primary/60",
-        "transition-all duration-300",
-        "shadow-sm shadow-primary/10"
-      )} 
+      className="relative flex-1 rounded-full bg-muted-foreground/40 hover:bg-muted-foreground/60 transition-colors duration-200" 
     />
   </ScrollAreaPrimitive.ScrollAreaScrollbar>
 ));

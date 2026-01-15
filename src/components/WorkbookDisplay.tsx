@@ -27,6 +27,7 @@ export default function WorkbookDisplay({ workbook, courseId, lessonId, onClose 
     const { user } = useAuth();
     const [prompts, setPrompts] = useState<ReflectionPrompt[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [visitedPages, setVisitedPages] = useState<Set<number>>(new Set([0]));
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -142,7 +143,9 @@ export default function WorkbookDisplay({ workbook, courseId, lessonId, onClose 
 
     const handleNext = () => {
         if (currentIndex < prompts.length - 1) {
-            setCurrentIndex(currentIndex + 1);
+            const nextIndex = currentIndex + 1;
+            setCurrentIndex(nextIndex);
+            setVisitedPages(prev => new Set([...prev, nextIndex]));
         }
     };
 
@@ -151,9 +154,14 @@ export default function WorkbookDisplay({ workbook, courseId, lessonId, onClose 
             setCurrentIndex(currentIndex - 1);
         }
     };
+    
+    const handleDotClick = (idx: number) => {
+        setCurrentIndex(idx);
+        setVisitedPages(prev => new Set([...prev, idx]));
+    };
 
     const completedCount = prompts.filter(p => p.response.trim().length > 0).length;
-    const progress = prompts.length > 0 ? (completedCount / prompts.length) * 100 : 0;
+    const progress = prompts.length > 0 ? (visitedPages.size / prompts.length) * 100 : 0;
     const currentPrompt = prompts[currentIndex];
 
     if (isLoading) {
@@ -210,7 +218,7 @@ export default function WorkbookDisplay({ workbook, courseId, lessonId, onClose 
                 {prompts.map((prompt, idx) => (
                     <button
                         key={idx}
-                        onClick={() => setCurrentIndex(idx)}
+                        onClick={() => handleDotClick(idx)}
                         className={cn(
                             "w-3 h-3 rounded-full transition-all duration-300",
                             idx === currentIndex 
