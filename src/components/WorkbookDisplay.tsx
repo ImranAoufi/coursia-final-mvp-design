@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Check, ChevronLeft, ChevronRight, Sparkles, BookOpen, Loader2 } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Sparkles, BookOpen, Loader2, Trophy, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ interface WorkbookDisplayProps {
     workbook: string;
     courseId?: string;
     lessonId?: string;
+    onClose?: () => void;
 }
 
 interface ReflectionPrompt {
@@ -22,7 +23,7 @@ interface ReflectionPrompt {
     saved: boolean;
 }
 
-export default function WorkbookDisplay({ workbook, courseId, lessonId }: WorkbookDisplayProps) {
+export default function WorkbookDisplay({ workbook, courseId, lessonId, onClose }: WorkbookDisplayProps) {
     const { user } = useAuth();
     const [prompts, setPrompts] = useState<ReflectionPrompt[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -309,10 +310,13 @@ export default function WorkbookDisplay({ workbook, courseId, lessonId }: Workbo
                         <ChevronRight className="h-4 w-4" />
                     </Button>
                 ) : (
-                    <div className="flex items-center gap-2 text-emerald-500 font-medium">
-                        <Check className="h-5 w-5" />
-                        Complete!
-                    </div>
+                    <Button
+                        onClick={onClose}
+                        className="rounded-xl gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+                    >
+                        <Trophy className="h-4 w-4" />
+                        Finish Workbook
+                    </Button>
                 )}
             </div>
 

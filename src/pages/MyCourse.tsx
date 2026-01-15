@@ -1118,6 +1118,10 @@ const MyCourse = () => {
                                 workbook={activeWorkbookContent} 
                                 courseId={jobId || undefined}
                                 lessonId={activeWorkbookLessonIndex !== null ? `lesson_${activeWorkbookLessonIndex + 1}` : undefined}
+                                onClose={() => {
+                                    setActiveWorkbookTitle(null);
+                                    setActiveWorkbookLessonIndex(null);
+                                }}
                             />
                         ) : (
                             <p className="text-sm text-muted-foreground">Loading workbook...</p>
