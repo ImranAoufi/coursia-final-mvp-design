@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { User, LogOut, ChevronDown } from "lucide-react";
+import { useProfile } from "@/hooks/useProfile";
+import { User, LogOut, ChevronDown, Settings } from "lucide-react";
 
 interface UserMenuProps {
   variant?: "default" | "gradient";
@@ -12,6 +13,7 @@ interface UserMenuProps {
 export function UserMenu({ variant = "gradient" }: UserMenuProps) {
   const navigate = useNavigate();
   const { user, signOut, loading } = useAuth();
+  const { profile } = useProfile();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = async () => {
@@ -38,7 +40,7 @@ export function UserMenu({ variant = "gradient" }: UserMenuProps) {
   }
 
   const userEmail = user.email || "User";
-  const displayName = userEmail.split("@")[0];
+  const displayName = profile?.display_name || userEmail.split("@")[0];
 
   return (
     <div className="relative">
@@ -46,8 +48,12 @@ export function UserMenu({ variant = "gradient" }: UserMenuProps) {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 glass px-3 py-2 rounded-xl hover:bg-white/10 transition-all"
       >
-        <div className="w-7 h-7 rounded-full bg-gradient-brand flex items-center justify-center">
-          <User className="w-4 h-4 text-white" />
+        <div className="w-7 h-7 rounded-full bg-gradient-brand flex items-center justify-center overflow-hidden">
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+          ) : (
+            <User className="w-4 h-4 text-white" />
+          )}
         </div>
         <span className="text-sm font-medium max-w-[100px] truncate hidden sm:block">
           {displayName}
@@ -85,7 +91,14 @@ export function UserMenu({ variant = "gradient" }: UserMenuProps) {
                 <p className="text-xs text-muted-foreground">Logged in</p>
               </div>
               
-              <div className="p-2">
+              <div className="p-2 space-y-1">
+                <button
+                  onClick={() => { setIsOpen(false); navigate("/profile"); }}
+                  className="w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-white/5 rounded-lg transition-colors"
+                >
+                  <Settings className="w-4 h-4" />
+                  Profile Settings
+                </button>
                 <button
                   onClick={handleSignOut}
                   className="w-full flex items-center gap-3 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
