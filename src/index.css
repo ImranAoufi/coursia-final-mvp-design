@@ -244,6 +244,50 @@ All colors MUST be HSL.
     background: hsl(var(--muted-foreground) / 0.5);
   }
 
+  /* Awesome glowing scrollbar - appears on hover with brand gradient */
+  .scrollbar-glow {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  
+  .scrollbar-glow::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .scrollbar-glow::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 100px;
+    margin: 8px 0;
+  }
+  
+  .scrollbar-glow::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(180 85% 55% / 0), hsl(270 70% 60% / 0));
+    border-radius: 100px;
+    border: 2px solid transparent;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .scrollbar-glow:hover::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(180 85% 55%), hsl(270 70% 60%));
+    box-shadow: 0 0 12px hsl(180 85% 55% / 0.5), 0 0 24px hsl(270 70% 60% / 0.3);
+  }
+  
+  .scrollbar-glow::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(180 85% 65%), hsl(270 70% 70%));
+    box-shadow: 0 0 16px hsl(180 85% 55% / 0.7), 0 0 32px hsl(270 70% 60% / 0.5);
+  }
+
+  .light .scrollbar-glow:hover::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(180 75% 45%), hsl(270 65% 55%));
+    box-shadow: 0 0 12px hsl(180 75% 45% / 0.4), 0 0 24px hsl(270 65% 55% / 0.25);
+  }
+  
+  .light .scrollbar-glow::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(180 75% 50%), hsl(270 65% 60%));
+    box-shadow: 0 0 16px hsl(180 75% 45% / 0.6), 0 0 32px hsl(270 65% 55% / 0.4);
+  }
+
   /* Animation utilities */
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
