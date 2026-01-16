@@ -1082,7 +1082,7 @@ const MyCourse = () => {
 
             {/* Quiz Modal (sibling) */}
             <Dialog open={!!activeQuizTitle} onOpenChange={() => setActiveQuizTitle(null)}>
-                <DialogContent className="max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl shadow-2xl border bg-background/95 backdrop-blur-md">
+                <DialogContent className="max-w-xl max-h-[85vh] overflow-y-auto scrollbar-hidden rounded-2xl shadow-2xl border bg-background/95 backdrop-blur-md">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-semibold tracking-tight">
                             {activeQuizTitle}
