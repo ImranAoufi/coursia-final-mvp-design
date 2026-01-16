@@ -15,6 +15,7 @@ import Preview from "./pages/Preview";
 import MyCourse from "@/pages/MyCourse";
 import Marketplace from "@/pages/Marketplace";
 import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
 
 // ✅ Hier kommt dein Wizard aus src/components/
 import IntakeWizard from "./components/IntakeWizard";
@@ -32,6 +33,7 @@ const App = () => (
             <Routes>
               {/* ✅ Auth-Seite */}
               <Route path="/auth" element={<Auth />} />
+              <Route path="/profile" element={<Profile />} />
 
               {/* ✅ Wizard-Seite */}
               <Route path="/wizard" element={<IntakeWizard />} />
