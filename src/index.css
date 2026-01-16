@@ -205,6 +205,45 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  /* Premium invisible scrollbar - only appears on hover */
+  .scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Premium thin scrollbar - elegant and minimal */
+  .scrollbar-premium {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  
+  .scrollbar-premium::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-premium::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-premium::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 100px;
+    transition: background 0.3s ease;
+  }
+  
+  .scrollbar-premium:hover::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+  
+  .scrollbar-premium:hover::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
   /* Animation utilities */
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;

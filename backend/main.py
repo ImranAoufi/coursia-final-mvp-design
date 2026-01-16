@@ -495,13 +495,23 @@ Return valid JSON ONLY (no markdown fences) in this exact structure:
         "question": "Question text",
         "options": ["A", "B", "C", "D"],
         "answer": "A"
+      }},
+      {{
+        "question": "Another question",
+        "options": ["A", "B", "C", "D"],
+        "answer": "B"
+      }},
+      {{
+        "question": "Third question",
+        "options": ["A", "B", "C", "D"],
+        "answer": "C"
       }}
     ]
   }},
   "workbook": "Short workbook/exercise text (a few bullet tasks or reflections)."
 }}
 
-Keep scripts actionable and specific to the lesson title. Keep quiz questions short and focused. Workbook should include 3-5 reflection/exercise bullets.
+IMPORTANT: The quiz MUST contain at least 3 questions and no more than 5 questions. Keep scripts actionable and specific to the lesson title. Keep quiz questions short and focused. Workbook should include 3-5 reflection/exercise bullets.
 """
 
             ai_success = False
@@ -598,9 +608,19 @@ Keep scripts actionable and specific to the lesson title. Keep quiz questions sh
                     quiz_obj = {
                         "questions": [
                             {
-                                "question": f"What is a key point from '{lesson_title}'?",
-                                "options": ["A", "B", "C", "D"],
+                                "question": f"What is a key concept from '{lesson_title}'?",
+                                "options": ["Understanding the fundamentals", "Skipping the basics", "Ignoring best practices", "Avoiding practice"],
                                 "answer": "A"
+                            },
+                            {
+                                "question": f"Why is '{lesson_title}' important?",
+                                "options": ["It's optional knowledge", "It builds core competencies", "It's just theory", "It has no practical use"],
+                                "answer": "B"
+                            },
+                            {
+                                "question": f"What should you do after completing '{lesson_title}'?",
+                                "options": ["Forget everything", "Never apply it", "Practice and reinforce learning", "Skip to unrelated topics"],
+                                "answer": "C"
                             }
                         ]
                     }
