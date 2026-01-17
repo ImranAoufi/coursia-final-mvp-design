@@ -240,7 +240,7 @@ const Preview = () => {
             transition={{ delay: 0.2 }}
           >
             <Tabs defaultValue="curriculum" className="w-full">
-              <TabsList className="glass-strong w-full md:w-auto flex flex-wrap justify-center gap-2 p-2 mb-8">
+              <TabsList className="bg-transparent border-none w-full md:w-auto flex flex-wrap justify-center gap-2 p-0 mb-8">
                 <TabsTrigger value="curriculum" className="flex items-center gap-2 px-6 py-3">
                   <Layers className="w-4 h-4" />
                   Curriculum
@@ -382,7 +382,7 @@ const Preview = () => {
                           {[
                             "Complete video scripts",
                             "Interactive quizzes",
-                            "Downloadable workbooks",
+                            "Interactive workbooks",
                             "Professional slide decks",
                             "Landing page & checkout"
                           ].map((item, idx) => (
