@@ -10,7 +10,7 @@ import { Logo } from "@/components/Logo";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
-import CompletionMeter from "@/components/CompletionMeter";
+
 import { generateFullCourse } from "@/api";
 import { 
   ArrowRight, 
@@ -179,7 +179,7 @@ const Preview = () => {
 
       <div className="pt-24 pb-16 px-4 md:px-6">
         <div className="max-w-7xl mx-auto">
-          <CompletionMeter currentStep={2} totalSteps={4} />
+          {/* Hero Section */}
 
           {/* Hero Section */}
           <motion.div 
@@ -240,16 +240,25 @@ const Preview = () => {
             transition={{ delay: 0.2 }}
           >
             <Tabs defaultValue="curriculum" className="w-full">
-              <TabsList className="bg-transparent border-none w-full md:w-auto flex flex-wrap justify-center gap-2 p-0 mb-8">
-                <TabsTrigger value="curriculum" className="flex items-center gap-2 px-6 py-3">
+              <TabsList className="bg-transparent border-none w-full md:w-auto flex flex-wrap justify-center gap-3 p-0 mb-8">
+                <TabsTrigger 
+                  value="curriculum" 
+                  className="flex items-center gap-2 px-6 py-3 rounded-full glass-strong border border-glass-border data-[state=active]:bg-gradient-brand data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-glow hover:border-primary/50 transition-all duration-300"
+                >
                   <Layers className="w-4 h-4" />
                   Curriculum
                 </TabsTrigger>
-                <TabsTrigger value="branding" className="flex items-center gap-2 px-6 py-3">
+                <TabsTrigger 
+                  value="branding" 
+                  className="flex items-center gap-2 px-6 py-3 rounded-full glass-strong border border-glass-border data-[state=active]:bg-gradient-brand data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-glow hover:border-primary/50 transition-all duration-300"
+                >
                   <Palette className="w-4 h-4" />
                   Branding
                 </TabsTrigger>
-                <TabsTrigger value="marketing" className="flex items-center gap-2 px-6 py-3">
+                <TabsTrigger 
+                  value="marketing" 
+                  className="flex items-center gap-2 px-6 py-3 rounded-full glass-strong border border-glass-border data-[state=active]:bg-gradient-brand data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-glow hover:border-primary/50 transition-all duration-300"
+                >
                   <Megaphone className="w-4 h-4" />
                   Marketing
                 </TabsTrigger>
