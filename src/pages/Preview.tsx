@@ -191,12 +191,24 @@ const Preview = () => {
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm">Your course structure is ready!</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold mb-3">
               <span className="gradient-text">{preview.topic ?? 'Your Course'}</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Review your course structure, branding options, and marketing preview before generating the full course.
+            
+            {/* Subline: Verb + Outcome + Target Audience/Context */}
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
+              Master {preview.topic || "this skill"} and transform your expertise into actionable knowledge for aspiring professionals and lifelong learners.
             </p>
+            
+            {/* Course Promise: Result + Speed + Clarity */}
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl glass-strong border border-primary/20 mb-4">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="font-medium text-foreground">
+                  Achieve real-world results in {Math.ceil((totalVideos * 8) / 60) || 2} hours with crystal-clear, step-by-step guidance
+                </span>
+              </div>
+            </div>
           </motion.div>
 
           {/* Stats Strip */}
@@ -204,13 +216,14 @@ const Preview = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
+            className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12"
           >
             {[
               { icon: Layers, label: "Lessons", value: preview.lessons?.length ?? 0, color: "text-primary" },
               { icon: Video, label: "Videos", value: totalVideos, color: "text-secondary" },
-              { icon: FileText, label: "Quizzes", value: totalQuizzes, color: "text-accent" },
-              { icon: BookOpen, label: "Workbooks", value: totalWorkbooks, color: "text-primary" },
+              { icon: Clock, label: "Duration", value: `${Math.ceil((totalVideos * 8) / 60) || 1}h`, color: "text-accent" },
+              { icon: FileText, label: "Quizzes", value: totalQuizzes, color: "text-primary" },
+              { icon: BookOpen, label: "Workbooks", value: totalWorkbooks, color: "text-secondary" },
             ].map((stat, idx) => (
               <div key={idx} className="glass-strong rounded-2xl p-6 text-center hover:scale-105 transition-all duration-300">
                 <stat.icon className={`w-8 h-8 mx-auto mb-3 ${stat.color}`} />
