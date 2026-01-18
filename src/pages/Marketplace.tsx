@@ -5,10 +5,16 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles, ChevronDown, Crown } from "lucide-react";
+import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles, ChevronDown, Crown, X, Trash2, BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Course {
   id: string;
@@ -123,10 +129,17 @@ export default function Marketplace() {
   const [showFilters, setShowFilters] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [allCourses, setAllCourses] = useState<Course[]>(mockCourses);
+  const [showMyCourses, setShowMyCourses] = useState(false);
+  const [myCourses, setMyCourses] = useState<Course[]>([]);
 
   // Load user-published courses from localStorage
   useEffect(() => {
+    loadUserCourses();
+  }, []);
+
+  const loadUserCourses = () => {
     const published = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
+    setMyCourses(published);
     if (published.length > 0) {
       setAllCourses([...published, ...mockCourses]);
       // Show toast if just published
@@ -136,7 +149,15 @@ export default function Marketplace() {
         toast.success("🎉 Your course is now live on the marketplace!");
       }
     }
-  }, []);
+  };
+
+  const handleRemoveCourse = (courseId: string) => {
+    const updatedCourses = myCourses.filter(c => c.id !== courseId);
+    localStorage.setItem("coursia_published_courses", JSON.stringify(updatedCourses));
+    setMyCourses(updatedCourses);
+    setAllCourses([...updatedCourses, ...mockCourses]);
+    toast.success("Course removed from marketplace");
+  };
 
   const filteredCourses = allCourses.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -165,9 +186,18 @@ export default function Marketplace() {
             <Link to="/marketplace" className="text-sm text-foreground font-medium">
               Marketplace
             </Link>
-            <Link to="/my-course" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <button 
+              onClick={() => setShowMyCourses(true)}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+            >
+              <BookOpen className="w-4 h-4" />
               My Courses
-            </Link>
+              {myCourses.length > 0 && (
+                <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                  {myCourses.length}
+                </span>
+              )}
+            </button>
             <ThemeToggle />
             <UserMenu />
           </nav>
@@ -517,6 +547,114 @@ export default function Marketplace() {
           </div>
         </div>
       </footer>
+
+      {/* My Courses Dialog */}
+      <Dialog open={showMyCourses} onOpenChange={setShowMyCourses}>
+        <DialogContent className="glass-strong border-white/20 max-w-2xl max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold gradient-text flex items-center gap-2">
+              <Crown className="w-6 h-6 text-primary" />
+              My Published Courses
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="mt-4 overflow-y-auto max-h-[60vh] pr-2 space-y-4">
+            {myCourses.length === 0 ? (
+              <div className="text-center py-12">
+                <BookOpen className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No courses yet</h3>
+                <p className="text-muted-foreground mb-6">
+                  Create your first course and publish it to see it here.
+                </p>
+                <Button 
+                  variant="gradient" 
+                  onClick={() => {
+                    setShowMyCourses(false);
+                    navigate("/wizard");
+                  }}
+                >
+                  Create Course
+                </Button>
+              </div>
+            ) : (
+              myCourses.map((course) => (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass rounded-xl p-4 border border-white/10 hover:border-primary/30 transition-all duration-300"
+                >
+                  <div className="flex gap-4">
+                    <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                      <img 
+                        src={course.image} 
+                        alt={course.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-lg truncate">{course.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-2">by {course.instructor}</p>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Star className="w-4 h-4 fill-primary text-primary" />
+                          <span>{course.rating}</span>
+                        </div>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                          {course.category}
+                        </span>
+                        <span className="text-xs">{course.level}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2 flex-shrink-0">
+                      <Button
+                        variant="glass"
+                        size="sm"
+                        onClick={() => {
+                          setShowMyCourses(false);
+                          navigate(`/course/${course.id}`);
+                        }}
+                        className="gap-2"
+                      >
+                        <BookOpen className="w-4 h-4" />
+                        View
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveCourse(course.id)}
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10 gap-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </div>
+
+          {myCourses.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
+              <p className="text-sm text-muted-foreground">
+                {myCourses.length} course{myCourses.length !== 1 ? "s" : ""} published
+              </p>
+              <Button 
+                variant="gradient" 
+                onClick={() => {
+                  setShowMyCourses(false);
+                  navigate("/wizard");
+                }}
+                className="gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                Create New Course
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
