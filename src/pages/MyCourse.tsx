@@ -494,14 +494,54 @@ const MyCourse = () => {
                                     <motion.button
                                         whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(139, 92, 246, 0.5), 0 0 80px rgba(236, 72, 153, 0.3)" }}
                                         whileTap={{ scale: 0.98 }}
-                                        onClick={() => {
+                                        onClick={async () => {
                                             if (!course) {
                                                 alert("No course data yet to publish.");
                                                 return;
                                             }
                                             setPublishing(true);
                                             
-                                            // Create marketplace-compatible course object
+                                            // Fetch and embed quiz/workbook content for each lesson
+                                            const quizzes: any[] = [];
+                                            const workbooks: string[] = [];
+                                            
+                                            for (const lesson of course.lessons || []) {
+                                                // Fetch quiz content
+                                                if (lesson.quiz_file) {
+                                                    try {
+                                                        const res = await fetch(toURL(lesson.quiz_file));
+                                                        if (res.ok) {
+                                                            const quizData = await res.json();
+                                                            quizzes.push(quizData);
+                                                        } else {
+                                                            quizzes.push(null);
+                                                        }
+                                                    } catch {
+                                                        quizzes.push(null);
+                                                    }
+                                                } else {
+                                                    quizzes.push(null);
+                                                }
+                                                
+                                                // Fetch workbook content
+                                                if (lesson.workbook_file) {
+                                                    try {
+                                                        const res = await fetch(toURL(lesson.workbook_file));
+                                                        if (res.ok) {
+                                                            const workbookText = await res.text();
+                                                            workbooks.push(workbookText);
+                                                        } else {
+                                                            workbooks.push("");
+                                                        }
+                                                    } catch {
+                                                        workbooks.push("");
+                                                    }
+                                                } else {
+                                                    workbooks.push("");
+                                                }
+                                            }
+                                            
+                                            // Create marketplace-compatible course object with embedded content
                                             const publishedCourse = {
                                                 id: `user-${Date.now()}`,
                                                 title: course.course_title || "Untitled Course",
@@ -516,13 +556,19 @@ const MyCourse = () => {
                                                 image: course.banner_url || course.banner_path || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
                                                 featured: true,
                                                 isUserCourse: true,
-                                                courseData: course,
+                                                courseData: {
+                                                    ...course,
+                                                    quizzes,
+                                                    workbooks,
+                                                },
                                             };
                                             
                                             // Save to localStorage
                                             const existing = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
                                             existing.unshift(publishedCourse);
                                             localStorage.setItem("coursia_published_courses", JSON.stringify(existing));
+                                            
+                                            toast.success("🎉 Course published to marketplace!");
                                             
                                             setTimeout(() => {
                                                 navigate("/marketplace");
