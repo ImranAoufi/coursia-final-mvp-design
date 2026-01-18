@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import Preview from "./pages/Preview";
 import MyCourse from "@/pages/MyCourse";
 import Marketplace from "@/pages/Marketplace";
+import CourseDetail from "@/pages/CourseDetail";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 
@@ -45,6 +46,7 @@ const App = () => (
               
               {/* ✅ Marketplace */}
               <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/course/:courseId" element={<CourseDetail />} />
 
               {/* ✅ Normale Seiten */}
               <Route path="/" element={<Landing />} />
