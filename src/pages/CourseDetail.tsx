@@ -324,7 +324,6 @@ export default function CourseDetail() {
                           {/* Videos */}
                           {videos.map((video: any, vIndex: number) => {
                             const videoTitle = typeof video === 'string' ? video : video.title;
-                            const scriptContent = typeof video === 'object' ? video.script_content : null;
                             
                             return (
                               <motion.div
@@ -340,17 +339,9 @@ export default function CourseDetail() {
                                   </div>
                                   <span className="text-sm font-medium">{videoTitle}</span>
                                 </div>
-                                {scriptContent && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleViewScript(videoTitle, scriptContent)}
-                                    className="opacity-0 group-hover/item:opacity-100 transition-opacity gap-2"
-                                  >
-                                    <FileText className="w-4 h-4" />
-                                    View Script
-                                  </Button>
-                                )}
+                                <span className="text-xs text-muted-foreground opacity-0 group-hover/item:opacity-100 transition-opacity">
+                                  Enroll to access
+                                </span>
                               </motion.div>
                             );
                           })}
