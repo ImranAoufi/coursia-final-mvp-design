@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   ArrowLeft, 
   Star, 
@@ -16,9 +18,15 @@ import {
   CheckCircle2,
   BookOpen,
   Crown,
-  Loader2
+  Loader2,
+  Brain,
+  Film,
+  Sparkles,
+  GraduationCap,
+  X
 } from "lucide-react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { QuizDisplay } from "@/components/QuizDisplay";
+import WorkbookDisplay from "@/components/WorkbookDisplay";
 
 interface Course {
   id: string;
@@ -37,11 +45,33 @@ interface Course {
   courseData?: any;
 }
 
+interface Lesson {
+  lesson_title: string;
+  videos?: Array<{ title?: string; script_file?: string; script_content?: string } | string>;
+  video_titles?: string[];
+  quiz_file?: string;
+  workbook_file?: string;
+}
+
 export default function CourseDetail() {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Content viewing states
+  const [openScript, setOpenScript] = useState(false);
+  const [activeScriptTitle, setActiveScriptTitle] = useState<string | null>(null);
+  const [activeScriptContent, setActiveScriptContent] = useState<string | null>(null);
+
+  const [openQuiz, setOpenQuiz] = useState(false);
+  const [activeQuizTitle, setActiveQuizTitle] = useState<string | null>(null);
+  const [activeQuizContent, setActiveQuizContent] = useState<any>(null);
+
+  const [openWorkbook, setOpenWorkbook] = useState(false);
+  const [activeWorkbookTitle, setActiveWorkbookTitle] = useState<string | null>(null);
+  const [activeWorkbookContent, setActiveWorkbookContent] = useState<string | null>(null);
+  const [activeWorkbookLessonIndex, setActiveWorkbookLessonIndex] = useState<number | null>(null);
 
   useEffect(() => {
     // Load course from localStorage or use mock data
@@ -54,6 +84,28 @@ export default function CourseDetail() {
     }
     setLoading(false);
   }, [courseId]);
+
+  const handleViewScript = (title: string, content?: string) => {
+    if (!content) return;
+    setActiveScriptTitle(title);
+    setActiveScriptContent(content);
+    setOpenScript(true);
+  };
+
+  const handleViewQuiz = (title: string, quizData: any) => {
+    if (!quizData) return;
+    setActiveQuizTitle(title);
+    setActiveQuizContent(quizData);
+    setOpenQuiz(true);
+  };
+
+  const handleViewWorkbook = (title: string, content: string, lessonIndex: number) => {
+    if (!content) return;
+    setActiveWorkbookTitle(title);
+    setActiveWorkbookContent(content);
+    setActiveWorkbookLessonIndex(lessonIndex);
+    setOpenWorkbook(true);
+  };
 
   if (loading) {
     return (
@@ -75,8 +127,8 @@ export default function CourseDetail() {
   }
 
   const courseData = course.courseData;
-  const lessons = courseData?.lessons || [];
-  const totalVideos = lessons.reduce((acc: number, lesson: any) => {
+  const lessons: Lesson[] = courseData?.lessons || [];
+  const totalVideos = lessons.reduce((acc: number, lesson: Lesson) => {
     const videoCount = lesson.videos?.length || lesson.video_titles?.length || 0;
     return acc + videoCount;
   }, 0);
@@ -212,69 +264,149 @@ export default function CourseDetail() {
             </div>
           </motion.div>
 
-          {/* Course Content */}
-          {lessons.length > 0 && (
+          {/* Course Content - Full Curriculum */}
+          {lessons.length > 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="glass-strong rounded-3xl border border-white/10 p-6 md:p-8"
             >
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                <BookOpen className="w-6 h-6 text-primary" />
-                Course Curriculum
-              </h2>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center border border-primary/20">
+                  <GraduationCap className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold">Course Curriculum</h2>
+                  <p className="text-sm text-muted-foreground">{lessons.length} lessons • {totalVideos} videos</p>
+                </div>
+              </div>
 
               <Accordion type="single" collapsible className="space-y-3">
-                {lessons.map((lesson: any, index: number) => {
+                {lessons.map((lesson: Lesson, index: number) => {
                   const videos = lesson.videos || [];
-                  const videoTitles = lesson.video_titles || videos.map((v: any) => v.title);
-                  const hasQuiz = lesson.quiz_file || lesson.quiz;
-                  const hasWorkbook = lesson.workbook_file || lesson.workbook;
+                  const hasQuiz = !!lesson.quiz_file;
+                  const hasWorkbook = !!lesson.workbook_file;
 
                   return (
                     <AccordionItem 
                       key={index} 
                       value={`lesson-${index}`}
-                      className="glass border border-white/10 rounded-xl overflow-hidden"
+                      className="glass border border-white/10 rounded-xl overflow-hidden hover:shadow-glass transition-all duration-300"
                     >
-                      <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-white/5">
-                        <div className="flex items-center gap-4 text-left">
-                          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-semibold text-sm">
-                            {index + 1}
-                          </span>
-                          <div>
-                            <h3 className="font-semibold">{lesson.lesson_title}</h3>
-                            <p className="text-sm text-muted-foreground">
-                              {videoTitles.length} videos
-                              {hasQuiz && " • Quiz"}
-                              {hasWorkbook && " • Workbook"}
-                            </p>
+                      <AccordionTrigger className="px-5 py-4 hover:no-underline group">
+                        <div className="flex items-center gap-4 text-left w-full">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center border border-primary/20 shrink-0 group-hover:scale-105 transition-transform">
+                            <span className="text-lg font-bold gradient-text">{index + 1}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-semibold text-base block truncate">{lesson.lesson_title || `Lesson ${index + 1}`}</span>
+                            <div className="flex items-center gap-3 mt-1">
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Film className="w-3 h-3" /> {videos.length} Videos
+                              </span>
+                              {hasQuiz && (
+                                <span className="text-xs text-emerald-500 flex items-center gap-1">
+                                  <Brain className="w-3 h-3" /> Quiz
+                                </span>
+                              )}
+                              {hasWorkbook && (
+                                <span className="text-xs text-secondary flex items-center gap-1">
+                                  <BookOpen className="w-3 h-3" /> Workbook
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </AccordionTrigger>
-                      <AccordionContent className="px-6 pb-4">
-                        <div className="space-y-2 ml-12">
-                          {videoTitles.map((title: string, vIndex: number) => (
-                            <div 
-                              key={vIndex}
-                              className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-white/5 transition-colors"
-                            >
-                              <Play className="w-4 h-4 text-primary" />
-                              <span className="text-sm">{title}</span>
-                            </div>
-                          ))}
+                      <AccordionContent className="px-5 pb-4">
+                        <div className="space-y-2 ml-16">
+                          {/* Videos */}
+                          {videos.map((video: any, vIndex: number) => {
+                            const videoTitle = typeof video === 'string' ? video : video.title;
+                            const scriptContent = typeof video === 'object' ? video.script_content : null;
+                            
+                            return (
+                              <motion.div
+                                key={vIndex}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: vIndex * 0.05 }}
+                                className="flex items-center justify-between py-3 px-4 rounded-xl hover:bg-white/5 transition-colors group/item"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                                    <Play className="w-4 h-4 text-primary" />
+                                  </div>
+                                  <span className="text-sm font-medium">{videoTitle}</span>
+                                </div>
+                                {scriptContent && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleViewScript(videoTitle, scriptContent)}
+                                    className="opacity-0 group-hover/item:opacity-100 transition-opacity gap-2"
+                                  >
+                                    <FileText className="w-4 h-4" />
+                                    View Script
+                                  </Button>
+                                )}
+                              </motion.div>
+                            );
+                          })}
+
+                          {/* Quiz Button */}
                           {hasQuiz && (
-                            <div className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-white/5 transition-colors">
-                              <CheckCircle2 className="w-4 h-4 text-green-500" />
-                              <span className="text-sm">Quiz</span>
-                            </div>
+                            <motion.div
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="flex items-center justify-between py-3 px-4 rounded-xl hover:bg-emerald-500/10 transition-colors cursor-pointer group/item"
+                              onClick={() => {
+                                const quizData = courseData?.quizzes?.[index];
+                                if (quizData) {
+                                  handleViewQuiz(lesson.lesson_title, quizData);
+                                }
+                              }}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                                  <Brain className="w-4 h-4 text-emerald-500" />
+                                </div>
+                                <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                                  {courseData?.quizzes?.[index] ? "Take Quiz" : "Quiz (Enroll to access)"}
+                                </span>
+                              </div>
+                              {courseData?.quizzes?.[index] && (
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                              )}
+                            </motion.div>
                           )}
+
+                          {/* Workbook Button */}
                           {hasWorkbook && (
-                            <div className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-white/5 transition-colors">
-                              <FileText className="w-4 h-4 text-blue-500" />
-                              <span className="text-sm">Interactive Workbook</span>
-                            </div>
+                            <motion.div
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="flex items-center justify-between py-3 px-4 rounded-xl hover:bg-secondary/10 transition-colors cursor-pointer group/item"
+                              onClick={() => {
+                                const workbookContent = courseData?.workbooks?.[index];
+                                if (workbookContent) {
+                                  handleViewWorkbook(lesson.lesson_title, workbookContent, index);
+                                }
+                              }}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-secondary/20 flex items-center justify-center">
+                                  <BookOpen className="w-4 h-4 text-secondary" />
+                                </div>
+                                <span className="text-sm font-medium text-secondary">
+                                  {courseData?.workbooks?.[index] ? "Interactive Workbook" : "Workbook (Enroll to access)"}
+                                </span>
+                              </div>
+                              {courseData?.workbooks?.[index] && (
+                                <Sparkles className="w-4 h-4 text-secondary opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                              )}
+                            </motion.div>
                           )}
                         </div>
                       </AccordionContent>
@@ -283,10 +415,7 @@ export default function CourseDetail() {
                 })}
               </Accordion>
             </motion.div>
-          )}
-
-          {/* If no courseData, show basic info */}
-          {!courseData && (
+          ) : (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -305,6 +434,71 @@ export default function CourseDetail() {
           )}
         </div>
       </div>
+
+      {/* Script Modal */}
+      <Dialog open={openScript} onOpenChange={setOpenScript}>
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-primary" />
+              </div>
+              <span>{activeScriptTitle}</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto rounded-xl bg-muted/30 p-6">
+            <pre className="whitespace-pre-wrap text-sm leading-relaxed font-mono">
+              {activeScriptContent}
+            </pre>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Quiz Modal */}
+      <Dialog open={openQuiz} onOpenChange={setOpenQuiz}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center">
+                <Brain className="w-5 h-5 text-emerald-500" />
+              </div>
+              <span>Quiz: {activeQuizTitle}</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto">
+            {activeQuizContent && (
+              <QuizDisplay 
+                quizData={activeQuizContent} 
+                onClose={() => setOpenQuiz(false)} 
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Workbook Modal */}
+      <Dialog open={openWorkbook} onOpenChange={setOpenWorkbook}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary/20 to-accent/20 flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-secondary" />
+              </div>
+              <span>Workbook: {activeWorkbookTitle}</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto">
+            {activeWorkbookContent && (
+              <WorkbookDisplay 
+                workbook={activeWorkbookContent}
+                courseId={course?.id}
+                lessonId={activeWorkbookLessonIndex !== null ? `lesson_${activeWorkbookLessonIndex + 1}` : undefined}
+                onClose={() => setOpenWorkbook(false)} 
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
