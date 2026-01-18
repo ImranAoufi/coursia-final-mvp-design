@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Star, Clock, Users, TrendingUp, Award, Sparkles, ChevronDown, Crown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 interface Course {
@@ -115,6 +115,7 @@ const levels = ["All Levels", "Beginner", "Intermediate", "Advanced"];
 const sortOptions = ["Popular", "Highest Rated", "Newest", "Price: Low to High", "Price: High to Low"];
 
 export default function Marketplace() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedLevel, setSelectedLevel] = useState("All Levels");
@@ -260,7 +261,8 @@ export default function Marketplace() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="glass-strong rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-[1.02] group"
+                onClick={() => navigate(`/course/${course.id}`)}
+                className="glass-strong rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-[1.02] group cursor-pointer"
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
@@ -310,7 +312,7 @@ export default function Marketplace() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-3xl font-bold gradient-text">${course.price}</span>
-                    <Button variant="gradient" size="lg">Enroll Now</Button>
+                    <Button variant="gradient" size="lg" onClick={(e) => { e.stopPropagation(); }}>Enroll Now</Button>
                   </div>
                 </div>
               </motion.div>
@@ -392,7 +394,8 @@ export default function Marketplace() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="glass-strong rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-[1.02] group"
+                onClick={() => navigate(`/course/${course.id}`)}
+                className="glass-strong rounded-2xl overflow-hidden border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-[1.02] group cursor-pointer"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -436,7 +439,7 @@ export default function Marketplace() {
 
                   <div className="flex items-center justify-between pt-3 border-t border-white/10">
                     <span className="text-2xl font-bold gradient-text">${course.price}</span>
-                    <Button variant="gradient" size="sm">Enroll</Button>
+                    <Button variant="gradient" size="sm" onClick={(e) => { e.stopPropagation(); }}>Enroll</Button>
                   </div>
                 </div>
               </motion.div>
