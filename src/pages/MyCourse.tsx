@@ -967,83 +967,108 @@ const MyCourse = () => {
                     <div className="flex flex-row gap-4">
                         {/* LEFT PANEL - CONTROLS */}
                         <div className="w-[180px] flex flex-col gap-3 shrink-0">
-                            {/* TELEPROMPTER CONTROLS */}
-                            <Card className="p-4 bg-muted/30 border border-border">
-                                <h3 className="font-semibold text-sm mb-3">Teleprompter Controls</h3>
+                        {/* TELEPROMPTER CONTROLS */}
+                            <Card className="p-4 glass-strong border border-white/10 shadow-xl">
+                                <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                    Teleprompter
+                                </h3>
                                 <div className="flex flex-col gap-3">
-                                    {/* Start/Stop Row */}
-                                    <div className="flex gap-2">
-                                        {!isTeleprompterActive ? (
-                                            <Button
-                                                variant="default"
-                                                onClick={startTeleprompter}
-                                                className="flex-1 text-sm"
-                                                size="sm"
+                                    {/* Main Control Button */}
+                                    {!isTeleprompterActive ? (
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={startTeleprompter}
+                                            className="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-secondary 
+                                                text-white font-semibold text-sm flex items-center justify-center gap-2
+                                                shadow-lg hover:shadow-primary/30 transition-all duration-300"
+                                        >
+                                            <Play className="w-4 h-4" /> Start
+                                        </motion.button>
+                                    ) : (
+                                        <div className="flex gap-2">
+                                            <motion.button
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                onClick={toggleTeleprompterPause}
+                                                className={`flex-1 py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2
+                                                    transition-all duration-300 ${
+                                                    isTeleprompterPaused 
+                                                        ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg" 
+                                                        : "bg-muted/50 text-foreground border border-border hover:bg-muted"
+                                                }`}
                                             >
-                                                <Play className="w-3 h-3 mr-1" /> Start
-                                            </Button>
-                                        ) : (
-                                            <>
-                                                <Button
-                                                    variant={isTeleprompterPaused ? "default" : "secondary"}
-                                                    onClick={toggleTeleprompterPause}
-                                                    className="flex-1 text-sm"
-                                                    size="sm"
-                                                >
-                                                    {isTeleprompterPaused ? (
-                                                        <><Play className="w-3 h-3 mr-1" /> Resume</>
-                                                    ) : (
-                                                        <><Pause className="w-3 h-3 mr-1" /> Pause</>
-                                                    )}
-                                                </Button>
-                                                <Button
-                                                    variant="destructive"
-                                                    onClick={stopTeleprompter}
-                                                    className="text-sm"
-                                                    size="sm"
-                                                >
-                                                    <Square className="w-3 h-3" />
-                                                </Button>
-                                            </>
-                                        )}
-                                    </div>
+                                                {isTeleprompterPaused ? (
+                                                    <><Play className="w-4 h-4" /> Resume</>
+                                                ) : (
+                                                    <><Pause className="w-4 h-4" /> Pause</>
+                                                )}
+                                            </motion.button>
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={stopTeleprompter}
+                                                className="w-10 h-10 rounded-xl bg-destructive/10 text-destructive 
+                                                    border border-destructive/20 flex items-center justify-center
+                                                    hover:bg-destructive hover:text-white transition-all duration-300"
+                                            >
+                                                <Square className="w-4 h-4" />
+                                            </motion.button>
+                                        </div>
+                                    )}
 
                                     {/* Skip Controls */}
                                     {isTeleprompterActive && (
                                         <div className="flex gap-2">
-                                            <Button
-                                                variant="outline"
+                                            <motion.button
+                                                whileHover={{ scale: 1.03, x: -2 }}
+                                                whileTap={{ scale: 0.97 }}
                                                 onClick={() => skipTeleprompter(-5)}
-                                                className="flex-1 text-xs"
-                                                size="sm"
+                                                className="flex-1 py-2 rounded-lg bg-muted/30 border border-border/50 
+                                                    text-xs font-medium flex items-center justify-center gap-1.5
+                                                    hover:bg-muted/50 hover:border-border transition-all duration-200"
                                             >
-                                                <SkipBack className="w-3 h-3 mr-1" /> -5s
-                                            </Button>
-                                            <Button
-                                                variant="outline"
+                                                <SkipBack className="w-3.5 h-3.5" /> 5s
+                                            </motion.button>
+                                            <motion.button
+                                                whileHover={{ scale: 1.03, x: 2 }}
+                                                whileTap={{ scale: 0.97 }}
                                                 onClick={() => skipTeleprompter(5)}
-                                                className="flex-1 text-xs"
-                                                size="sm"
+                                                className="flex-1 py-2 rounded-lg bg-muted/30 border border-border/50 
+                                                    text-xs font-medium flex items-center justify-center gap-1.5
+                                                    hover:bg-muted/50 hover:border-border transition-all duration-200"
                                             >
-                                                +5s <SkipForward className="w-3 h-3 ml-1" />
-                                            </Button>
+                                                5s <SkipForward className="w-3.5 h-3.5" />
+                                            </motion.button>
                                         </div>
                                     )}
 
                                     {/* Speed Control */}
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="outline" className="justify-between text-xs w-full" size="sm">
-                                                Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
-                                                <ChevronDown className="w-3 h-3 opacity-70" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(1)}>🐢 Slow</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(2)}>🚶 Medium</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(3)}>🏃 Fast</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <div className="pt-2 border-t border-border/30">
+                                        <span className="text-xs text-muted-foreground mb-2 block">Speed</span>
+                                        <div className="flex gap-1.5">
+                                            {[
+                                                { value: 1, label: "Slow", icon: "🐢" },
+                                                { value: 2, label: "Med", icon: "🚶" },
+                                                { value: 3, label: "Fast", icon: "🏃" },
+                                            ].map((speed) => (
+                                                <motion.button
+                                                    key={speed.value}
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    onClick={() => setScrollSpeed(speed.value)}
+                                                    className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all duration-200
+                                                        ${scrollSpeed === speed.value 
+                                                            ? "bg-primary/20 text-primary border border-primary/30" 
+                                                            : "bg-muted/20 text-muted-foreground border border-transparent hover:border-border/50"
+                                                        }`}
+                                                >
+                                                    {speed.icon}
+                                                </motion.button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             </Card>
 
@@ -1134,20 +1159,22 @@ const MyCourse = () => {
                                     )}
                                     <div
                                         id="script-scroll-inner"
-                                        className="text-3xl sm:text-4xl leading-relaxed tracking-wide font-medium
-                                        whitespace-pre-wrap px-8 py-4 text-center select-none"
+                                        className="text-3xl sm:text-4xl lg:text-5xl leading-[1.6] tracking-wide font-medium
+                                        whitespace-pre-wrap px-10 py-6 text-center select-none"
                                         style={{
                                             overflowY: "scroll",
                                             maxHeight: "180px",
                                             scrollbarWidth: "none",
-                                            scrollBehavior: "auto", // Disable smooth scroll for precise control
+                                            scrollBehavior: "auto",
                                         }}
                                     >
-                                        {activeScriptContent.split("\n").map((line, idx) => (
-                                            <div key={idx} className="py-2">
-                                                {line || " "}
-                                            </div>
-                                        ))}
+                                        <div className="max-w-3xl mx-auto">
+                                            {activeScriptContent.split("\n").map((line, idx) => (
+                                                <div key={idx} className="py-3">
+                                                    {line || " "}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             )}
