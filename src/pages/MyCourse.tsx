@@ -1140,38 +1140,40 @@ const MyCourse = () => {
                             </Card>
                         </div>
 
-                        {/* CENTER PANEL — VIDEO + TELEPROMPTER */}
+                        {/* CENTER PANEL — VIDEO + FLOATING TELEPROMPTER */}
                         <div className="flex-1 relative rounded-xl overflow-hidden border border-border shadow-lg bg-black min-h-[350px]">
-                            {/* Show video only when recording or after recording */}
-                            {isRecording && (
+                            {isRecording ? (
                                 <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
-                            )}
-                            
-                            {!isRecording && recordedBlob && (
+                            ) : recordedBlob ? (
                                 <video src={videoURL || ""} controls className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                    Ready to record
+                                </div>
                             )}
 
-                            {/* TELEPROMPTER - Full screen when not recording, overlay when recording */}
+                            {/* FLOATING TELEPROMPTER OVERLAY */}
                             {activeScriptContent && isTeleprompterActive && (
                                 <div
-                                    className={`${
-                                        isRecording 
-                                            ? "absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%] h-[200px]" 
-                                            : "absolute inset-0 w-full h-full"
-                                    } bg-black/90 backdrop-blur-2xl text-white
+                                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%]
+                                    bg-black/90 backdrop-blur-2xl text-white
                                     rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.8)]
-                                    border border-white/10 transition-all duration-300 ease-out overflow-hidden`}
+                                    border border-white/10 transition-all duration-300 ease-out"
+                                    style={{
+                                        height: "200px",
+                                        overflow: "hidden",
+                                    }}
                                 >
                                     {/* Soft edge gradients - top and bottom */}
                                     <div className="absolute inset-0 pointer-events-none z-10"
                                         style={{
-                                            background: "linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.95) 100%)",
+                                            background: "linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, transparent 25%, transparent 75%, rgba(0,0,0,0.95) 100%)",
                                         }}
                                     />
                                     
                                     {/* Pause indicator */}
                                     {isTeleprompterPaused && (
-                                        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 
+                                        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 
                                             bg-amber-500/90 text-black px-4 py-1 rounded-full text-xs font-bold
                                             flex items-center gap-1.5 shadow-lg">
                                             <Pause className="w-3 h-3" /> PAUSED
@@ -1183,7 +1185,7 @@ const MyCourse = () => {
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.9 }}
                                         onClick={stopTeleprompter}
-                                        className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full 
+                                        className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full 
                                             bg-white/10 hover:bg-white/20 backdrop-blur-sm
                                             flex items-center justify-center transition-colors border border-white/20"
                                     >
@@ -1192,12 +1194,9 @@ const MyCourse = () => {
                                     
                                     <div
                                         id="script-scroll-inner"
-                                        className={`h-full flex flex-col justify-center ${
-                                            isRecording 
-                                                ? "text-3xl sm:text-4xl lg:text-5xl" 
-                                                : "text-4xl sm:text-5xl lg:text-6xl"
-                                        } leading-[1.5] tracking-wide font-medium
-                                        whitespace-pre-wrap px-12 text-center select-none`}
+                                        className="h-full flex flex-col justify-center text-3xl sm:text-4xl lg:text-5xl 
+                                            leading-[1.5] tracking-wide font-medium
+                                            whitespace-pre-wrap px-12 text-center select-none"
                                         style={{
                                             overflowY: "scroll",
                                             scrollbarWidth: "none",
@@ -1205,25 +1204,17 @@ const MyCourse = () => {
                                         }}
                                     >
                                         {/* Top padding to allow first line to center */}
-                                        <div className={isRecording ? "h-[85px]" : "h-[40%]"} style={{ flexShrink: 0 }} />
-                                        <div className="max-w-4xl mx-auto">
+                                        <div className="h-[85px] shrink-0" />
+                                        <div className="max-w-3xl mx-auto">
                                             {activeScriptContent.split("\n").map((line, idx) => (
-                                                <div key={idx} className={isRecording ? "py-4" : "py-6"}>
+                                                <div key={idx} className="py-4">
                                                     {line || " "}
                                                 </div>
                                             ))}
                                         </div>
                                         {/* Bottom padding to allow last line to center */}
-                                        <div className={isRecording ? "h-[85px]" : "h-[40%]"} style={{ flexShrink: 0 }} />
+                                        <div className="h-[85px] shrink-0" />
                                     </div>
-                                </div>
-                            )}
-                            
-                            {/* Empty state - only when no teleprompter and no video */}
-                            {!isRecording && !recordedBlob && !isTeleprompterActive && (
-                                <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground gap-3">
-                                    <Video className="w-12 h-12 opacity-30" />
-                                    <span className="text-sm">Start the teleprompter to begin</span>
                                 </div>
                             )}
 
