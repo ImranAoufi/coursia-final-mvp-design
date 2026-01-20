@@ -1141,14 +1141,40 @@ const MyCourse = () => {
                         </div>
 
                         {/* CENTER PANEL — VIDEO + FLOATING TELEPROMPTER */}
-                        <div className="flex-1 relative rounded-xl overflow-hidden border border-border shadow-lg bg-black min-h-[350px]">
+                        <div className={`flex-1 relative rounded-2xl overflow-hidden border border-border/50 shadow-xl bg-black/95 ${
+                            recordedBlob && !isRecording ? 'max-w-2xl mx-auto' : 'min-h-[350px]'
+                        }`}>
                             {isRecording ? (
                                 <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
                             ) : recordedBlob ? (
-                                <video src={videoURL || ""} controls className="w-full h-full object-cover" />
+                                <div className="relative group">
+                                    {/* Premium video container with aspect ratio */}
+                                    <div className="relative aspect-video bg-gradient-to-br from-black via-black/95 to-black">
+                                        <video 
+                                            src={videoURL || ""} 
+                                            controls 
+                                            className="w-full h-full object-contain rounded-2xl"
+                                        />
+                                    </div>
+                                    
+                                    {/* Video title overlay */}
+                                    <div className="absolute top-0 left-0 right-0 p-4 
+                                        bg-gradient-to-b from-black/70 via-black/30 to-transparent
+                                        opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                            <span className="text-white/90 text-sm font-medium">
+                                                {activeVideoTitle || "Recorded Video"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                                    Ready to record
+                                <div className="w-full h-full min-h-[350px] flex flex-col items-center justify-center gap-3 text-muted-foreground">
+                                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                                        <Video className="w-7 h-7 text-white/40" />
+                                    </div>
+                                    <span className="text-sm font-medium text-white/50">Ready to record</span>
                                 </div>
                             )}
 
