@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit } from "lucide-react";
+import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit, Video, RefreshCw, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
 import { toast } from "sonner";
@@ -276,11 +276,11 @@ const MyCourse = () => {
                 teleprompterScrollRef.current += scrollAmount;
                 inner.scrollTop = teleprompterScrollRef.current;
 
-                // Stop when reached end
+                // When reaching end, pause instead of auto-dismissing
                 if (inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 5) {
                     if (inner.scrollHeight > inner.clientHeight + 5) {
-                        setIsTeleprompterActive(false);
-                        setIsTeleprompterPaused(false);
+                        // Pause at the end so user can dismiss when ready
+                        setIsTeleprompterPaused(true);
                         return;
                     }
                 }
@@ -1073,49 +1073,68 @@ const MyCourse = () => {
                             </Card>
 
                             {/* RECORDING CONTROLS */}
-                            <Card className="p-4 bg-muted/30 border border-border">
-                                <h3 className="font-semibold text-sm mb-3">Recording</h3>
-                                <div className="flex flex-col gap-2">
+                            <Card className="p-4 glass-strong border border-white/10">
+                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                                    <Video className="w-4 h-4 text-primary" />
+                                    Recording
+                                </h3>
+                                <div className="flex flex-col gap-3">
                                     {!isRecording && !recordedBlob && (
-                                        <Button
+                                        <motion.button
+                                            whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(239,68,68,0.4)" }}
+                                            whileTap={{ scale: 0.98 }}
                                             onClick={() => handleStartRecording(activeScriptTitle || "video")}
-                                            className="text-xs"
-                                            size="sm"
+                                            className="w-full py-3 rounded-xl bg-gradient-to-r from-red-500 via-red-600 to-rose-600
+                                                text-white font-semibold text-sm flex items-center justify-center gap-2
+                                                shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all duration-300
+                                                border border-red-400/30"
                                         >
-                                            🎥 Start Recording
-                                        </Button>
+                                            <div className="w-3 h-3 rounded-full bg-white animate-pulse" />
+                                            Start Recording
+                                        </motion.button>
                                     )}
                                     {isRecording && (
-                                        <Button
-                                            variant="destructive"
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
                                             onClick={handleStopRecording}
-                                            className="text-xs"
-                                            size="sm"
+                                            className="w-full py-3 rounded-xl bg-gradient-to-r from-gray-700 to-gray-800
+                                                text-white font-semibold text-sm flex items-center justify-center gap-2
+                                                shadow-lg border border-gray-600/50 hover:border-gray-500 transition-all duration-300"
                                         >
-                                            ⏹ Stop Recording
-                                        </Button>
+                                            <Square className="w-4 h-4 fill-current" />
+                                            Stop Recording
+                                        </motion.button>
                                     )}
                                     {!isRecording && recordedBlob && (
-                                        <>
-                                            <Button
+                                        <div className="space-y-2">
+                                            <motion.button
+                                                whileHover={{ scale: 1.02, boxShadow: "0 0 25px rgba(34,197,94,0.4)" }}
+                                                whileTap={{ scale: 0.98 }}
                                                 onClick={handleSaveRecording}
-                                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs"
-                                                size="sm"
+                                                className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500
+                                                    text-white font-semibold text-sm flex items-center justify-center gap-2
+                                                    shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300
+                                                    border border-emerald-400/30"
                                             >
-                                                💾 Save Video
-                                            </Button>
-                                            <Button
-                                                variant="secondary"
+                                                <CheckCircle className="w-4 h-4" />
+                                                Save Video
+                                            </motion.button>
+                                            <motion.button
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
                                                 onClick={() => {
                                                     setRecordedBlob(null);
                                                     setVideoURL(null);
                                                 }}
-                                                className="text-xs"
-                                                size="sm"
+                                                className="w-full py-2.5 rounded-xl bg-muted/30 backdrop-blur-sm
+                                                    text-muted-foreground font-medium text-sm flex items-center justify-center gap-2
+                                                    border border-border/50 hover:border-border hover:bg-muted/50 transition-all duration-300"
                                             >
-                                                🔁 Record Again
-                                            </Button>
-                                        </>
+                                                <RefreshCw className="w-3.5 h-3.5" />
+                                                Record Again
+                                            </motion.button>
+                                        </div>
                                     )}
                                 </div>
                             </Card>
@@ -1136,45 +1155,65 @@ const MyCourse = () => {
                             {/* FLOATING TELEPROMPTER OVERLAY */}
                             {activeScriptContent && isTeleprompterActive && (
                                 <div
-                                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%]
-                                    bg-black/80 backdrop-blur-xl text-white
-                                    rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.6)]
-                                    border border-white/15 transition-all duration-300 ease-out"
+                                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%]
+                                    bg-black/90 backdrop-blur-2xl text-white
+                                    rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.8)]
+                                    border border-white/10 transition-all duration-300 ease-out"
                                     style={{
-                                        maxHeight: "180px",
+                                        height: "200px",
                                         overflow: "hidden",
-                                        WebkitMaskImage:
-                                            "linear-gradient(to bottom, transparent 0%, white 12%, white 88%, transparent 100%)",
-                                        maskImage:
-                                            "linear-gradient(to bottom, transparent 0%, white 12%, white 88%, transparent 100%)",
                                     }}
                                 >
+                                    {/* Soft edge gradients - top and bottom */}
+                                    <div className="absolute inset-0 pointer-events-none z-10"
+                                        style={{
+                                            background: "linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, transparent 25%, transparent 75%, rgba(0,0,0,0.95) 100%)",
+                                        }}
+                                    />
+                                    
                                     {/* Pause indicator */}
                                     {isTeleprompterPaused && (
-                                        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 
-                                            bg-amber-500/90 text-black px-3 py-0.5 rounded-full text-xs font-semibold
-                                            flex items-center gap-1.5">
+                                        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 
+                                            bg-amber-500/90 text-black px-4 py-1 rounded-full text-xs font-bold
+                                            flex items-center gap-1.5 shadow-lg">
                                             <Pause className="w-3 h-3" /> PAUSED
                                         </div>
                                     )}
+                                    
+                                    {/* Dismiss button */}
+                                    <motion.button
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                        onClick={stopTeleprompter}
+                                        className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full 
+                                            bg-white/10 hover:bg-white/20 backdrop-blur-sm
+                                            flex items-center justify-center transition-colors border border-white/20"
+                                    >
+                                        <X className="w-4 h-4 text-white/70" />
+                                    </motion.button>
+                                    
                                     <div
                                         id="script-scroll-inner"
-                                        className="text-3xl sm:text-4xl lg:text-5xl leading-[1.6] tracking-wide font-medium
-                                        whitespace-pre-wrap px-10 py-6 text-center select-none"
+                                        className="h-full flex flex-col justify-center text-3xl sm:text-4xl lg:text-5xl 
+                                            leading-[1.5] tracking-wide font-medium
+                                            whitespace-pre-wrap px-12 text-center select-none"
                                         style={{
                                             overflowY: "scroll",
-                                            maxHeight: "180px",
                                             scrollbarWidth: "none",
                                             scrollBehavior: "auto",
                                         }}
                                     >
+                                        {/* Top padding to allow first line to center */}
+                                        <div className="h-[85px] shrink-0" />
                                         <div className="max-w-3xl mx-auto">
                                             {activeScriptContent.split("\n").map((line, idx) => (
-                                                <div key={idx} className="py-3">
+                                                <div key={idx} className="py-4">
                                                     {line || " "}
                                                 </div>
                                             ))}
                                         </div>
+                                        {/* Bottom padding to allow last line to center */}
+                                        <div className="h-[85px] shrink-0" />
                                     </div>
                                 </div>
                             )}
