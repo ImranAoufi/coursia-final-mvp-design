@@ -1,10 +1,10 @@
 // FILE: src/pages/MyCourse.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, GraduationCap, Layers, Palette, Rocket, Store, Edit } from "lucide-react";
+import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit } from "lucide-react";
 import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
 import { toast } from "sonner";
@@ -84,7 +84,9 @@ const MyCourse = () => {
 
 
     const [isTeleprompterActive, setIsTeleprompterActive] = useState(false);
-    const [scrollSpeed, setScrollSpeed] = useState(1); // 1 = langsam, 3 = schnell
+    const [isTeleprompterPaused, setIsTeleprompterPaused] = useState(false);
+    const [scrollSpeed, setScrollSpeed] = useState(2); // 1 = slow, 2 = medium, 3 = fast
+    const teleprompterScrollRef = useRef<number>(0); // Track precise scroll position
 
 
     const [isRecording, setIsRecording] = useState(false);
@@ -239,44 +241,105 @@ const MyCourse = () => {
     }, [jobId]);
 
 
+    // Smooth teleprompter scrolling using requestAnimationFrame
     useEffect(() => {
-        const getInner = () => document.getElementById("script-scroll-inner");
+        let animationFrameId: number | null = null;
+        let lastTime: number | null = null;
 
+        // Speed in pixels per second (much smoother than interval-based)
+        const getSpeedPxPerSecond = () => {
+            switch (scrollSpeed) {
+                case 1: return 25;  // Slow
+                case 2: return 50;  // Medium
+                case 3: return 85;  // Fast
+                default: return 50;
+            }
+        };
 
-        const tickMs = 30; // alle 20ms (smooth)
-        const baseSpeed = 0.4; // Basisgeschwindigkeit
+        const animate = (currentTime: number) => {
+            const inner = document.getElementById("script-scroll-inner");
+            if (!inner) {
+                animationFrameId = requestAnimationFrame(animate);
+                return;
+            }
 
+            if (lastTime === null) {
+                lastTime = currentTime;
+            }
 
-        let interval: ReturnType<typeof setInterval> | null = null;
+            const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+            lastTime = currentTime;
 
+            // Only scroll if not paused
+            if (!isTeleprompterPaused) {
+                const scrollAmount = getSpeedPxPerSecond() * deltaTime;
+                teleprompterScrollRef.current += scrollAmount;
+                inner.scrollTop = teleprompterScrollRef.current;
+
+                // Stop when reached end
+                if (inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 5) {
+                    if (inner.scrollHeight > inner.clientHeight + 5) {
+                        setIsTeleprompterActive(false);
+                        setIsTeleprompterPaused(false);
+                        return;
+                    }
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(animate);
+        };
 
         if (isTeleprompterActive) {
-            interval = setInterval(() => {
-                const inner = document.getElementById("script-scroll-inner");
-                if (!inner) return;
-
-
-                const scrollStep = baseSpeed * scrollSpeed;
-
-
-                // Scroll um den Wert nach unten
-                inner.scrollTop += scrollStep;
-
-
-                // 🚀 NEU: nur stoppen, wenn wirklich "sichtbar unten angekommen"
-                if (inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 5) {
-                    // Wenn Text zu kurz ist, trotzdem ein paar Sekunden weiterlaufen lassen
-                    if (inner.scrollHeight <= inner.clientHeight + 5) return;
-                    setIsTeleprompterActive(false);
-                }
-            }, tickMs);
+            // Sync ref with current scroll position on start
+            const inner = document.getElementById("script-scroll-inner");
+            if (inner) {
+                teleprompterScrollRef.current = inner.scrollTop;
+            }
+            animationFrameId = requestAnimationFrame(animate);
         }
 
-
         return () => {
-            if (interval) clearInterval(interval);
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
         };
-    }, [isTeleprompterActive, scrollSpeed]);
+    }, [isTeleprompterActive, isTeleprompterPaused, scrollSpeed]);
+
+    // Skip teleprompter forward/backward by seconds
+    const skipTeleprompter = (seconds: number) => {
+        const inner = document.getElementById("script-scroll-inner");
+        if (!inner) return;
+
+        // Calculate pixels based on current speed
+        const speedPxPerSecond = scrollSpeed === 1 ? 25 : scrollSpeed === 2 ? 50 : 85;
+        const skipAmount = speedPxPerSecond * seconds;
+        
+        teleprompterScrollRef.current = Math.max(0, Math.min(
+            inner.scrollHeight - inner.clientHeight,
+            teleprompterScrollRef.current + skipAmount
+        ));
+        inner.scrollTop = teleprompterScrollRef.current;
+    };
+
+    // Reset teleprompter position when starting fresh
+    const startTeleprompter = () => {
+        const inner = document.getElementById("script-scroll-inner");
+        if (inner) {
+            inner.scrollTop = 0;
+            teleprompterScrollRef.current = 0;
+        }
+        setIsTeleprompterPaused(false);
+        setIsTeleprompterActive(true);
+    };
+
+    const toggleTeleprompterPause = () => {
+        setIsTeleprompterPaused(prev => !prev);
+    };
+
+    const stopTeleprompter = () => {
+        setIsTeleprompterActive(false);
+        setIsTeleprompterPaused(false);
+    };
 
 
     useEffect(() => {
@@ -906,28 +969,79 @@ const MyCourse = () => {
                         <div className="w-[180px] flex flex-col gap-3 shrink-0">
                             {/* TELEPROMPTER CONTROLS */}
                             <Card className="p-4 bg-muted/30 border border-border">
-                                <h3 className="font-semibold text-sm mb-3">Teleprompter</h3>
-                                <div className="flex flex-col gap-2">
-                                    <Button
-                                        variant={isTeleprompterActive ? "destructive" : "default"}
-                                        onClick={() => setIsTeleprompterActive(s => !s)}
-                                        className="text-sm"
-                                        size="sm"
-                                    >
-                                        {isTeleprompterActive ? "⏸ Pause" : "▶ Start"}
-                                    </Button>
+                                <h3 className="font-semibold text-sm mb-3">Teleprompter Controls</h3>
+                                <div className="flex flex-col gap-3">
+                                    {/* Start/Stop Row */}
+                                    <div className="flex gap-2">
+                                        {!isTeleprompterActive ? (
+                                            <Button
+                                                variant="default"
+                                                onClick={startTeleprompter}
+                                                className="flex-1 text-sm"
+                                                size="sm"
+                                            >
+                                                <Play className="w-3 h-3 mr-1" /> Start
+                                            </Button>
+                                        ) : (
+                                            <>
+                                                <Button
+                                                    variant={isTeleprompterPaused ? "default" : "secondary"}
+                                                    onClick={toggleTeleprompterPause}
+                                                    className="flex-1 text-sm"
+                                                    size="sm"
+                                                >
+                                                    {isTeleprompterPaused ? (
+                                                        <><Play className="w-3 h-3 mr-1" /> Resume</>
+                                                    ) : (
+                                                        <><Pause className="w-3 h-3 mr-1" /> Pause</>
+                                                    )}
+                                                </Button>
+                                                <Button
+                                                    variant="destructive"
+                                                    onClick={stopTeleprompter}
+                                                    className="text-sm"
+                                                    size="sm"
+                                                >
+                                                    <Square className="w-3 h-3" />
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
 
+                                    {/* Skip Controls */}
+                                    {isTeleprompterActive && (
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => skipTeleprompter(-5)}
+                                                className="flex-1 text-xs"
+                                                size="sm"
+                                            >
+                                                <SkipBack className="w-3 h-3 mr-1" /> -5s
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => skipTeleprompter(5)}
+                                                className="flex-1 text-xs"
+                                                size="sm"
+                                            >
+                                                +5s <SkipForward className="w-3 h-3 ml-1" />
+                                            </Button>
+                                        </div>
+                                    )}
+
+                                    {/* Speed Control */}
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button variant="outline" className="justify-between text-xs" size="sm">
+                                            <Button variant="outline" className="justify-between text-xs w-full" size="sm">
                                                 Speed: {scrollSpeed === 1 ? "Slow" : scrollSpeed === 2 ? "Medium" : "Fast"}
                                                 <ChevronDown className="w-3 h-3 opacity-70" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(1)}>Slow</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(2)}>Medium</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setScrollSpeed(3)}>Fast</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(1)}>🐢 Slow</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(2)}>🚶 Medium</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => setScrollSpeed(3)}>🏃 Fast</DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </div>
@@ -997,32 +1111,40 @@ const MyCourse = () => {
                             {/* FLOATING TELEPROMPTER OVERLAY */}
                             {activeScriptContent && isTeleprompterActive && (
                                 <div
-                                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%]
-                                    bg-black/70 backdrop-blur-md text-white
-                                    rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.5)]
-                                    border border-white/10 transition-all duration-500 ease-in-out
-                                    flex items-center justify-center"
+                                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%]
+                                    bg-black/80 backdrop-blur-xl text-white
+                                    rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.6)]
+                                    border border-white/15 transition-all duration-300 ease-out"
                                     style={{
-                                        maxHeight: "140px",
+                                        maxHeight: "180px",
                                         overflow: "hidden",
                                         WebkitMaskImage:
-                                            "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
+                                            "linear-gradient(to bottom, transparent 0%, white 12%, white 88%, transparent 100%)",
                                         maskImage:
-                                            "linear-gradient(to bottom, transparent 0%, white 15%, white 85%, transparent 100%)",
+                                            "linear-gradient(to bottom, transparent 0%, white 12%, white 88%, transparent 100%)",
                                     }}
                                 >
+                                    {/* Pause indicator */}
+                                    {isTeleprompterPaused && (
+                                        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 
+                                            bg-amber-500/90 text-black px-3 py-0.5 rounded-full text-xs font-semibold
+                                            flex items-center gap-1.5">
+                                            <Pause className="w-3 h-3" /> PAUSED
+                                        </div>
+                                    )}
                                     <div
                                         id="script-scroll-inner"
-                                        className="text-2xl leading-relaxed tracking-wide font-light
-                                        whitespace-pre-wrap px-6 text-center select-none"
+                                        className="text-3xl sm:text-4xl leading-relaxed tracking-wide font-medium
+                                        whitespace-pre-wrap px-8 py-4 text-center select-none"
                                         style={{
                                             overflowY: "scroll",
-                                            maxHeight: "140px",
+                                            maxHeight: "180px",
                                             scrollbarWidth: "none",
+                                            scrollBehavior: "auto", // Disable smooth scroll for precise control
                                         }}
                                     >
                                         {activeScriptContent.split("\n").map((line, idx) => (
-                                            <div key={idx} className="py-1">
+                                            <div key={idx} className="py-2">
                                                 {line || " "}
                                             </div>
                                         ))}
