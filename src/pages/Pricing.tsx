@@ -6,7 +6,7 @@ import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
 import { pollJobStatus } from "@/api";
-
+import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
 interface PricingTier {
   name: string;
   price: number;
@@ -22,6 +22,9 @@ const Pricing = () => {
   const location = useLocation();
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStep, setGenerationStep] = useState("starting");
+  const [generationProgress, setGenerationProgress] = useState(0);
 
   useEffect(() => {
     const jobId = sessionStorage.getItem("coursia_job_id");
@@ -278,22 +281,37 @@ const Pricing = () => {
             })}
           </div>
 
+          {/* Generation Loading Screen */}
+          <GenerationLoadingScreen
+            isOpen={isGenerating}
+            currentStep={generationStep}
+            progress={generationProgress}
+            title="Generating Your Full Course"
+            subtitle="Creating scripts, quizzes, workbooks, and more..."
+          />
+
           {/* Create Course Button (only shown when coming from wizard) */}
           {fromWizard && (
             <div className="text-center mt-12">
               <Button
                 variant="gradient"
                 size="lg"
-                disabled={!selectedTier}
+                disabled={!selectedTier || isGenerating}
                 className="min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={async () => {
                   if (!selectedTier) return;
-                  setSelectedTier("loading");
+                  
+                  setIsGenerating(true);
+                  setGenerationStep("analyzing");
+                  setGenerationProgress(5);
 
                   try {
                     console.log("🚀 Starting full course generation...");
 
                     const previewData = JSON.parse(sessionStorage.getItem("coursia_preview") || "{}");
+
+                    setGenerationStep("structuring");
+                    setGenerationProgress(10);
 
                     const res = await fetch("http://127.0.0.1:8000/api/generate-full-course", {
                       method: "POST",
@@ -303,28 +321,64 @@ const Pricing = () => {
 
                     const data = await res.json();
 
-                    if (!data.job_id) throw new Error("No job ID returned from backend");
+                    if (!data.jobId && !data.job_id) throw new Error("No job ID returned from backend");
+                    
+                    const jobId = data.jobId || data.job_id;
+                    console.log("⏳ Job started, polling for status...", jobId);
+                    sessionStorage.setItem("coursia_job_id", jobId);
 
-                    console.log("⏳ Job started, polling for status...", data.job_id);
+                    // Start polling with progress updates
+                    let currentProgress = 15;
+                    const progressInterval = setInterval(() => {
+                      setGenerationProgress((prev) => {
+                        if (prev >= 95) {
+                          clearInterval(progressInterval);
+                          return prev;
+                        }
+                        // Progress through steps based on progress percentage
+                        if (prev < 30) {
+                          setGenerationStep("generating_scripts");
+                        } else if (prev < 50) {
+                          setGenerationStep("creating_quizzes");
+                        } else if (prev < 70) {
+                          setGenerationStep("building_workbooks");
+                        } else if (prev < 85) {
+                          setGenerationStep("polishing");
+                        } else {
+                          setGenerationStep("finalizing");
+                        }
+                        return prev + 2;
+                      });
+                    }, 1500);
 
-                    // Polling starten
-                    const fullCourse = await pollJobStatus(data.job_id, (s) =>
-                      console.log("📡 Status:", s)
-                    );
+                    const fullCourse = await pollJobStatus(jobId, (s) => {
+                      console.log("📡 Status:", s);
+                      // Map backend status to our steps
+                      if (s.includes("script")) setGenerationStep("generating_scripts");
+                      else if (s.includes("quiz")) setGenerationStep("creating_quizzes");
+                      else if (s.includes("workbook")) setGenerationStep("building_workbooks");
+                      else if (s === "done") setGenerationStep("finalizing");
+                    });
+
+                    clearInterval(progressInterval);
+                    setGenerationProgress(100);
+                    setGenerationStep("done");
 
                     console.log("✅ Full course ready:", fullCourse);
 
-                    // Redirect zur MyCourse Seite
-                    navigate("/my-course");
+                    // Small delay to show completion
+                    setTimeout(() => {
+                      setIsGenerating(false);
+                      navigate("/my-course", { state: { jobId } });
+                    }, 1000);
                   } catch (err) {
                     console.error("❌ Error generating course:", err);
+                    setIsGenerating(false);
                     alert("There was a problem generating your full course. Check the console.");
-                  } finally {
-                    setSelectedTier(null);
                   }
                 }}
               >
-                {selectedTier === "loading" ? "Generating..." : "Create Course"}
+                {isGenerating ? "Generating..." : "Create Course"}
               </Button>
             </div>
           )}

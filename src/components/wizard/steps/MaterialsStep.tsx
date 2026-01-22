@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Upload, Link2, FileText, CheckCircle2, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { uploadMaterialsToBackend } from "@/api";
+import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
 
 interface MaterialsStepProps {
   onNext: (data: { materials: string; links: string; files?: string[] }) => void;
@@ -16,6 +17,9 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
   const [links, setLinks] = useState("");
   const [files, setFiles] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStep, setGenerationStep] = useState("starting");
+  const [generationProgress, setGenerationProgress] = useState(0);
 
   const canProceed = materials.trim().length >= 50;
   const handleContinue = async () => {
@@ -157,6 +161,15 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
         </motion.div>
       )}
 
+      {/* Generation Loading Screen */}
+      <GenerationLoadingScreen
+        isOpen={isGenerating}
+        currentStep={generationStep}
+        progress={generationProgress}
+        title="Creating Your Course Preview"
+        subtitle="Analyzing your content and building your course structure"
+      />
+
       {/* Navigation buttons */}
       <div className="flex flex-col sm:flex-row gap-3">
         <Button onClick={onBack} variant="glass" size="lg" className="w-full sm:w-auto">
@@ -165,6 +178,10 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
         <Button
           onClick={async () => {
             try {
+              setIsGenerating(true);
+              setGenerationStep("analyzing");
+              setGenerationProgress(5);
+
               console.log("🧩 Create Course clicked");
               console.log("🧠 Materials length:", materials.length);
               console.log("🔗 Links length:", links.length);
@@ -174,16 +191,20 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
               formData.append("links", links);
               formData.append("courseSize", sessionStorage.getItem("courseSize") || "standard");
 
-              // 🔥 Neu: Hochgeladene Files lesen lassen
+              // Process uploaded files
+              setGenerationStep("processing");
+              setGenerationProgress(15);
+
               const fileInput = document.getElementById("fileInput") as HTMLInputElement;
               if (fileInput?.files?.length) {
-                for (const file of fileInput.files) {
+                const totalFiles = fileInput.files.length;
+                for (let i = 0; i < totalFiles; i++) {
+                  const file = fileInput.files[i];
                   console.log("📎 Uploading file to backend for reading:", file.name);
 
                   const uploadData = new FormData();
                   uploadData.append("file", file);
 
-                  // Schicke jede Datei an deinen neuen Endpoint
                   const uploadRes = await fetch("http://127.0.0.1:8000/api/read-file", {
                     method: "POST",
                     body: uploadData,
@@ -193,27 +214,61 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
                   const uploadResult = await uploadRes.json();
                   console.log("✅ File processed by backend:", uploadResult);
 
-                  // Wenn der Backend-Endpoint Text zurückgibt, füge ihn hinzu
                   if (uploadResult.text) {
                     formData.append("file_texts", uploadResult.text);
                   }
+
+                  // Update progress based on file processing
+                  setGenerationProgress(15 + ((i + 1) / totalFiles) * 15);
                 }
               }
 
+              // Generate course structure
+              setGenerationStep("structuring");
+              setGenerationProgress(35);
+
               console.log("🚀 Sending POST to /api/generate-course ...");
+              
+              // Simulate step progression during generation
+              const progressInterval = setInterval(() => {
+                setGenerationProgress((prev) => {
+                  if (prev >= 90) {
+                    clearInterval(progressInterval);
+                    return prev;
+                  }
+                  // Progress through steps
+                  if (prev < 50) {
+                    setGenerationStep("generating_scripts");
+                  } else if (prev < 65) {
+                    setGenerationStep("creating_quizzes");
+                  } else if (prev < 80) {
+                    setGenerationStep("building_workbooks");
+                  } else {
+                    setGenerationStep("polishing");
+                  }
+                  return prev + 3;
+                });
+              }, 800);
+
               const res = await fetch("http://127.0.0.1:8000/api/generate-course", {
                 method: "POST",
                 body: formData,
               });
+
+              clearInterval(progressInterval);
 
               console.log("📥 Response status:", res.status);
 
               if (!res.ok) {
                 const text = await res.text();
                 console.error("❌ Backend responded with error:", text);
+                setIsGenerating(false);
                 alert("Error: Backend returned an invalid response.");
                 return;
               }
+
+              setGenerationStep("finalizing");
+              setGenerationProgress(95);
 
               const data = await res.json();
               console.log("✅ Response from backend:", data);
@@ -223,16 +278,20 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
               sessionStorage.setItem("coursia_preview", JSON.stringify(data));
               console.log("💾 Saved to sessionStorage");
 
+              setGenerationProgress(100);
+              setGenerationStep("done");
+
               setTimeout(() => {
                 console.log("➡️ Navigating to /preview");
                 window.location.href = "/preview";
-              }, 2500);
+              }, 1000);
             } catch (err) {
               console.error("💥 Error during course generation:", err);
+              setIsGenerating(false);
               alert("Something went wrong. Check console for details.");
             }
           }}
-          disabled={!canProceed}
+          disabled={!canProceed || isGenerating}
           variant="gradient"
           size="lg"
           className="w-full sm:flex-1"

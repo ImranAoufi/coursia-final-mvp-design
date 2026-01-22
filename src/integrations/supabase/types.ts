@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      course_generation_jobs: {
+        Row: {
+          created_at: string | null
+          current_step: string | null
+          error: string | null
+          id: string
+          job_type: string | null
+          progress_percent: number | null
+          result_data: Json | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_step?: string | null
+          error?: string | null
+          id?: string
+          job_type?: string | null
+          progress_percent?: number | null
+          result_data?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_step?: string | null
+          error?: string | null
+          id?: string
+          job_type?: string | null
+          progress_percent?: number | null
+          result_data?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
