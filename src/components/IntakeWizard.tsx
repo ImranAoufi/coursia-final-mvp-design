@@ -16,8 +16,6 @@ import { generatePreviewCourse } from "@/api";
 import { sendOutcomeToBackend } from "@/api";
 import { sendAudienceToBackend } from "@/api";
 import { generateFullCourse } from "@/api";
-import GenerationLoadingScreen from "./GenerationLoadingScreen";
-import { useJobProgress } from "@/hooks/useJobProgress";
 
 
 interface WizardData {
@@ -34,15 +32,6 @@ const IntakeWizard = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [wizardData, setWizardData] = useState<WizardData>({});
   const totalSteps = 4;
-  
-  const { 
-    jobId, 
-    isLoading, 
-    createJob, 
-    updateJobProgress, 
-    completeJob, 
-    failJob 
-  } = useJobProgress();
 
   const handleNext = (stepData: Partial<WizardData>) => {
     const updatedData = { ...wizardData, ...stepData };
@@ -67,19 +56,12 @@ const IntakeWizard = () => {
 
   const handleComplete = async (data: WizardData) => {
     console.log("🧩 handleComplete triggered! wizardData:", data);
-    
     try {
-      // Create a job for tracking progress
-      const newJobId = await createJob('preview');
-      if (!newJobId) {
-        throw new Error("Failed to create progress job");
-      }
+      //soundEngine.playStepForward();
+      console.log("✅ soundEngine ok, continuing...");
+      console.log("🚀 Generating AI-powered course preview...");
 
-      // Step 1: Analyzing requirements
-      await updateJobProgress(newJobId, 10, 'Analyzing your requirements...');
-      
-      // Step 2: Crafting outline
-      await updateJobProgress(newJobId, 25, 'Crafting course outline...');
+
 
       const preview = await generatePreviewCourse({
         prompt: `
@@ -99,10 +81,10 @@ Generate a realistic, engaging, English-only JSON course structure with:
   `,
         num_lessons:
           data.courseSize === "micro"
-            ? 4
+            ? 4 // Mittelwert von 3-5
             : data.courseSize === "standard"
-              ? 8
-              : 13,
+              ? 8 // Mittelwert von 6-10
+              : 13, // Mittelwert von 12-15
         videos_per_lesson: 2,
         include_quiz: true,
         include_workbook: true,
@@ -114,12 +96,9 @@ Generate a realistic, engaging, English-only JSON course structure with:
               : "Masterclass",
       });
 
-      // Step 3: Generating lessons
-      await updateJobProgress(newJobId, 60, 'Generating lesson content...');
-
       console.log("✅ Preview generated:", preview);
 
-      // Parse preview
+      // 🔍 Preview sicher parsen
       let parsed;
       try {
         parsed =
@@ -130,30 +109,63 @@ Generate a realistic, engaging, English-only JSON course structure with:
         parsed = preview;
       }
 
-      // Step 4: Finalizing
-      await updateJobProgress(newJobId, 90, 'Finalizing your course...');
+      // 💾 Speichern für Preview-Seite
+      sessionStorage.setItem(
+        "coursia_preview",
+        JSON.stringify({
+          topic: data.outcome || "Untitled Course",
+          lessons: parsed.lessons ?? parsed,
+        })
+      );
 
-      // Store for Preview page
-      const resultData = {
-        topic: data.outcome || "Untitled Course",
-        lessons: parsed.lessons ?? parsed,
-      };
-      
-      sessionStorage.setItem("coursia_preview", JSON.stringify(resultData));
+      // 🚀 Automatische Weiterleitung zur Preview-Seite
+      navigate("/preview", { state: { preview: parsed } });
+      console.log("🚀 Generating full course package...");
+      try {
+        console.log("🚀 Triggering full course generation in background...");
+        const fullCourseResponse = await generateFullCourse();
+        console.log("✅ Full course generation started:", fullCourseResponse);
+      } catch (err) {
+        console.error("⚠️ Could not trigger full course generation:", err);
+      }
 
-      // Complete the job
-      await completeJob(newJobId, resultData);
+      try {
+        const payload = {
+          preview: {
+            topic: data.outcome || "Untitled Course",
+            lessons: parsed.lessons ?? parsed,
+          },
+        };
+        console.log("📤 Sending full course generation request to backend...");
+        const response = await fetch("http://localhost:8080/api/generate-full-course", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        console.log("📥 Full course response status:", response.status);
 
+        const job = await response.json();
+        console.log("📦 Full course job started:", job);
+
+        // Optional: du kannst hier warten, bis das ZIP fertig ist
+        const interval = setInterval(async () => {
+          const statusRes = await fetch(`http://localhost:8080/api/job/${job.jobId}`);
+          const statusData = await statusRes.json();
+
+          if (statusData.status === "done") {
+            clearInterval(interval);
+            console.log("✅ Full course ready!", statusData);
+            alert("Your full course package is ready for download!");
+            window.open(`http://localhost:8080/generated/${job.jobId}.zip`, "_blank");
+          }
+        }, 2000);
+      } catch (err) {
+        console.error("❌ Error generating full course:", err);
+      }
     } catch (err) {
       console.error("❌ Error generating preview:", err);
-      if (jobId) {
-        await failJob(jobId, err instanceof Error ? err.message : "Unknown error");
-      }
+      alert("There was an error generating your course preview.");
     }
-  };
-
-  const handleLoadingComplete = (resultData: any) => {
-    navigate("/preview", { state: { preview: resultData } });
   };
 
 
@@ -193,20 +205,7 @@ Generate a realistic, engaging, English-only JSON course structure with:
   const currentStepData = steps[currentStep - 1];
 
   return (
-    <>
-      {/* Loading Screen */}
-      {isLoading && jobId && (
-        <GenerationLoadingScreen
-          jobId={jobId}
-          onComplete={handleLoadingComplete}
-          onError={(error) => {
-            console.error("Generation failed:", error);
-          }}
-          title="Creating Your Course Preview"
-        />
-      )}
-
-      <div className="min-h-screen">
+    <div className="min-h-screen">
       <CompletionMeter currentStep={currentStep} totalSteps={totalSteps} />
 
       {/* Logo and Theme Toggle */}
@@ -258,8 +257,7 @@ Generate a realistic, engaging, English-only JSON course structure with:
         </div>
       </div>
     </div>
-    </>
   );
 };
 
-export default IntakeWizard;
+export default IntakeWizard;  

@@ -10,8 +10,6 @@ import { Logo } from "@/components/Logo";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
-import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
-import { useJobProgress } from "@/hooks/useJobProgress";
 
 import { generateFullCourse } from "@/api";
 import { 
@@ -54,15 +52,7 @@ const Preview = () => {
   const navigate = useNavigate();
   const [preview, setPreview] = useState<CoursePreview | null>(null);
   const [expandedLesson, setExpandedLesson] = useState<number | null>(0);
-  
-  const { 
-    jobId, 
-    isLoading, 
-    createJob, 
-    updateJobProgress, 
-    completeJob, 
-    failJob 
-  } = useJobProgress();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("coursia_preview") || sessionStorage.getItem("Coursera Preview");
@@ -94,53 +84,24 @@ const Preview = () => {
 
   const handleGenerateFullCourse = async () => {
     try {
-      const newJobId = await createJob('full_course');
-      if (!newJobId) {
-        throw new Error("Failed to create progress job");
-      }
-
-      // Step 1: Analyzing
-      await updateJobProgress(newJobId, 10, 'Analyzing your course structure...');
-
+      setIsGenerating(true);
       const previewData = JSON.parse(sessionStorage.getItem("coursia_preview") || "{}");
-
-      // Step 2: Generating content
-      await updateJobProgress(newJobId, 25, 'Generating lesson content...');
-
       const result = await generateFullCourse(previewData);
-
-      // Step 3: Creating quizzes
-      await updateJobProgress(newJobId, 50, 'Creating interactive quizzes...');
-
-      // Simulate some progress steps
-      await new Promise(resolve => setTimeout(resolve, 500));
-      await updateJobProgress(newJobId, 70, 'Building workbook materials...');
-
-      await new Promise(resolve => setTimeout(resolve, 500));
-      await updateJobProgress(newJobId, 90, 'Finalizing your course...');
 
       if (!result?.jobId) {
         console.error("No jobId returned from backend:", result);
-        await failJob(newJobId, "Generation started but no job ID received.");
+        alert("Generation started but no job ID received.");
         return;
       }
 
       sessionStorage.setItem("coursia_job_id", result.jobId);
-      
-      // Complete the job with result data
-      await completeJob(newJobId, { backendJobId: result.jobId });
-
+      navigate("/my-course", { state: { jobId: result.jobId } });
     } catch (err) {
       console.error("Error starting full course generation:", err);
-      if (jobId) {
-        await failJob(jobId, err instanceof Error ? err.message : "Unknown error");
-      }
+      alert("There was a problem generating the full course.");
+    } finally {
+      setIsGenerating(false);
     }
-  };
-
-  const handleLoadingComplete = (resultData: any) => {
-    const backendJobId = resultData?.backendJobId || sessionStorage.getItem("coursia_job_id");
-    navigate("/my-course", { state: { jobId: backendJobId } });
   };
 
   const totalVideos = preview?.lessons?.reduce(
@@ -202,20 +163,7 @@ const Preview = () => {
   }
 
   return (
-    <>
-      {/* Loading Screen for Full Course Generation */}
-      {isLoading && jobId && (
-        <GenerationLoadingScreen
-          jobId={jobId}
-          onComplete={handleLoadingComplete}
-          onError={(error) => {
-            console.error("Full course generation failed:", error);
-          }}
-          title="Generating Your Full Course"
-        />
-      )}
-
-      <div className="min-h-screen relative">
+    <div className="min-h-screen relative">
       <BackgroundOrbs />
 
       {/* Header */}
@@ -458,9 +406,9 @@ const Preview = () => {
                           className="w-full group" 
                           size="lg"
                           onClick={handleGenerateFullCourse}
-                          disabled={isLoading}
+                          disabled={isGenerating}
                         >
-                          {isLoading ? (
+                          {isGenerating ? (
                             <>
                               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
                               Generating...
@@ -732,9 +680,9 @@ const Preview = () => {
                   size="lg" 
                   className="group shadow-glow"
                   onClick={handleGenerateFullCourse}
-                  disabled={isLoading}
+                  disabled={isGenerating}
                 >
-                  {isLoading ? (
+                  {isGenerating ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
                       Generating...
@@ -752,7 +700,6 @@ const Preview = () => {
         </div>
       </div>
     </div>
-    </>
   );
 };
 
