@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit, Video, RefreshCw, X } from "lucide-react";
+import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
 import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
 import { toast } from "sonner";
@@ -66,6 +67,7 @@ const MyCourse = () => {
     const [progressMsg, setProgressMsg] = useState<string>("Waiting...");
     const [downloading, setDownloading] = useState(false);
     const [publishing, setPublishing] = useState(false);
+    const [generationProgress, setGenerationProgress] = useState(0);
 
 
     const [openScript, setOpenScript] = useState(false);
@@ -202,12 +204,24 @@ const MyCourse = () => {
     useEffect(() => {
         if (course) {
             setStatus("done");
+            setGenerationProgress(100);
             return;
         }
 
 
         let cancelled = false;
+        let progressInterval: NodeJS.Timeout | null = null;
+
         if (jobId) {
+            // Start progress animation
+            setGenerationProgress(5);
+            progressInterval = setInterval(() => {
+                setGenerationProgress((prev) => {
+                    if (prev >= 90) return prev;
+                    return prev + 2;
+                });
+            }, 1500);
+
             (async () => {
                 try {
                     setStatus("polling");
@@ -215,10 +229,18 @@ const MyCourse = () => {
                         if (cancelled) return;
                         setStatus(s);
                         setProgressMsg(s);
+                        
+                        // Map status to progress messages
+                        if (s.includes("script")) setProgressMsg("Generating lesson scripts...");
+                        else if (s.includes("quiz")) setProgressMsg("Creating quizzes...");
+                        else if (s.includes("workbook")) setProgressMsg("Building workbooks...");
+                        else if (s === "running") setProgressMsg("Processing your course...");
                     });
 
 
                     if (full) {
+                        if (progressInterval) clearInterval(progressInterval);
+                        setGenerationProgress(100);
                         sessionStorage.setItem("coursia_full_course", JSON.stringify(full));
                         if (!cancelled) {
                             setCourse(full);
@@ -230,6 +252,7 @@ const MyCourse = () => {
                 } catch (err) {
                     console.error("Polling failed:", err);
                     if (!cancelled) setStatus("error");
+                    if (progressInterval) clearInterval(progressInterval);
                 }
             })();
         }
@@ -237,6 +260,7 @@ const MyCourse = () => {
 
         return () => {
             cancelled = true;
+            if (progressInterval) clearInterval(progressInterval);
         };
     }, [jobId]);
 
@@ -463,8 +487,20 @@ const MyCourse = () => {
     };
 
 
+    // Show loading screen when generating (status is not done and we have a jobId)
+    const isGenerating = jobId && status !== "done" && status !== "error";
+
     return (
         <div className="min-h-screen bg-background">
+            {/* Generation Loading Screen */}
+            <GenerationLoadingScreen
+                isOpen={!!isGenerating}
+                currentStep={status || "analyzing"}
+                progress={generationProgress}
+                title="Generating Your Full Course"
+                subtitle="Creating scripts, quizzes, workbooks, and more..."
+            />
+
             {/* Animated background orbs */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float" />
