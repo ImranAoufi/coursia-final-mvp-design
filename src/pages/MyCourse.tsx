@@ -22,7 +22,7 @@ import { ChevronDown } from "lucide-react";
 import { QuizDisplay } from "@/components/QuizDisplay";
 import WorkbookDisplay from "@/components/WorkbookDisplay";
 import SlideViewer from "@/components/SlideViewer";
-import InlineSlidePanel from "@/components/InlineSlidePanel";
+import TeleprompterSlidePanel from "@/components/TeleprompterSlidePanel";
 
 
 
@@ -113,6 +113,7 @@ const MyCourse = () => {
     const [scriptSlides, setScriptSlides] = useState<Slide[]>([]);
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
     const [slidesLoading, setSlidesLoading] = useState(false);
+    const [teleprompterScrollProgress, setTeleprompterScrollProgress] = useState(0);
 
 
     const handleStartRecording = async (title: string) => {
@@ -1153,126 +1154,137 @@ const MyCourse = () => {
                             </Card>
                         </div>
 
-                        {/* CENTER PANEL — VIDEO + FLOATING TELEPROMPTER */}
-                        <div className={`flex-1 relative rounded-2xl overflow-hidden border border-border/50 shadow-xl bg-black/95 ${
-                            recordedBlob && !isRecording ? 'max-w-2xl mx-auto' : 'min-h-[350px]'
-                        }`}>
-                            {isRecording ? (
-                                <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
-                            ) : recordedBlob ? (
-                                <div className="relative group">
-                                    {/* Premium video container with aspect ratio */}
-                                    <div className="relative aspect-video bg-gradient-to-br from-black via-black/95 to-black">
-                                        <video 
-                                            src={videoURL || ""} 
-                                            controls 
-                                            className="w-full h-full object-contain rounded-2xl"
-                                        />
-                                    </div>
-                                    
-                                    {/* Video title overlay */}
-                                    <div className="absolute top-0 left-0 right-0 p-4 
-                                        bg-gradient-to-b from-black/70 via-black/30 to-transparent
-                                        opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                            <span className="text-white/90 text-sm font-medium">
-                                                {activeVideoTitle || "Recorded Video"}
-                                            </span>
+                        {/* CENTER PANEL — VIDEO + TELEPROMPTER + SLIDES (STACKED) */}
+                        <div className="flex-1 flex flex-col gap-4">
+                            {/* Video Area */}
+                            <div className={`relative rounded-2xl overflow-hidden border border-border/50 shadow-xl bg-black/95 ${
+                                recordedBlob && !isRecording ? 'max-w-2xl mx-auto w-full' : 'min-h-[280px]'
+                            }`}>
+                                {isRecording ? (
+                                    <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
+                                ) : recordedBlob ? (
+                                    <div className="relative group">
+                                        {/* Premium video container with aspect ratio */}
+                                        <div className="relative aspect-video bg-gradient-to-br from-black via-black/95 to-black">
+                                            <video 
+                                                src={videoURL || ""} 
+                                                controls 
+                                                className="w-full h-full object-contain rounded-2xl"
+                                            />
+                                        </div>
+                                        
+                                        {/* Video title overlay */}
+                                        <div className="absolute top-0 left-0 right-0 p-4 
+                                            bg-gradient-to-b from-black/70 via-black/30 to-transparent
+                                            opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                                <span className="text-white/90 text-sm font-medium">
+                                                    {activeVideoTitle || "Recorded Video"}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="w-full h-full min-h-[350px] flex flex-col items-center justify-center gap-3 text-muted-foreground">
-                                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                                        <Video className="w-7 h-7 text-white/40" />
+                                ) : (
+                                    <div className="w-full h-full min-h-[280px] flex flex-col items-center justify-center gap-3 text-muted-foreground">
+                                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                                            <Video className="w-7 h-7 text-white/40" />
+                                        </div>
+                                        <span className="text-sm font-medium text-white/50">Ready to record</span>
                                     </div>
-                                    <span className="text-sm font-medium text-white/50">Ready to record</span>
-                                </div>
-                            )}
+                                )}
 
-                            {/* FLOATING TELEPROMPTER OVERLAY */}
-                            {activeScriptContent && isTeleprompterActive && (
-                                <div
-                                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%]
-                                    bg-black/90 backdrop-blur-2xl text-white
-                                    rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.8)]
-                                    border border-white/10 transition-all duration-300 ease-out"
-                                    style={{
-                                        height: "200px",
-                                        overflow: "hidden",
-                                    }}
-                                >
-                                    {/* Soft edge gradients - top and bottom */}
-                                    <div className="absolute inset-0 pointer-events-none z-10"
-                                        style={{
-                                            background: "linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, transparent 25%, transparent 75%, rgba(0,0,0,0.95) 100%)",
-                                        }}
-                                    />
-                                    
-                                    {/* Pause indicator */}
-                                    {isTeleprompterPaused && (
-                                        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 
-                                            bg-amber-500/90 text-black px-4 py-1 rounded-full text-xs font-bold
-                                            flex items-center gap-1.5 shadow-lg">
-                                            <Pause className="w-3 h-3" /> PAUSED
-                                        </div>
-                                    )}
-                                    
-                                    {/* Dismiss button */}
-                                    <motion.button
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.9 }}
-                                        onClick={stopTeleprompter}
-                                        className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full 
-                                            bg-white/10 hover:bg-white/20 backdrop-blur-sm
-                                            flex items-center justify-center transition-colors border border-white/20"
-                                    >
-                                        <X className="w-4 h-4 text-white/70" />
-                                    </motion.button>
-                                    
+                                {/* FLOATING TELEPROMPTER OVERLAY */}
+                                {activeScriptContent && isTeleprompterActive && (
                                     <div
-                                        id="script-scroll-inner"
-                                        className="h-full flex flex-col justify-center text-3xl sm:text-4xl lg:text-5xl 
-                                            leading-[1.5] tracking-wide font-medium
-                                            whitespace-pre-wrap px-12 text-center select-none"
+                                        className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[94%]
+                                        bg-black/90 backdrop-blur-2xl text-white
+                                        rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.8)]
+                                        border border-white/10 transition-all duration-300 ease-out"
                                         style={{
-                                            overflowY: "scroll",
-                                            scrollbarWidth: "none",
-                                            scrollBehavior: "auto",
+                                            height: "160px",
+                                            overflow: "hidden",
                                         }}
                                     >
-                                        {/* Top padding to allow first line to center */}
-                                        <div className="h-[85px] shrink-0" />
-                                        <div className="max-w-3xl mx-auto">
-                                            {activeScriptContent.split("\n").map((line, idx) => (
-                                                <div key={idx} className="py-4">
-                                                    {line || " "}
-                                                </div>
-                                            ))}
+                                        {/* Soft edge gradients - top and bottom */}
+                                        <div className="absolute inset-0 pointer-events-none z-10"
+                                            style={{
+                                                background: "linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, transparent 25%, transparent 75%, rgba(0,0,0,0.95) 100%)",
+                                            }}
+                                        />
+                                        
+                                        {/* Pause indicator */}
+                                        {isTeleprompterPaused && (
+                                            <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 
+                                                bg-amber-500/90 text-black px-3 py-0.5 rounded-full text-xs font-bold
+                                                flex items-center gap-1.5 shadow-lg">
+                                                <Pause className="w-3 h-3" /> PAUSED
+                                            </div>
+                                        )}
+                                        
+                                        {/* Dismiss button */}
+                                        <motion.button
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
+                                            onClick={stopTeleprompter}
+                                            className="absolute top-2 right-2 z-20 w-6 h-6 rounded-full 
+                                                bg-white/10 hover:bg-white/20 backdrop-blur-sm
+                                                flex items-center justify-center transition-colors border border-white/20"
+                                        >
+                                            <X className="w-3 h-3 text-white/70" />
+                                        </motion.button>
+                                        
+                                        <div
+                                            id="script-scroll-inner"
+                                            className="h-full flex flex-col justify-center text-2xl sm:text-3xl lg:text-4xl 
+                                                leading-[1.4] tracking-wide font-medium
+                                                whitespace-pre-wrap px-8 text-center select-none"
+                                            style={{
+                                                overflowY: "scroll",
+                                                scrollbarWidth: "none",
+                                                scrollBehavior: "auto",
+                                            }}
+                                            onScroll={(e) => {
+                                                const target = e.target as HTMLElement;
+                                                const scrollTop = target.scrollTop;
+                                                const scrollHeight = target.scrollHeight - target.clientHeight;
+                                                const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+                                                setTeleprompterScrollProgress(progress);
+                                            }}
+                                        >
+                                            {/* Top padding to allow first line to center */}
+                                            <div className="h-[65px] shrink-0" />
+                                            <div className="max-w-3xl mx-auto">
+                                                {activeScriptContent.split("\n").map((line, lineIdx) => (
+                                                    <div key={lineIdx} className="py-3">
+                                                        {line || " "}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {/* Bottom padding to allow last line to center */}
+                                            <div className="h-[65px] shrink-0" />
                                         </div>
-                                        {/* Bottom padding to allow last line to center */}
-                                        <div className="h-[85px] shrink-0" />
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Recording indicator */}
-                            {isRecording && (
-                                <div className="absolute top-3 right-3 flex items-center gap-2 bg-red-500/90 text-white px-3 py-1 rounded-full text-xs font-medium">
-                                    <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                                    REC
-                                </div>
-                            )}
+                                {/* Recording indicator */}
+                                {isRecording && (
+                                    <div className="absolute top-3 right-3 flex items-center gap-2 bg-red-500/90 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                        <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                        REC
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* SLIDES PANEL - Below Teleprompter */}
+                            <TeleprompterSlidePanel
+                                lessonId={activeScriptLessonIndex !== null ? `lesson_${activeScriptLessonIndex + 1}` : null}
+                                scriptText={activeScriptContent}
+                                lessonTitle={activeScriptTitle || undefined}
+                                isVisible={openScript && !!activeScriptContent}
+                                scrollProgress={teleprompterScrollProgress}
+                            />
                         </div>
-
-                        {/* RIGHT PANEL - SLIDES */}
-                        <InlineSlidePanel
-                            lessonId={activeScriptLessonIndex !== null ? `lesson_${activeScriptLessonIndex + 1}` : null}
-                            scriptText={activeScriptContent}
-                            lessonTitle={activeScriptTitle || undefined}
-                            isVisible={openScript && !!activeScriptContent}
-                        />
                     </div>
                 </DialogContent>
             </Dialog>
