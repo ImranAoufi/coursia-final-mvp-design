@@ -1217,8 +1217,8 @@ const MyCourse = () => {
                                         
                                         <div
                                             id="script-scroll-inner"
-                                            className="h-full flex flex-col justify-center text-3xl sm:text-4xl lg:text-5xl 
-                                                leading-[1.5] tracking-wide font-medium
+                                            className="h-full flex flex-col justify-start text-4xl sm:text-5xl lg:text-6xl 
+                                                leading-[1.6] tracking-wide font-medium
                                                 whitespace-pre-wrap px-8 text-center select-none"
                                             style={{
                                                 overflowY: "scroll",
@@ -1233,8 +1233,8 @@ const MyCourse = () => {
                                                 setTeleprompterScrollProgress(progress);
                                             }}
                                         >
-                                            {/* Top padding to allow first line to center */}
-                                            <div className="h-[65px] shrink-0" />
+                                            {/* Top padding to allow first line to be visible */}
+                                            <div className="h-[20px] shrink-0" />
                                             <div className="max-w-3xl mx-auto">
                                                 {activeScriptContent.split("\n").map((line, lineIdx) => (
                                                     <div key={lineIdx} className="py-3">
