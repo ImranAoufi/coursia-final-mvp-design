@@ -1236,8 +1236,8 @@ const MyCourse = () => {
                                         
                                         <div
                                             id="script-scroll-inner"
-                                            className="h-full flex flex-col justify-center text-2xl sm:text-3xl lg:text-4xl 
-                                                leading-[1.4] tracking-wide font-medium
+                                            className="h-full flex flex-col justify-center text-3xl sm:text-4xl lg:text-5xl 
+                                                leading-[1.5] tracking-wide font-medium
                                                 whitespace-pre-wrap px-8 text-center select-none"
                                             style={{
                                                 overflowY: "scroll",
