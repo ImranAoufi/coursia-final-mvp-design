@@ -166,7 +166,7 @@ export default function TeleprompterSlidePanel({
 
           {/* Loading State */}
           {loading && (
-            <div className="h-52 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-neutral-50 to-white">
+            <div className="h-72 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-neutral-50 to-white">
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
@@ -178,7 +178,7 @@ export default function TeleprompterSlidePanel({
 
           {/* Error State */}
           {!loading && error && (
-            <div className="h-40 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-neutral-50 to-white">
+            <div className="h-72 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-neutral-50 to-white">
               <Presentation className="w-8 h-8 text-neutral-300" />
               <p className="text-sm text-neutral-500">{error}</p>
             </div>
@@ -186,7 +186,7 @@ export default function TeleprompterSlidePanel({
 
           {/* Empty State */}
           {!loading && !error && slides.length === 0 && (
-            <div className="h-40 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-neutral-50 to-white">
+            <div className="h-72 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-neutral-50 to-white">
               <Presentation className="w-8 h-8 text-neutral-300" />
               <p className="text-sm text-neutral-400">Slides will appear here</p>
             </div>
@@ -194,7 +194,7 @@ export default function TeleprompterSlidePanel({
 
           {/* Slide Content */}
           {!loading && !error && currentSlide && (
-            <div className="relative min-h-[220px] bg-white">
+            <div className="relative min-h-[320px] bg-white">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={idx}
