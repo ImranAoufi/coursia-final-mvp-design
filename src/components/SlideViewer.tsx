@@ -1,124 +1,261 @@
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { motion, AnimatePresence } from "framer-motion";
 
-interface Slide {
-    filename: string;
-    url: string; // proxied signed url endpoint
+interface SlideContent {
+  SlideTitle: string;
+  KeyPoints: string[];
+  IconDescription: string;
+  ColorAccent: string;
 }
 
+interface SlideViewerProps {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  lessonId: string | null;
+  scriptText?: string;
+  lessonTitle?: string;
+}
 
 export default function SlideViewer({
-    open,
-    onOpenChange,
-    lessonId,
-    apiBase = ""
-}: {
-    open: boolean;
-    onOpenChange: (v: boolean) => void;
-    lessonId: string | null;
-    apiBase?: string;
-}) {
-    const [slides, setSlides] = useState<Slide[] | null>(null);
-    const [idx, setIdx] = useState(0);
-    const [loading, setLoading] = useState(false);
+  open,
+  onOpenChange,
+  lessonId,
+  scriptText,
+  lessonTitle
+}: SlideViewerProps) {
+  const [slides, setSlides] = useState<SlideContent[]>([]);
+  const [idx, setIdx] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (!open || !lessonId) return;
-        setLoading(true);
-        fetch(`${apiBase}/api/slides-signed-urls/${lessonId}`)
-            .then((r) => {
-                if (!r.ok) throw new Error("Slides not ready");
-                return r.json();
-            })
-            .then((d) => {
-                // convert relative urls to absolute if needed
-                const base = apiBase || "";
-                const slides = d.slides.map((s: any) => ({ filename: s.filename, url: (s.url.startsWith("/") ? base + s.url : s.url) }));
-                setSlides(slides);
-                setIdx(0);
-            })
-            .catch((e) => {
-                console.error(e);
-                setSlides([]);
-            })
-            .finally(() => setLoading(false));
-    }, [open, lessonId, apiBase]);
+  useEffect(() => {
+    if (!open || !lessonId) return;
+    
+    // If we already have slides for this lesson, don't regenerate
+    if (slides.length > 0) {
+      setIdx(0);
+      return;
+    }
 
-    // disable right click + drag on image
-    useEffect(() => {
-        const handler = (e: any) => e.preventDefault();
-        if (open) {
-            document.addEventListener("contextmenu", handler);
+    if (!scriptText || scriptText.trim().length === 0) {
+      setError("No script content available to generate slides");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    // Call the edge function to generate slides
+    supabase.functions.invoke("generate-slides", {
+      body: {
+        lesson_id: lessonId,
+        script_text: scriptText,
+        title: lessonTitle || "Lesson",
+        preferred_style: "apple"
+      }
+    })
+      .then(({ data, error: fnError }) => {
+        if (fnError) {
+          console.error("Edge function error:", fnError);
+          setError("Failed to generate slides");
+          return;
         }
-        return () => document.removeEventListener("contextmenu", handler);
-    }, [open]);
+        
+        if (data?.slides && Array.isArray(data.slides)) {
+          setSlides(data.slides);
+          setIdx(0);
+        } else {
+          setError("No slides returned from AI");
+        }
+      })
+      .catch((e) => {
+        console.error("Slides generation error:", e);
+        setError("Failed to generate slides");
+      })
+      .finally(() => setLoading(false));
+  }, [open, lessonId, scriptText, lessonTitle]);
 
-    if (!open) return null;
+  // Reset when closed
+  useEffect(() => {
+    if (!open) {
+      setSlides([]);
+      setIdx(0);
+      setError(null);
+    }
+  }, [open]);
 
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-5xl max-h-[90vh] p-0 overflow-hidden">
-                <DialogHeader className="flex items-center justify-between p-4 border-b">
-                    <DialogTitle className="text-lg font-semibold">Slides</DialogTitle>
-                    <div className="flex items-center gap-2">
-                        <Button variant="ghost" onClick={() => onOpenChange(false)}><X /></Button>
+  // Disable right click
+  useEffect(() => {
+    const handler = (e: Event) => e.preventDefault();
+    if (open) {
+      document.addEventListener("contextmenu", handler);
+    }
+    return () => document.removeEventListener("contextmenu", handler);
+  }, [open]);
+
+  if (!open) return null;
+
+  const currentSlide = slides[idx];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-5xl max-h-[90vh] p-0 overflow-hidden bg-background/95 backdrop-blur-xl">
+        <DialogHeader className="flex items-center justify-between p-4 border-b border-border/50">
+          <DialogTitle className="text-lg font-semibold">
+            {lessonTitle || "Slides"} {slides.length > 0 && `(${idx + 1}/${slides.length})`}
+          </DialogTitle>
+          <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
+            <X className="h-4 w-4" />
+          </Button>
+        </DialogHeader>
+
+        <div className="flex gap-4 p-6 items-start min-h-[500px]">
+          {/* Main slide area */}
+          <div className="flex-1 flex items-center justify-center">
+            {loading && (
+              <div className="flex flex-col items-center gap-4 text-muted-foreground">
+                <Loader2 className="h-8 w-8 animate-spin" />
+                <p>Generating slides with AI...</p>
+              </div>
+            )}
+            
+            {error && !loading && (
+              <div className="text-destructive text-center p-4">
+                <p>{error}</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Close
+                </Button>
+              </div>
+            )}
+
+            {!loading && !error && slides.length === 0 && (
+              <div className="text-muted-foreground text-center">
+                <p>No slides available yet.</p>
+                <p className="text-sm mt-2">Make sure you have script content to generate from.</p>
+              </div>
+            )}
+
+            {!loading && !error && currentSlide && (
+              <div className="relative w-full h-full flex items-center justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full max-w-3xl"
+                  >
+                    {/* Rendered Slide Card */}
+                    <div 
+                      className="relative rounded-2xl shadow-2xl overflow-hidden"
+                      style={{
+                        aspectRatio: "16/9",
+                        background: `linear-gradient(135deg, white 0%, ${currentSlide.ColorAccent}10 100%)`
+                      }}
+                    >
+                      {/* Accent bar */}
+                      <div 
+                        className="absolute top-0 left-0 right-0 h-1"
+                        style={{ backgroundColor: currentSlide.ColorAccent }}
+                      />
+                      
+                      {/* Content */}
+                      <div className="p-8 h-full flex flex-col">
+                        {/* Title */}
+                        <h2 
+                          className="text-2xl md:text-3xl font-bold mb-6"
+                          style={{ color: currentSlide.ColorAccent }}
+                        >
+                          {currentSlide.SlideTitle}
+                        </h2>
+                        
+                        {/* Key points */}
+                        <ul className="space-y-3 flex-1">
+                          {currentSlide.KeyPoints.map((point, i) => (
+                            <motion.li
+                              key={i}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.1 }}
+                              className="flex items-start gap-3 text-lg text-foreground/90"
+                            >
+                              <span 
+                                className="mt-2 w-2 h-2 rounded-full flex-shrink-0"
+                                style={{ backgroundColor: currentSlide.ColorAccent }}
+                              />
+                              <span>{point}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                        
+                        {/* Slide number */}
+                        <div className="text-right text-sm text-muted-foreground mt-4">
+                          {idx + 1} / {slides.length}
+                        </div>
+                      </div>
                     </div>
-                </DialogHeader>
+                  </motion.div>
+                </AnimatePresence>
 
-                <div className="flex gap-4 p-6 items-start">
-                    <div className="flex-1 flex items-center justify-center">
-                        {loading && <div>Loading slides…</div>}
-                        {!loading && slides && slides.length === 0 && <div className="text-muted-foreground">No slides available yet.</div>}
+                {/* Navigation buttons */}
+                <button
+                  aria-label="Previous slide"
+                  onClick={() => setIdx(Math.max(0, idx - 1))}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-background/80 shadow-lg hover:bg-background border border-border/50 transition-all disabled:opacity-50"
+                  disabled={idx === 0}
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  aria-label="Next slide"
+                  onClick={() => setIdx(Math.min(slides.length - 1, idx + 1))}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-background/80 shadow-lg hover:bg-background border border-border/50 transition-all disabled:opacity-50"
+                  disabled={idx === slides.length - 1}
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+            )}
+          </div>
 
-                        {!loading && slides && slides.length > 0 && (
-                            <div className="relative w-full h-[60vh] flex items-center justify-center">
-                                <img
-                                    src={slides[idx].url}
-                                    alt={`Slide ${idx + 1}`}
-                                    draggable={false}
-                                    onDragStart={(e) => e.preventDefault()}
-                                    className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl select-none"
-                                    style={{ userSelect: "none", pointerEvents: "auto" }}
-                                />
+          {/* Thumbnails sidebar */}
+          {slides.length > 0 && (
+            <div className="w-[140px] overflow-auto max-h-[60vh] pr-2 space-y-2">
+              {slides.map((slide, i) => (
+                <button
+                  key={i}
+                  onClick={() => setIdx(i)}
+                  className={`w-full p-2 rounded-lg text-left transition-all ${
+                    i === idx 
+                      ? "ring-2 ring-primary bg-primary/10" 
+                      : "bg-muted/50 hover:bg-muted opacity-75 hover:opacity-100"
+                  }`}
+                >
+                  <div 
+                    className="h-1 w-full rounded mb-1"
+                    style={{ backgroundColor: slide.ColorAccent }}
+                  />
+                  <p className="text-xs font-medium truncate">{slide.SlideTitle}</p>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-                                {/* left/right */}
-                                <button
-                                    aria-label="prev"
-                                    onClick={() => setIdx(Math.max(0, idx - 1))}
-                                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 shadow hover:bg-white z-50"
-                                    disabled={idx === 0}
-                                >
-                                    <ChevronLeft />
-                                </button>
-                                <button
-                                    aria-label="next"
-                                    onClick={() => setIdx(Math.min(slides.length - 1, idx + 1))}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 shadow hover:bg-white z-50"
-                                    disabled={idx === slides.length - 1}
-                                >
-                                    <ChevronRight />
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* small thumbnails */}
-                    <div className="w-[160px] overflow-auto max-h-[60vh] pr-2">
-                        {slides && slides.map((s, i) => (
-                            <div key={s.filename} className={`mb-2 rounded overflow-hidden cursor-pointer ${i === idx ? "ring-2 ring-primary" : "opacity-90"}`} onClick={() => setIdx(i)}>
-                                <img src={s.url} alt={s.filename} draggable={false} className="w-full h-20 object-cover" />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="p-4 border-t flex items-center justify-between text-sm text-muted-foreground">
-                    <div>{slides ? `${idx + 1} / ${slides.length}` : ""}</div>
-                    <div>Slides are view-only on this platform</div>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
+        <div className="p-4 border-t border-border/50 flex items-center justify-between text-sm text-muted-foreground">
+          <div>Use arrow keys or click to navigate</div>
+          <div>AI-generated slides</div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 }

@@ -169,23 +169,11 @@ const MyCourse = () => {
     };
 
 
-    const API_BASE = "http://127.0.0.1:8000";
-    
-    const handleViewSlides = async (lessonId: string, scriptText?: string) => {
-        // ensure slides generated on demand (auto)
-        try {
-            // call backend to generate (if not already)
-            await fetch(`${API_BASE}/api/generate-slides`, {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ lesson_id: lessonId, script_text: scriptText || activeScriptContent, preferred_style: "apple" })
-            });
-            // open viewer
-            setOpenSlidesForLesson(lessonId);
-        } catch (e) {
-            console.error(e);
-            alert("Could not request slides generation.");
-        }
+    // Slides are now generated via Supabase edge function
+    const handleViewSlides = (lessonId: string, scriptText?: string) => {
+        setActiveLessonId(lessonId);
+        setActiveScriptContent(scriptText || activeScriptContent);
+        setOpenSlidesForLesson(lessonId);
     };
 
 
@@ -403,12 +391,10 @@ const MyCourse = () => {
     const handleViewScript = async (title: string, path?: string, lessonIndex?: number) => {
         if (!path) return alert("No script file found.");
 
-
         try {
             const res = await fetch(toURL(path));
             if (!res.ok) throw new Error("Failed to load script file");
             const text = await res.text();
-
 
             setActiveScriptTitle(title);
             setActiveScriptContent(text);
@@ -416,36 +402,6 @@ const MyCourse = () => {
             setOpenScript(true);
             setCurrentSlideIndex(0);
             setScriptSlides([]);
-
-            // Load slides for this lesson
-            if (lessonIndex !== undefined) {
-                setSlidesLoading(true);
-                try {
-                    const lessonId = `lesson_${lessonIndex + 1}`;
-                    // Try to generate slides on demand
-                    await fetch(`${API_BASE}/api/generate-slides`, {
-                        method: "POST",
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ lesson_id: lessonId, script_text: text, preferred_style: "apple" })
-                    });
-                    // Render slides to PNGs
-                    await fetch(`${API_BASE}/api/render-slides/${lessonId}`, { method: "POST" });
-                    // Then fetch the slides
-                    const slidesRes = await fetch(`${API_BASE}/api/slides-signed-urls/${lessonId}`);
-                    if (slidesRes.ok) {
-                        const data = await slidesRes.json();
-                        const slides = data.slides?.map((s: any) => ({
-                            filename: s.filename,
-                            url: s.url.startsWith("http") ? s.url : `${API_BASE}${s.url}`
-                        })) || [];
-                        setScriptSlides(slides);
-                    }
-                } catch (e) {
-                    console.error("Could not load slides:", e);
-                } finally {
-                    setSlidesLoading(false);
-                }
-            }
         } catch (err) {
             console.error(err);
             alert("Failed to load script — check console.");
@@ -875,6 +831,26 @@ const MyCourse = () => {
                                                             </Button>
                                                         </div>
                                                     )}
+
+                                                    {/* Slides button */}
+                                                    <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                                                        <div className="flex items-center gap-2 mb-3">
+                                                            <Layers className="w-5 h-5 text-blue-500" />
+                                                            <span className="font-semibold text-sm">AI Slides</span>
+                                                        </div>
+                                                        <Button
+                                                            size="sm"
+                                                            className="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-700 dark:text-blue-300 border border-blue-500/30"
+                                                            onClick={() => {
+                                                                // Get script content for this lesson if available
+                                                                const firstVideo = lesson.videos?.[0];
+                                                                const scriptFile = typeof firstVideo === 'object' ? firstVideo?.script_file : undefined;
+                                                                handleViewSlides(`lesson_${li + 1}`, activeScriptContent || undefined);
+                                                            }}
+                                                        >
+                                                            <Layers className="w-3 h-3 mr-1" /> Generate Slides
+                                                        </Button>
+                                                    </div>
                                                 </div>
                                             </AccordionContent>
                                         </AccordionItem>
@@ -1290,85 +1266,29 @@ const MyCourse = () => {
                         </div>
                     </div>
 
-                    {/* SLIDES SECTION - Below teleprompter */}
+                    {/* SLIDES SECTION - Button to open AI slides viewer */}
                     <div className="border-t border-border/50 pt-4">
                         <div className="flex items-center justify-between mb-3">
                             <h4 className="font-medium text-sm flex items-center gap-2">
                                 <Layers className="w-4 h-4" /> Presentation Slides
                             </h4>
-                            {scriptSlides.length > 0 && (
-                                <span className="text-xs text-muted-foreground">
-                                    {currentSlideIndex + 1} / {scriptSlides.length}
-                                </span>
-                            )}
                         </div>
 
-                        {slidesLoading ? (
-                            <div className="flex items-center justify-center py-6">
-                                <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent"></div>
-                                <span className="ml-3 text-sm text-muted-foreground">Generating slides...</span>
-                            </div>
-                        ) : scriptSlides.length > 0 ? (
-                            <div className="space-y-3">
-                                {/* Current slide */}
-                                <div className="relative aspect-video max-h-[180px] mx-auto rounded-lg overflow-hidden bg-muted/20 border border-border flex items-center justify-center">
-                                    <img
-                                        src={scriptSlides[currentSlideIndex].url}
-                                        alt={`Slide ${currentSlideIndex + 1}`}
-                                        className="max-w-full max-h-full object-contain"
-                                        draggable={false}
-                                    />
-                                </div>
-
-                                {/* Thumbnails with navigation */}
-                                <div className="flex items-center gap-2">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setCurrentSlideIndex(i => Math.max(0, i - 1))}
-                                        disabled={currentSlideIndex === 0}
-                                        className="shrink-0"
-                                    >
-                                        ←
-                                    </Button>
-                                    
-                                    <div className="flex-1 flex gap-2 overflow-x-auto py-1 px-1">
-                                        {scriptSlides.map((slide, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => setCurrentSlideIndex(i)}
-                                                className={`shrink-0 w-16 h-10 rounded overflow-hidden border-2 transition-all ${
-                                                    i === currentSlideIndex
-                                                        ? "border-primary ring-2 ring-primary/30"
-                                                        : "border-border hover:border-primary/50"
-                                                }`}
-                                            >
-                                                <img
-                                                    src={slide.url}
-                                                    alt={`Thumbnail ${i + 1}`}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setCurrentSlideIndex(i => Math.min(scriptSlides.length - 1, i + 1))}
-                                        disabled={currentSlideIndex === scriptSlides.length - 1}
-                                        className="shrink-0"
-                                    >
-                                        →
-                                    </Button>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="text-center py-4 text-muted-foreground text-sm">
-                                <Layers className="w-6 h-6 mx-auto mb-2 opacity-40" />
-                                Slides will appear here once generated
-                            </div>
-                        )}
+                        <Button
+                            className="w-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30 text-blue-700 dark:text-blue-300 border border-blue-500/30"
+                            onClick={() => {
+                                if (activeScriptLessonIndex !== null) {
+                                    handleViewSlides(`lesson_${activeScriptLessonIndex + 1}`, activeScriptContent || undefined);
+                                }
+                            }}
+                        >
+                            <Layers className="w-4 h-4 mr-2" />
+                            Generate AI Slides
+                        </Button>
+                        
+                        <p className="text-xs text-muted-foreground text-center mt-2">
+                            AI will create professional slides from this script
+                        </p>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -1427,32 +1347,14 @@ const MyCourse = () => {
             </Dialog>
 
 
-            {/* --- Slide Viewer Modal (korrekt: open + onOpenChange übergeben) --- */}
-            <Dialog
+            {/* --- Slide Viewer Modal --- */}
+            <SlideViewer
                 open={!!openSlidesForLesson}
-                onOpenChange={(open) => {
-                    if (!open) setOpenSlidesForLesson(null);
-                }}
-            >
-                <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden rounded-2xl">
-                    <DialogHeader>
-                        <DialogTitle className="text-lg font-semibold">
-                            Slides {openSlidesForLesson ? `for ${openSlidesForLesson}` : ""}
-                        </DialogTitle>
-                    </DialogHeader>
-
-
-                    <div className="p-4 h-[75vh]">
-                        {/* SlideViewer erwartet jetzt open + onOpenChange + lessonId */}
-                        <SlideViewer
-                            open={!!openSlidesForLesson}
-                            onOpenChange={(v) => { if (!v) setOpenSlidesForLesson(null); }}
-                            lessonId={openSlidesForLesson}
-                            apiBase={""}
-                        />
-                    </div>
-                </DialogContent>
-            </Dialog>
+                onOpenChange={(v) => { if (!v) setOpenSlidesForLesson(null); }}
+                lessonId={openSlidesForLesson}
+                scriptText={activeScriptContent || undefined}
+                lessonTitle={activeScriptTitle || undefined}
+            />
         </div >
     );
 };
