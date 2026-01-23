@@ -22,6 +22,7 @@ import { ChevronDown } from "lucide-react";
 import { QuizDisplay } from "@/components/QuizDisplay";
 import WorkbookDisplay from "@/components/WorkbookDisplay";
 import SlideViewer from "@/components/SlideViewer";
+import InlineSlidePanel from "@/components/InlineSlidePanel";
 
 
 
@@ -969,7 +970,7 @@ const MyCourse = () => {
                 </motion.section>
             </div>
             <Dialog open={openScript} onOpenChange={setOpenScript}>
-                <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col gap-4 rounded-2xl backdrop-blur-xl bg-background/95 border border-border shadow-2xl overflow-y-auto">
+                <DialogContent className="max-w-6xl max-h-[90vh] flex flex-col gap-4 rounded-2xl backdrop-blur-xl bg-background/95 border border-border shadow-2xl overflow-y-auto">
                     <DialogHeader className="pb-2 border-b border-border/50">
                         <DialogTitle className="text-xl font-semibold tracking-tight">
                             {activeScriptTitle}
@@ -978,7 +979,7 @@ const MyCourse = () => {
 
                     <div className="flex flex-row gap-4">
                         {/* LEFT PANEL - CONTROLS */}
-                        <div className="w-[180px] flex flex-col gap-3 shrink-0">
+                        <div className="w-[160px] flex flex-col gap-3 shrink-0">
                         {/* TELEPROMPTER CONTROLS */}
                             <Card className="p-4 glass-strong border border-white/10 shadow-xl">
                                 <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
@@ -1264,31 +1265,14 @@ const MyCourse = () => {
                                 </div>
                             )}
                         </div>
-                    </div>
 
-                    {/* SLIDES SECTION - Button to open AI slides viewer */}
-                    <div className="border-t border-border/50 pt-4">
-                        <div className="flex items-center justify-between mb-3">
-                            <h4 className="font-medium text-sm flex items-center gap-2">
-                                <Layers className="w-4 h-4" /> Presentation Slides
-                            </h4>
-                        </div>
-
-                        <Button
-                            className="w-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30 text-blue-700 dark:text-blue-300 border border-blue-500/30"
-                            onClick={() => {
-                                if (activeScriptLessonIndex !== null) {
-                                    handleViewSlides(`lesson_${activeScriptLessonIndex + 1}`, activeScriptContent || undefined);
-                                }
-                            }}
-                        >
-                            <Layers className="w-4 h-4 mr-2" />
-                            Generate AI Slides
-                        </Button>
-                        
-                        <p className="text-xs text-muted-foreground text-center mt-2">
-                            AI will create professional slides from this script
-                        </p>
+                        {/* RIGHT PANEL - SLIDES */}
+                        <InlineSlidePanel
+                            lessonId={activeScriptLessonIndex !== null ? `lesson_${activeScriptLessonIndex + 1}` : null}
+                            scriptText={activeScriptContent}
+                            lessonTitle={activeScriptTitle || undefined}
+                            isVisible={openScript && !!activeScriptContent}
+                        />
                     </div>
                 </DialogContent>
             </Dialog>
