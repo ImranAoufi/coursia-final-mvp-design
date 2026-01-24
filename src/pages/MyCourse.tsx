@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit, Video, RefreshCw, X } from "lucide-react";
+import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit, Video, RefreshCw, X, Eye } from "lucide-react";
 import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
 import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
@@ -22,7 +22,8 @@ import { ChevronDown } from "lucide-react";
 import { QuizDisplay } from "@/components/QuizDisplay";
 import WorkbookDisplay from "@/components/WorkbookDisplay";
 import SlideViewer from "@/components/SlideViewer";
-import TeleprompterSlidePanel from "@/components/TeleprompterSlidePanel";
+import TeleprompterSlidePanel, { SlideContent } from "@/components/TeleprompterSlidePanel";
+import VideoWithSlides from "@/components/VideoWithSlides";
 
 
 
@@ -114,6 +115,10 @@ const MyCourse = () => {
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
     const [slidesLoading, setSlidesLoading] = useState(false);
     const [teleprompterScrollProgress, setTeleprompterScrollProgress] = useState(0);
+    
+    // Saved slides for video playback
+    const [savedSlides, setSavedSlides] = useState<SlideContent[]>([]);
+    const [showVideoWithSlides, setShowVideoWithSlides] = useState(false);
 
 
     const handleStartRecording = async (title: string) => {
@@ -1115,6 +1120,23 @@ const MyCourse = () => {
                                                 <CheckCircle className="w-4 h-4" />
                                                 Save Video
                                             </motion.button>
+                                            
+                                            {/* View with Slides button - only show if slides were saved */}
+                                            {savedSlides.length > 0 && (
+                                                <motion.button
+                                                    whileHover={{ scale: 1.02, boxShadow: "0 0 25px rgba(139,92,246,0.4)" }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    onClick={() => setShowVideoWithSlides(true)}
+                                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500
+                                                        text-white font-semibold text-sm flex items-center justify-center gap-2
+                                                        shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300
+                                                        border border-violet-400/30"
+                                                >
+                                                    <Eye className="w-4 h-4" />
+                                                    View with Slides
+                                                </motion.button>
+                                            )}
+                                            
                                             <motion.button
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
@@ -1264,6 +1286,8 @@ const MyCourse = () => {
                                 lessonTitle={activeScriptTitle || undefined}
                                 isVisible={openScript && !!activeScriptContent}
                                 scrollProgress={teleprompterScrollProgress}
+                                courseId={jobId || undefined}
+                                onSlidesSaved={(slides) => setSavedSlides(slides)}
                             />
                         </div>
                     </div>
@@ -1332,6 +1356,17 @@ const MyCourse = () => {
                 scriptText={activeScriptContent || undefined}
                 lessonTitle={activeScriptTitle || undefined}
             />
+
+            {/* --- Video with Slides Modal --- */}
+            {videoURL && (
+                <VideoWithSlides
+                    videoUrl={videoURL}
+                    videoTitle={activeVideoTitle || undefined}
+                    slides={savedSlides}
+                    isOpen={showVideoWithSlides}
+                    onClose={() => setShowVideoWithSlides(false)}
+                />
+            )}
         </div >
     );
 };
