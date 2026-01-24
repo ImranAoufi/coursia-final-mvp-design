@@ -53,6 +53,36 @@ export type Database = {
         }
         Relationships: []
       }
+      lesson_slides: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          lesson_id: string
+          slides: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          lesson_id: string
+          slides: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          lesson_id?: string
+          slides?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

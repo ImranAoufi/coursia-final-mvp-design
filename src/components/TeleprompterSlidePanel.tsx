@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Loader2, Presentation, Link2, Link2Off, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Presentation, Link2, Link2Off, Sparkles, Save, CheckCircle, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
-interface SlideContent {
+export interface SlideContent {
   SlideTitle: string;
   KeyPoints: string[];
   IconDescription: string;
@@ -16,6 +17,8 @@ interface TeleprompterSlidePanelProps {
   lessonTitle?: string;
   isVisible: boolean;
   scrollProgress?: number;
+  courseId?: string;
+  onSlidesSaved?: (slides: SlideContent[]) => void;
 }
 
 export default function TeleprompterSlidePanel({
@@ -23,7 +26,9 @@ export default function TeleprompterSlidePanel({
   scriptText,
   lessonTitle,
   isVisible,
-  scrollProgress = 0
+  scrollProgress = 0,
+  courseId,
+  onSlidesSaved
 }: TeleprompterSlidePanelProps) {
   const [slides, setSlides] = useState<SlideContent[]>([]);
   const [idx, setIdx] = useState(0);
@@ -32,6 +37,8 @@ export default function TeleprompterSlidePanel({
   const [hasGenerated, setHasGenerated] = useState(false);
   const [autoSync, setAutoSync] = useState(true);
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (!isVisible || !lessonId || !scriptText || hasGenerated) return;
@@ -93,6 +100,7 @@ export default function TeleprompterSlidePanel({
     setIdx(0);
     setError(null);
     setHasGenerated(false);
+    setSaved(false);
   }, [lessonId]);
 
   // Keyboard navigation
@@ -112,6 +120,46 @@ export default function TeleprompterSlidePanel({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isVisible, slides.length]);
+
+  // Save slides to database
+  const handleSaveSlides = async () => {
+    if (!lessonId || slides.length === 0) return;
+    
+    setSaving(true);
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user?.id) {
+        toast.error("Please sign in to save slides");
+        return;
+      }
+
+      const { error: saveError } = await supabase
+        .from('lesson_slides')
+        .upsert({
+          user_id: userData.user.id,
+          lesson_id: lessonId,
+          course_id: courseId || 'unknown',
+          slides: slides as any
+        }, {
+          onConflict: 'user_id,lesson_id'
+        });
+
+      if (saveError) {
+        console.error("Save error:", saveError);
+        toast.error("Failed to save slides");
+        return;
+      }
+
+      setSaved(true);
+      toast.success("Slides saved successfully!");
+      onSlidesSaved?.(slides);
+    } catch (err) {
+      console.error("Save error:", err);
+      toast.error("Failed to save slides");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (!isVisible) return null;
 
@@ -189,37 +237,87 @@ export default function TeleprompterSlidePanel({
               )}
             </div>
             
-            {/* Sync Toggle - Premium style */}
-            {slides.length > 0 && (
-              <motion.button
-                whileHover={{ scale: 1.03, y: -1 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => setAutoSync(!autoSync)}
-                className={`relative flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold 
-                  transition-all duration-300 overflow-hidden ${
-                  autoSync 
-                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white" 
-                    : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                }`}
-                style={{
-                  boxShadow: autoSync 
-                    ? '0 4px 12px rgba(59, 130, 246, 0.35), inset 0 1px 0 rgba(255,255,255,0.2)' 
-                    : '0 2px 6px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)'
-                }}
-              >
-                {autoSync && (
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                    animate={{ x: ['-100%', '100%'] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  />
-                )}
-                <span className="relative">
-                  {autoSync ? <Link2 className="w-3.5 h-3.5" /> : <Link2Off className="w-3.5 h-3.5" />}
-                </span>
-                <span className="relative">{autoSync ? "Auto-sync" : "Manual"}</span>
-              </motion.button>
-            )}
+            {/* Right side controls */}
+            <div className="relative flex items-center gap-2">
+              {/* Save Slides Button */}
+              {slides.length > 0 && (
+                <motion.button
+                  whileHover={{ scale: 1.03, y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleSaveSlides}
+                  disabled={saving || saved}
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold 
+                    transition-all duration-300 overflow-hidden ${
+                    saved
+                      ? "bg-gradient-to-r from-emerald-500 to-green-500 text-white"
+                      : saving
+                        ? "bg-neutral-200 text-neutral-500"
+                        : "bg-gradient-to-r from-violet-500 to-purple-600 text-white hover:from-violet-600 hover:to-purple-700"
+                  }`}
+                  style={{
+                    boxShadow: saved
+                      ? '0 4px 12px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255,255,255,0.2)'
+                      : saving
+                        ? 'none'
+                        : '0 4px 12px rgba(139, 92, 246, 0.35), inset 0 1px 0 rgba(255,255,255,0.2)'
+                  }}
+                >
+                  {saving ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        <Save className="w-3.5 h-3.5" />
+                      </motion.div>
+                      <span>Saving...</span>
+                    </>
+                  ) : saved ? (
+                    <>
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      <span>Saved</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-3.5 h-3.5" />
+                      <span>Save Slides</span>
+                    </>
+                  )}
+                </motion.button>
+              )}
+
+              {/* Sync Toggle - Premium style */}
+              {slides.length > 0 && (
+                <motion.button
+                  whileHover={{ scale: 1.03, y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setAutoSync(!autoSync)}
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold 
+                    transition-all duration-300 overflow-hidden ${
+                    autoSync 
+                      ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white" 
+                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                  }`}
+                  style={{
+                    boxShadow: autoSync 
+                      ? '0 4px 12px rgba(59, 130, 246, 0.35), inset 0 1px 0 rgba(255,255,255,0.2)' 
+                      : '0 2px 6px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)'
+                  }}
+                >
+                  {autoSync && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                      animate={{ x: ['-100%', '100%'] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    />
+                  )}
+                  <span className="relative">
+                    {autoSync ? <Link2 className="w-3.5 h-3.5" /> : <Link2Off className="w-3.5 h-3.5" />}
+                  </span>
+                  <span className="relative">{autoSync ? "Auto-sync" : "Manual"}</span>
+                </motion.button>
+              )}
+            </div>
           </div>
 
           {/* Loading State - Premium spinner */}
