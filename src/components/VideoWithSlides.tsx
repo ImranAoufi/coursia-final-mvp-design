@@ -114,16 +114,18 @@ export default function VideoWithSlides({
     { mode: "timeline" as ViewMode, icon: Clock, label: "Timeline" },
   ];
 
-  const renderSlideContent = (compact = false) => (
+  const renderSlideContent = (compact = false, centered = false) => (
     <AnimatePresence mode="wait">
       <motion.div
         key={currentSlideIndex}
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className={`bg-white rounded-xl ${compact ? 'p-4' : 'p-6'} h-full flex flex-col`}
+        className={`bg-white rounded-xl ${compact ? 'p-4 max-w-md' : 'p-6'} ${centered ? 'mx-auto' : ''} flex flex-col`}
         style={{
-          boxShadow: `0 4px 20px rgba(0,0,0,0.1), 0 0 0 1px ${currentSlide?.ColorAccent}20`
+          boxShadow: `0 4px 20px rgba(0,0,0,0.1), 0 0 0 1px ${currentSlide?.ColorAccent}20`,
+          aspectRatio: centered ? '4/3' : undefined,
+          maxHeight: centered ? '400px' : undefined
         }}
       >
         {/* Accent bar */}
@@ -138,7 +140,7 @@ export default function VideoWithSlides({
         </h3>
         
         {/* Key Points */}
-        <div className={`space-y-${compact ? '2' : '3'} flex-1`}>
+        <div className={`space-y-${compact ? '2' : '3'} flex-1 overflow-auto`}>
           {currentSlide?.KeyPoints.slice(0, compact ? 3 : 6).map((point, i) => (
             <div key={i} className="flex items-start gap-3">
               <div 
@@ -285,20 +287,20 @@ export default function VideoWithSlides({
 
           {/* Picture in Picture View - Premium */}
           {viewMode === "pip" && (
-            <div className="relative h-full min-h-[500px]">
-              {/* Full screen slides with premium container */}
-              <div className="w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
-                {renderSlideContent()}
+            <div className="relative h-full min-h-[500px] flex items-center justify-center">
+              {/* Centered slide at natural size */}
+              <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
+                {renderSlideContent(false, true)}
               </div>
               
-              {/* PiP Video - Premium floating window */}
+              {/* PiP Video - Smaller premium floating window */}
               <motion.div
                 drag
                 dragMomentum={false}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 whileHover={{ scale: 1.02 }}
-                className="absolute bottom-6 right-6 w-80 rounded-2xl overflow-hidden cursor-move group"
+                className="absolute bottom-6 right-6 w-56 rounded-2xl overflow-hidden cursor-move group"
                 style={{ aspectRatio: '16/9' }}
               >
                 {/* Multi-layer glow effect */}
@@ -310,7 +312,7 @@ export default function VideoWithSlides({
                   {renderVideoPlayer()}
                   
                   {/* Drag indicator */}
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 bg-white/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </motion.div>
             </div>
@@ -353,8 +355,8 @@ export default function VideoWithSlides({
                 </div>
               </div>
               
-              {/* Content with premium container */}
-              <div className="flex-1 rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
+              {/* Content area - centered with proper sizing */}
+              <div className="flex-1 flex items-center justify-center">
                 <AnimatePresence mode="wait">
                   {activeTab === "video" ? (
                     <motion.div
@@ -363,7 +365,8 @@ export default function VideoWithSlides({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.98 }}
                       transition={{ duration: 0.2 }}
-                      className="h-full"
+                      className="w-full max-w-3xl rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50"
+                      style={{ aspectRatio: '16/9' }}
                     >
                       {renderVideoPlayer(true)}
                     </motion.div>
@@ -374,9 +377,9 @@ export default function VideoWithSlides({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.98 }}
                       transition={{ duration: 0.2 }}
-                      className="h-full"
+                      className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50"
                     >
-                      {renderSlideContent()}
+                      {renderSlideContent(false, true)}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -387,9 +390,11 @@ export default function VideoWithSlides({
           {/* Timeline View - Premium */}
           {viewMode === "timeline" && (
             <div className="flex flex-col gap-6 h-full min-h-[500px]">
-              {/* Video with premium container */}
-              <div className="flex-1 rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
-                {renderVideoPlayer(true)}
+              {/* Video - centered with constrained size */}
+              <div className="flex-1 flex items-center justify-center">
+                <div className="w-full max-w-3xl rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50" style={{ aspectRatio: '16/9' }}>
+                  {renderVideoPlayer(true)}
+                </div>
               </div>
               
               {/* Premium Timeline Panel */}
