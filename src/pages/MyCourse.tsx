@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit, Video, RefreshCw, X, Eye } from "lucide-react";
+import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit, Video, RefreshCw, X, Eye, ChevronRight } from "lucide-react";
 import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
 import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
@@ -1107,33 +1107,40 @@ const MyCourse = () => {
                                         </motion.button>
                                     )}
                                     {!isRecording && recordedBlob && (
-                                        <div className="space-y-2">
-                                            <motion.button
-                                                whileHover={{ scale: 1.02, boxShadow: "0 0 25px rgba(34,197,94,0.4)" }}
-                                                whileTap={{ scale: 0.98 }}
-                                                onClick={handleSaveRecording}
-                                                className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500
-                                                    text-white font-semibold text-sm flex items-center justify-center gap-2
-                                                    shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300
-                                                    border border-emerald-400/30"
-                                            >
-                                                <CheckCircle className="w-4 h-4" />
-                                                Save Video
-                                            </motion.button>
-                                            
-                                            {/* View with Slides button - only show if slides were saved */}
+                                        <div className="space-y-3">
+                                            {/* Premium View with Slides button */}
                                             {savedSlides.length > 0 && (
                                                 <motion.button
-                                                    whileHover={{ scale: 1.02, boxShadow: "0 0 25px rgba(139,92,246,0.4)" }}
+                                                    whileHover={{ scale: 1.03 }}
                                                     whileTap={{ scale: 0.98 }}
-                                                    onClick={() => setShowVideoWithSlides(true)}
-                                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500
-                                                        text-white font-semibold text-sm flex items-center justify-center gap-2
-                                                        shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300
-                                                        border border-violet-400/30"
+                                                    onClick={() => {
+                                                        setOpenScript(false);
+                                                        setShowVideoWithSlides(true);
+                                                    }}
+                                                    className="group relative w-full py-4 rounded-2xl overflow-hidden"
                                                 >
-                                                    <Eye className="w-4 h-4" />
-                                                    View with Slides
+                                                    {/* Multi-layer glow background */}
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600" />
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/50 via-purple-500/50 to-fuchsia-500/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                                    <div className="absolute inset-[1px] rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600" />
+                                                    <div className="absolute inset-[1px] rounded-2xl bg-gradient-to-b from-white/20 to-transparent opacity-60" />
+                                                    
+                                                    {/* Shimmer effect */}
+                                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                                                    </div>
+                                                    
+                                                    {/* Content */}
+                                                    <div className="relative flex items-center justify-center gap-3">
+                                                        <div className="p-2 rounded-xl bg-white/20 backdrop-blur-sm">
+                                                            <Layers className="w-5 h-5 text-white" />
+                                                        </div>
+                                                        <div className="text-left">
+                                                            <span className="text-white font-bold text-base tracking-wide">View with Slides</span>
+                                                            <span className="block text-white/70 text-xs font-medium">Synced playback experience</span>
+                                                        </div>
+                                                        <ChevronRight className="w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform duration-300" />
+                                                    </div>
                                                 </motion.button>
                                             )}
                                             
