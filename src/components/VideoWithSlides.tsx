@@ -198,55 +198,86 @@ export default function VideoWithSlides({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-md flex items-center justify-center p-6"
     >
+      {/* Ambient background glow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-3xl" />
+      </div>
+
       <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="bg-background rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col"
+        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden flex flex-col border border-white/10"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
+        {/* Premium frosted header */}
+        <div className="relative flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5 backdrop-blur-xl">
+          {/* Left: Title with icon */}
           <div className="flex items-center gap-4">
-            <Layers className="w-5 h-5 text-primary" />
-            <span className="font-semibold">Video with Slides</span>
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 border border-white/10">
+              <Layers className="w-5 h-5 text-violet-400" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white tracking-tight">Presentation Playback</h2>
+              <p className="text-xs text-white/50 font-medium">Synced video and slides</p>
+            </div>
           </div>
           
-          {/* View Mode Switcher */}
-          <div className="flex items-center gap-1 bg-muted/50 rounded-lg p-1">
+          {/* Center: View Mode Switcher */}
+          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-black/40 rounded-2xl p-1.5 border border-white/10">
             {viewModeOptions.map(({ mode, icon: Icon, label }) => (
               <motion.button
                 key={mode}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setViewMode(mode)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-300 ${
                   viewMode === mode
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "text-white"
+                    : "text-white/40 hover:text-white/70"
                 }`}
                 title={label}
               >
-                <Icon className="w-4 h-4" />
-                <span className="hidden sm:inline">{label}</span>
+                {viewMode === mode && (
+                  <motion.div
+                    layoutId="activeViewMode"
+                    className="absolute inset-0 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-xl"
+                    transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-2">
+                  <Icon className="w-4 h-4" />
+                  <span className="hidden md:inline">{label}</span>
+                </span>
               </motion.button>
             ))}
           </div>
           
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="w-5 h-5" />
-          </Button>
+          {/* Right: Close button */}
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: 90 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={onClose}
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+          >
+            <X className="w-5 h-5 text-white/70" />
+          </motion.button>
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-auto p-4">
-          {/* Side by Side View */}
+        <div className="flex-1 overflow-auto p-6">
+          {/* Side by Side View - Premium */}
           {viewMode === "side-by-side" && (
-            <div className="grid grid-cols-2 gap-4 h-full min-h-[400px]">
-              <div className="flex flex-col">
+            <div className="grid grid-cols-2 gap-6 h-full min-h-[450px]">
+              {/* Video Panel */}
+              <div className="relative rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl shadow-black/50">
+                <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black/80 to-transparent z-10 pointer-events-none" />
                 {renderVideoPlayer(true)}
               </div>
-              <div className="flex flex-col">
+              {/* Slide Panel */}
+              <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
                 {renderSlideContent()}
               </div>
             </div>
@@ -405,50 +436,72 @@ export default function VideoWithSlides({
           )}
         </div>
 
-        {/* Footer with Navigation */}
-        <div className="p-4 border-t border-border flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
+        {/* Premium Footer with Navigation */}
+        <div className="px-6 py-4 border-t border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => goToSlide(currentSlideIndex - 1)}
               disabled={currentSlideIndex === 0}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-medium"
             >
-              <ChevronLeft className="w-4 h-4 mr-1" />
+              <ChevronLeft className="w-4 h-4" />
               Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => goToSlide(currentSlideIndex + 1)}
               disabled={currentSlideIndex === slides.length - 1}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-medium"
             >
               Next
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
+              <ChevronRight className="w-4 h-4" />
+            </motion.button>
+          </div>
+          
+          {/* Center: Slide indicator */}
+          <div className="flex items-center gap-2">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goToSlide(i)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  i === currentSlideIndex 
+                    ? 'bg-gradient-to-r from-violet-500 to-fuchsia-500 w-6 shadow-lg shadow-violet-500/50' 
+                    : 'bg-white/20 hover:bg-white/40'
+                }`}
+              />
+            ))}
           </div>
           
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-white/50 font-medium">
               Slide {currentSlideIndex + 1} of {slides.length}
             </span>
-            <Button
-              variant="default"
-              size="sm"
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={togglePlayPause}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+                isPlaying 
+                  ? 'bg-white/10 text-white border border-white/10 hover:bg-white/20' 
+                  : 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50'
+              }`}
             >
               {isPlaying ? (
                 <>
-                  <Pause className="w-4 h-4 mr-1" />
+                  <Pause className="w-4 h-4" />
                   Pause
                 </>
               ) : (
                 <>
-                  <Play className="w-4 h-4 mr-1" />
+                  <Play className="w-4 h-4" />
                   Play
                 </>
               )}
-            </Button>
+            </motion.button>
           </div>
         </div>
       </motion.div>
