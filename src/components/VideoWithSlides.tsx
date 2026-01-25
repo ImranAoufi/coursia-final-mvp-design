@@ -322,20 +322,20 @@ export default function VideoWithSlides({
 
           {/* Picture in Picture View - Premium */}
           {viewMode === "pip" && (
-            <div className="relative h-full min-h-[500px] flex items-center justify-center">
-              {/* Centered slide at natural size */}
-              <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
+            <div className="relative h-full min-h-[500px]">
+              {/* Full-size slide taking most of the space */}
+              <div className="w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
                 {renderSlideContent()}
               </div>
               
-              {/* PiP Video - Smaller premium floating window */}
+              {/* PiP Video - Floating in corner */}
               <motion.div
                 drag
                 dragMomentum={false}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 whileHover={{ scale: 1.02 }}
-                className="absolute bottom-6 right-6 w-56 rounded-2xl overflow-hidden cursor-move group"
+                className="absolute bottom-6 right-6 w-64 rounded-2xl overflow-hidden cursor-move group"
                 style={{ aspectRatio: '16/9' }}
               >
                 {/* Multi-layer glow effect */}
@@ -390,8 +390,8 @@ export default function VideoWithSlides({
                 </div>
               </div>
               
-              {/* Content area - centered with proper sizing */}
-              <div className="flex-1 flex items-center justify-center">
+              {/* Content area - full size */}
+              <div className="flex-1 min-h-0">
                 <AnimatePresence mode="wait">
                   {activeTab === "video" ? (
                     <motion.div
@@ -400,10 +400,11 @@ export default function VideoWithSlides({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.98 }}
                       transition={{ duration: 0.2 }}
-                      className="w-full max-w-3xl rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50"
-                      style={{ aspectRatio: '16/9' }}
+                      className="h-full flex items-center justify-center"
                     >
-                      {renderVideoPlayer(true)}
+                      <div className="w-full max-w-4xl rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50" style={{ aspectRatio: '16/9' }}>
+                        {renderVideoPlayer(true)}
+                      </div>
                     </motion.div>
                   ) : (
                     <motion.div
@@ -412,7 +413,7 @@ export default function VideoWithSlides({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.98 }}
                       transition={{ duration: 0.2 }}
-                      className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50"
+                      className="h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50"
                     >
                       {renderSlideContent()}
                     </motion.div>
