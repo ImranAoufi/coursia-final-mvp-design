@@ -43,7 +43,9 @@ export default function VideoWithSlides({
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<"video" | "slides">("video");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const currentSlide = slides[currentSlideIndex];
 
@@ -105,6 +107,27 @@ export default function VideoWithSlides({
     video.currentTime = targetTime;
   };
 
+  const toggleFullscreen = () => {
+    if (!containerRef.current) return;
+    
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   if (!isOpen) return null;
 
   const viewModeOptions = [
@@ -114,18 +137,16 @@ export default function VideoWithSlides({
     { mode: "timeline" as ViewMode, icon: Clock, label: "Timeline" },
   ];
 
-  const renderSlideContent = (compact = false, centered = false) => (
+  const renderSlideContent = (compact = false) => (
     <AnimatePresence mode="wait">
       <motion.div
         key={currentSlideIndex}
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className={`bg-white rounded-xl ${compact ? 'p-4 max-w-md' : 'p-6'} ${centered ? 'mx-auto' : ''} flex flex-col`}
+        className={`bg-white rounded-xl ${compact ? 'p-4' : 'p-6'} h-full flex flex-col`}
         style={{
-          boxShadow: `0 4px 20px rgba(0,0,0,0.1), 0 0 0 1px ${currentSlide?.ColorAccent}20`,
-          aspectRatio: centered ? '4/3' : undefined,
-          maxHeight: centered ? '400px' : undefined
+          boxShadow: `0 4px 20px rgba(0,0,0,0.1), 0 0 0 1px ${currentSlide?.ColorAccent}20`
         }}
       >
         {/* Accent bar */}
@@ -209,10 +230,13 @@ export default function VideoWithSlides({
       </div>
 
       <motion.div
+        ref={containerRef}
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 rounded-3xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden flex flex-col border border-white/10"
+        className={`relative bg-gradient-to-b from-neutral-900 to-neutral-950 shadow-2xl w-full overflow-hidden flex flex-col border border-white/10 ${
+          isFullscreen ? 'rounded-none max-w-none max-h-none h-full' : 'rounded-3xl max-w-7xl max-h-[90vh]'
+        }`}
       >
         {/* Premium frosted header */}
         <div className="relative flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5 backdrop-blur-xl">
@@ -257,15 +281,26 @@ export default function VideoWithSlides({
             ))}
           </div>
           
-          {/* Right: Close button */}
-          <motion.button
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={onClose}
-            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-          >
-            <X className="w-5 h-5 text-white/70" />
-          </motion.button>
+          {/* Right: Fullscreen + Close buttons */}
+          <div className="flex items-center gap-2">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleFullscreen}
+              className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+              title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+            >
+              <Maximize2 className={`w-5 h-5 transition-colors ${isFullscreen ? 'text-violet-400' : 'text-white/70'}`} />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={onClose}
+              className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+            >
+              <X className="w-5 h-5 text-white/70" />
+            </motion.button>
+          </div>
         </div>
 
         {/* Content Area */}
@@ -290,7 +325,7 @@ export default function VideoWithSlides({
             <div className="relative h-full min-h-[500px] flex items-center justify-center">
               {/* Centered slide at natural size */}
               <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
-                {renderSlideContent(false, true)}
+                {renderSlideContent()}
               </div>
               
               {/* PiP Video - Smaller premium floating window */}
@@ -379,7 +414,7 @@ export default function VideoWithSlides({
                       transition={{ duration: 0.2 }}
                       className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50"
                     >
-                      {renderSlideContent(false, true)}
+                      {renderSlideContent()}
                     </motion.div>
                   )}
                 </AnimatePresence>
