@@ -11,7 +11,8 @@ import {
   Play,
   Pause,
   Maximize2,
-  X
+  X,
+  Presentation
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -30,7 +31,7 @@ interface VideoWithSlidesProps {
   onClose: () => void;
 }
 
-type ViewMode = "side-by-side" | "pip" | "tabs" | "timeline";
+type ViewMode = "side-by-side" | "pip" | "tabs" | "timeline" | "presenter";
 
 export default function VideoWithSlides({
   videoUrl,
@@ -134,6 +135,7 @@ export default function VideoWithSlides({
   const viewModeOptions = [
     { mode: "side-by-side" as ViewMode, icon: SplitSquareHorizontal, label: "Side by Side" },
     { mode: "pip" as ViewMode, icon: PictureInPicture2, label: "Picture in Picture" },
+    { mode: "presenter" as ViewMode, icon: Presentation, label: "Presenter" },
     { mode: "tabs" as ViewMode, icon: LayoutGrid, label: "Switchable" },
     { mode: "timeline" as ViewMode, icon: Clock, label: "Timeline" },
   ];
@@ -457,6 +459,115 @@ export default function VideoWithSlides({
                   <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 bg-white/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </motion.div>
+            </div>
+          )}
+
+          {/* Presenter View - Billion-Dollar Course Style */}
+          {viewMode === "presenter" && (
+            <div className="relative h-full min-h-[500px] flex items-center justify-center">
+              {/* Main slide - exactly as generated */}
+              <div 
+                className="relative w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl"
+                style={{ aspectRatio: '16/9' }}
+              >
+                {/* Slide background with gradient */}
+                <div 
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(135deg, white 0%, ${currentSlide?.ColorAccent}08 100%)`
+                  }}
+                />
+                
+                {/* Accent bar at top */}
+                <div 
+                  className="absolute top-0 left-0 right-0 h-1.5"
+                  style={{ backgroundColor: currentSlide?.ColorAccent }}
+                />
+                
+                {/* Slide content */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentSlideIndex}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative h-full p-12 flex flex-col"
+                  >
+                    {/* Title */}
+                    <motion.h2 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="text-4xl md:text-5xl font-bold mb-10 leading-tight"
+                      style={{ color: currentSlide?.ColorAccent }}
+                    >
+                      {currentSlide?.SlideTitle}
+                    </motion.h2>
+                    
+                    {/* Key points in clean list */}
+                    <ul className="space-y-5 flex-1">
+                      {currentSlide?.KeyPoints.map((point, i) => (
+                        <motion.li
+                          key={i}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.15 + i * 0.08 }}
+                          className="flex items-start gap-4 text-xl text-neutral-800"
+                        >
+                          <span 
+                            className="mt-2.5 w-3 h-3 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: currentSlide?.ColorAccent }}
+                          />
+                          <span className="leading-relaxed">{point}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                    
+                    {/* Slide number */}
+                    <div className="text-right text-sm text-neutral-400 font-medium mt-6">
+                      {currentSlideIndex + 1} / {slides.length}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+                
+                {/* Facecam video - positioned in bottom right corner */}
+                <motion.div
+                  drag
+                  dragMomentum={false}
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  whileHover={{ scale: 1.03 }}
+                  className="absolute bottom-6 right-6 w-48 rounded-2xl overflow-hidden cursor-move group shadow-2xl"
+                  style={{ aspectRatio: '16/9' }}
+                >
+                  {/* Glow ring */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-violet-500/50 to-fuchsia-500/50 rounded-2xl blur-md opacity-70 group-hover:opacity-100 transition-opacity" />
+                  
+                  {/* Video */}
+                  <div className="relative rounded-2xl overflow-hidden border-2 border-white/30">
+                    <video 
+                      ref={videoRef}
+                      src={videoUrl}
+                      className="w-full h-full object-cover"
+                      controls={false}
+                      onClick={togglePlayPause}
+                    />
+                    
+                    {/* Play/Pause overlay on hover */}
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      {isPlaying ? (
+                        <Pause className="w-8 h-8 text-white drop-shadow-lg" />
+                      ) : (
+                        <Play className="w-8 h-8 text-white drop-shadow-lg" />
+                      )}
+                    </div>
+                    
+                    {/* Drag indicator */}
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-white/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </motion.div>
+              </div>
             </div>
           )}
 
