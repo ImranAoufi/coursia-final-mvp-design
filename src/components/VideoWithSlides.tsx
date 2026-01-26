@@ -44,6 +44,7 @@ export default function VideoWithSlides({
   const [activeTab, setActiveTab] = useState<"video" | "slides">("video");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -137,38 +138,39 @@ export default function VideoWithSlides({
     { mode: "timeline" as ViewMode, icon: Clock, label: "Timeline" },
   ];
 
-  const renderSlideContent = (compact = false) => (
+  // Compact slide for side-by-side view
+  const renderSlideContentCompact = () => (
     <AnimatePresence mode="wait">
       <motion.div
         key={currentSlideIndex}
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className={`bg-white rounded-xl ${compact ? 'p-4' : 'p-6'} h-full flex flex-col`}
+        className="bg-white rounded-xl p-6 h-full flex flex-col"
         style={{
           boxShadow: `0 4px 20px rgba(0,0,0,0.1), 0 0 0 1px ${currentSlide?.ColorAccent}20`
         }}
       >
         {/* Accent bar */}
         <div 
-          className={`${compact ? 'h-1 w-12 mb-3' : 'h-1.5 w-16 mb-4'} rounded-full`}
+          className="h-1.5 w-16 mb-4 rounded-full"
           style={{ backgroundColor: currentSlide?.ColorAccent }}
         />
         
         {/* Title */}
-        <h3 className={`font-bold text-neutral-900 ${compact ? 'text-lg mb-3' : 'text-2xl mb-4'} leading-tight`}>
+        <h3 className="font-bold text-neutral-900 text-2xl mb-4 leading-tight">
           {currentSlide?.SlideTitle}
         </h3>
         
         {/* Key Points */}
-        <div className={`space-y-${compact ? '2' : '3'} flex-1 overflow-auto`}>
-          {currentSlide?.KeyPoints.slice(0, compact ? 3 : 6).map((point, i) => (
+        <div className="space-y-3 flex-1 overflow-auto">
+          {currentSlide?.KeyPoints.slice(0, 6).map((point, i) => (
             <div key={i} className="flex items-start gap-3">
               <div 
-                className={`${compact ? 'w-1.5 h-1.5 mt-2' : 'w-2 h-2 mt-2.5'} rounded-full shrink-0`}
+                className="w-2 h-2 mt-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: currentSlide?.ColorAccent }}
               />
-              <span className={`${compact ? 'text-sm' : 'text-base'} text-neutral-700 leading-relaxed`}>
+              <span className="text-base text-neutral-700 leading-relaxed">
                 {point}
               </span>
             </div>
@@ -196,6 +198,111 @@ export default function VideoWithSlides({
         </div>
       </motion.div>
     </AnimatePresence>
+  );
+
+  // Premium full-size slide (teleprompter style) for PiP and Tabs views
+  const renderSlideContentPremium = () => (
+    <div className="relative h-full min-h-[400px] bg-gradient-to-br from-white via-white to-neutral-50/50 rounded-xl overflow-hidden">
+      {/* Subtle texture overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.015] pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+        }}
+      />
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentSlideIndex}
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.98 }}
+          transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+          className="relative p-10 h-full flex flex-col"
+        >
+          {/* Gradient accent bar */}
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: 80 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="h-1.5 rounded-full mb-7"
+            style={{ 
+              background: `linear-gradient(90deg, ${currentSlide?.ColorAccent}, ${currentSlide?.ColorAccent}80)` 
+            }}
+          />
+          
+          {/* Title with enhanced typography */}
+          <motion.h2 
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
+            className="text-4xl font-extrabold text-neutral-900 tracking-tight mb-8 leading-[1.1]"
+          >
+            {currentSlide?.SlideTitle}
+          </motion.h2>
+          
+          {/* Key Points - Interactive grid */}
+          <div className="grid grid-cols-2 gap-x-10 gap-y-5 flex-1">
+            {currentSlide?.KeyPoints.slice(0, 6).map((point, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -15 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ 
+                  delay: 0.2 + i * 0.08, 
+                  duration: 0.3,
+                  ease: "easeOut"
+                }}
+                onHoverStart={() => setHoveredPoint(i)}
+                onHoverEnd={() => setHoveredPoint(null)}
+                className="relative flex items-start gap-4 group cursor-default"
+              >
+                {/* Animated bullet */}
+                <motion.div 
+                  animate={{ 
+                    scale: hoveredPoint === i ? 1.3 : 1,
+                    boxShadow: hoveredPoint === i 
+                      ? `0 0 12px ${currentSlide?.ColorAccent}60` 
+                      : `0 0 0 ${currentSlide?.ColorAccent}00`
+                  }}
+                  className="mt-2.5 w-2.5 h-2.5 rounded-full flex-shrink-0 transition-all duration-200"
+                  style={{ backgroundColor: currentSlide?.ColorAccent }}
+                />
+                <motion.span 
+                  animate={{ 
+                    color: hoveredPoint === i ? 'rgb(23, 23, 23)' : 'rgb(64, 64, 64)'
+                  }}
+                  className="text-lg leading-relaxed font-medium transition-colors duration-200"
+                >
+                  {point}
+                </motion.span>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Slide indicator at bottom */}
+          <div className="mt-auto pt-6 flex items-center justify-between">
+            <span className="text-sm text-neutral-400 font-medium">
+              Slide {currentSlideIndex + 1} of {slides.length}
+            </span>
+            <div className="flex gap-1.5">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goToSlide(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    i === currentSlideIndex 
+                      ? 'w-6' 
+                      : 'bg-neutral-300 hover:bg-neutral-400'
+                  }`}
+                  style={i === currentSlideIndex ? { backgroundColor: currentSlide?.ColorAccent } : undefined}
+                />
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 
   const renderVideoPlayer = (fullWidth = false) => (
@@ -315,7 +422,7 @@ export default function VideoWithSlides({
               </div>
               {/* Slide Panel */}
               <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
-                {renderSlideContent()}
+                {renderSlideContentCompact()}
               </div>
             </div>
           )}
@@ -325,7 +432,7 @@ export default function VideoWithSlides({
             <div className="relative h-full min-h-[500px]">
               {/* Full-size slide taking most of the space */}
               <div className="w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
-                {renderSlideContent()}
+                      {renderSlideContentPremium()}
               </div>
               
               {/* PiP Video - Floating in corner */}
@@ -415,7 +522,7 @@ export default function VideoWithSlides({
                       transition={{ duration: 0.2 }}
                       className="h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50"
                     >
-                      {renderSlideContent()}
+                      {renderSlideContentPremium()}
                     </motion.div>
                   )}
                 </AnimatePresence>
