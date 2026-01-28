@@ -140,7 +140,21 @@ export default function VideoWithSlides({
     { mode: "timeline" as ViewMode, icon: Clock, label: "Timeline" },
   ];
 
-  // Universal slide renderer - exact same display across all modes
+  // Mode-specific accent colors for visual distinction
+  const getModeAccentColor = (mode: ViewMode) => {
+    switch (mode) {
+      case "presenter": return currentSlide?.ColorAccent; // Original slide color
+      case "side-by-side": return "#6366f1"; // Indigo
+      case "pip": return "#8b5cf6"; // Violet  
+      case "tabs": return "#ec4899"; // Pink
+      case "timeline": return "#14b8a6"; // Teal
+      default: return currentSlide?.ColorAccent;
+    }
+  };
+
+  const modeAccent = getModeAccentColor(viewMode);
+
+  // Universal slide renderer - exact same display across all modes, different accent color
   const renderSlideContent = (aspectRatioConstrained = false) => (
     <div 
       className={`relative bg-gradient-to-br from-white via-white to-neutral-50/50 rounded-2xl overflow-hidden shadow-[0_25px_80px_-15px_rgba(0,0,0,0.3)] ${
@@ -160,7 +174,7 @@ export default function VideoWithSlides({
       <div 
         className="absolute top-0 left-0 right-0 h-2"
         style={{ 
-          background: `linear-gradient(90deg, ${currentSlide?.ColorAccent}, ${currentSlide?.ColorAccent}cc)` 
+          background: `linear-gradient(90deg, ${modeAccent}, ${modeAccent}cc)` 
         }}
       />
       
@@ -180,7 +194,7 @@ export default function VideoWithSlides({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.4 }}
             className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 md:mb-10 leading-[1.1] tracking-tight"
-            style={{ color: currentSlide?.ColorAccent }}
+            style={{ color: modeAccent }}
           >
             {currentSlide?.SlideTitle}
           </motion.h2>
@@ -198,8 +212,8 @@ export default function VideoWithSlides({
                 <motion.span 
                   className="mt-2 w-3 h-3 md:w-3.5 md:h-3.5 rounded-full flex-shrink-0 shadow-sm"
                   style={{ 
-                    backgroundColor: currentSlide?.ColorAccent,
-                    boxShadow: `0 2px 8px ${currentSlide?.ColorAccent}40`
+                    backgroundColor: modeAccent,
+                    boxShadow: `0 2px 8px ${modeAccent}40`
                   }}
                 />
                 <span className="text-lg md:text-xl text-neutral-700 leading-relaxed font-medium">
@@ -218,7 +232,7 @@ export default function VideoWithSlides({
                   className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                     i === currentSlideIndex ? 'w-8' : 'w-2 opacity-30 hover:opacity-50'
                   }`}
-                  style={{ backgroundColor: currentSlide?.ColorAccent }}
+                  style={{ backgroundColor: modeAccent }}
                   onClick={() => goToSlide(i)}
                 />
               ))}
