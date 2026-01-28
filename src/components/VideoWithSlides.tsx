@@ -40,7 +40,7 @@ export default function VideoWithSlides({
   isOpen,
   onClose
 }: VideoWithSlidesProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>("side-by-side");
+  const [viewMode, setViewMode] = useState<ViewMode>("presenter");
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<"video" | "slides">("video");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -133,174 +133,99 @@ export default function VideoWithSlides({
   if (!isOpen) return null;
 
   const viewModeOptions = [
+    { mode: "presenter" as ViewMode, icon: Presentation, label: "Presenter" },
     { mode: "side-by-side" as ViewMode, icon: SplitSquareHorizontal, label: "Side by Side" },
     { mode: "pip" as ViewMode, icon: PictureInPicture2, label: "Picture in Picture" },
-    { mode: "presenter" as ViewMode, icon: Presentation, label: "Presenter" },
     { mode: "tabs" as ViewMode, icon: LayoutGrid, label: "Switchable" },
     { mode: "timeline" as ViewMode, icon: Clock, label: "Timeline" },
   ];
 
-  // Compact slide for side-by-side view
-  const renderSlideContentCompact = () => (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={currentSlideIndex}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        className="bg-white rounded-xl p-6 h-full flex flex-col"
-        style={{
-          boxShadow: `0 4px 20px rgba(0,0,0,0.1), 0 0 0 1px ${currentSlide?.ColorAccent}20`
-        }}
-      >
-        {/* Accent bar */}
-        <div 
-          className="h-1.5 w-16 mb-4 rounded-full"
-          style={{ backgroundColor: currentSlide?.ColorAccent }}
-        />
-        
-        {/* Title */}
-        <h3 className="font-bold text-neutral-900 text-2xl mb-4 leading-tight">
-          {currentSlide?.SlideTitle}
-        </h3>
-        
-        {/* Key Points */}
-        <div className="space-y-3 flex-1 overflow-auto">
-          {currentSlide?.KeyPoints.slice(0, 6).map((point, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <div 
-                className="w-2 h-2 mt-2.5 rounded-full shrink-0"
-                style={{ backgroundColor: currentSlide?.ColorAccent }}
-              />
-              <span className="text-base text-neutral-700 leading-relaxed">
-                {point}
-              </span>
-            </div>
-          ))}
-        </div>
-        
-        {/* Slide indicator */}
-        <div className="mt-auto pt-3 flex items-center justify-between">
-          <span className="text-xs text-neutral-400 font-medium">
-            Slide {currentSlideIndex + 1} of {slides.length}
-          </span>
-          <div className="flex gap-1">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goToSlide(i)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  i === currentSlideIndex 
-                    ? 'bg-neutral-800 w-4' 
-                    : 'bg-neutral-300 hover:bg-neutral-400'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
-  );
-
-  // Premium full-size slide (teleprompter style) for PiP and Tabs views
-  const renderSlideContentPremium = () => (
-    <div className="relative h-full min-h-[400px] bg-gradient-to-br from-white via-white to-neutral-50/50 rounded-xl overflow-hidden">
-      {/* Subtle texture overlay */}
+  // Universal slide renderer - exact same display across all modes
+  const renderSlideContent = (aspectRatioConstrained = false) => (
+    <div 
+      className={`relative bg-gradient-to-br from-white via-white to-neutral-50/50 rounded-2xl overflow-hidden shadow-[0_25px_80px_-15px_rgba(0,0,0,0.3)] ${
+        aspectRatioConstrained ? '' : 'h-full'
+      }`}
+      style={aspectRatioConstrained ? { aspectRatio: '16/9' } : { minHeight: '400px' }}
+    >
+      {/* Subtle texture overlay for premium feel */}
       <div 
-        className="absolute inset-0 opacity-[0.015] pointer-events-none"
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
         }}
       />
-
+      
+      {/* Accent bar at top with gradient */}
+      <div 
+        className="absolute top-0 left-0 right-0 h-2"
+        style={{ 
+          background: `linear-gradient(90deg, ${currentSlide?.ColorAccent}, ${currentSlide?.ColorAccent}cc)` 
+        }}
+      />
+      
+      {/* Slide content */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlideIndex}
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -20, scale: 0.98 }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-          className="relative p-10 h-full flex flex-col"
+          className="relative h-full p-10 md:p-14 flex flex-col"
         >
-          {/* Gradient accent bar */}
-          <motion.div 
-            initial={{ width: 0 }}
-            animate={{ width: 80 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="h-1.5 rounded-full mb-7"
-            style={{ 
-              background: `linear-gradient(90deg, ${currentSlide?.ColorAccent}, ${currentSlide?.ColorAccent}80)` 
-            }}
-          />
-          
           {/* Title with enhanced typography */}
           <motion.h2 
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-            className="text-4xl font-extrabold text-neutral-900 tracking-tight mb-8 leading-[1.1]"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 md:mb-10 leading-[1.1] tracking-tight"
+            style={{ color: currentSlide?.ColorAccent }}
           >
             {currentSlide?.SlideTitle}
           </motion.h2>
           
-          {/* Key Points - Interactive grid */}
-          <div className="grid grid-cols-2 gap-x-10 gap-y-5 flex-1">
+          {/* Key points in refined grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5 flex-1">
             {currentSlide?.KeyPoints.slice(0, 6).map((point, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, x: -15 }}
+                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ 
-                  delay: 0.2 + i * 0.08, 
-                  duration: 0.3,
-                  ease: "easeOut"
-                }}
-                onHoverStart={() => setHoveredPoint(i)}
-                onHoverEnd={() => setHoveredPoint(null)}
-                className="relative flex items-start gap-4 group cursor-default"
+                transition={{ delay: 0.18 + i * 0.07, duration: 0.35 }}
+                className="flex items-start gap-4"
               >
-                {/* Animated bullet */}
-                <motion.div 
-                  animate={{ 
-                    scale: hoveredPoint === i ? 1.3 : 1,
-                    boxShadow: hoveredPoint === i 
-                      ? `0 0 12px ${currentSlide?.ColorAccent}60` 
-                      : `0 0 0 ${currentSlide?.ColorAccent}00`
-                  }}
-                  className="mt-2.5 w-2.5 h-2.5 rounded-full flex-shrink-0 transition-all duration-200"
-                  style={{ backgroundColor: currentSlide?.ColorAccent }}
-                />
                 <motion.span 
-                  animate={{ 
-                    color: hoveredPoint === i ? 'rgb(23, 23, 23)' : 'rgb(64, 64, 64)'
+                  className="mt-2 w-3 h-3 md:w-3.5 md:h-3.5 rounded-full flex-shrink-0 shadow-sm"
+                  style={{ 
+                    backgroundColor: currentSlide?.ColorAccent,
+                    boxShadow: `0 2px 8px ${currentSlide?.ColorAccent}40`
                   }}
-                  className="text-lg leading-relaxed font-medium transition-colors duration-200"
-                >
+                />
+                <span className="text-lg md:text-xl text-neutral-700 leading-relaxed font-medium">
                   {point}
-                </motion.span>
+                </span>
               </motion.div>
             ))}
           </div>
-
-          {/* Slide indicator at bottom */}
-          <div className="mt-auto pt-6 flex items-center justify-between">
-            <span className="text-sm text-neutral-400 font-medium">
-              Slide {currentSlideIndex + 1} of {slides.length}
-            </span>
-            <div className="flex gap-1.5">
+          
+          {/* Slide number - refined */}
+          <div className="flex items-center justify-between mt-6 md:mt-8">
+            <div className="flex gap-2">
               {slides.map((_, i) => (
-                <button
+                <div
                   key={i}
-                  onClick={() => goToSlide(i)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all ${
-                    i === currentSlideIndex 
-                      ? 'w-6' 
-                      : 'bg-neutral-300 hover:bg-neutral-400'
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    i === currentSlideIndex ? 'w-8' : 'w-2 opacity-30 hover:opacity-50'
                   }`}
-                  style={i === currentSlideIndex ? { backgroundColor: currentSlide?.ColorAccent } : undefined}
+                  style={{ backgroundColor: currentSlide?.ColorAccent }}
+                  onClick={() => goToSlide(i)}
                 />
               ))}
             </div>
+            <span className="text-sm text-neutral-400 font-semibold tracking-wide">
+              {currentSlideIndex + 1} / {slides.length}
+            </span>
           </div>
         </motion.div>
       </AnimatePresence>
@@ -424,7 +349,7 @@ export default function VideoWithSlides({
               </div>
               {/* Slide Panel */}
               <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
-                {renderSlideContentCompact()}
+                {renderSlideContent()}
               </div>
             </div>
           )}
@@ -433,8 +358,8 @@ export default function VideoWithSlides({
           {viewMode === "pip" && (
             <div className="relative h-full min-h-[500px]">
               {/* Full-size slide taking most of the space */}
-              <div className="w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
-                      {renderSlideContentPremium()}
+              <div className="w-full h-full">
+                {renderSlideContent()}
               </div>
               
               {/* PiP Video - Floating in corner */}
@@ -465,99 +390,10 @@ export default function VideoWithSlides({
           {/* Presenter View - Billion-Dollar Course Style */}
           {viewMode === "presenter" && (
             <div className="relative h-full min-h-[500px] flex items-center justify-center">
-              {/* Main slide - exactly as generated */}
-              <div 
-                className="relative w-full max-w-5xl rounded-3xl overflow-hidden shadow-[0_25px_80px_-15px_rgba(0,0,0,0.4)]"
-                style={{ aspectRatio: '16/9' }}
-              >
-                {/* Slide background with premium gradient */}
-                <div 
-                  className="absolute inset-0"
-                  style={{
-                    background: `linear-gradient(145deg, #ffffff 0%, #fafafa 50%, ${currentSlide?.ColorAccent}06 100%)`
-                  }}
-                />
-                
-                {/* Subtle texture overlay for premium feel */}
-                <div 
-                  className="absolute inset-0 opacity-[0.02] pointer-events-none"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-                  }}
-                />
-                
-                {/* Accent bar at top with gradient */}
-                <div 
-                  className="absolute top-0 left-0 right-0 h-2"
-                  style={{ 
-                    background: `linear-gradient(90deg, ${currentSlide?.ColorAccent}, ${currentSlide?.ColorAccent}cc)` 
-                  }}
-                />
-                
-                {/* Slide content */}
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentSlideIndex}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-                    className="relative h-full p-14 flex flex-col"
-                  >
-                    {/* Title with enhanced typography */}
-                    <motion.h2 
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1, duration: 0.4 }}
-                      className="text-5xl md:text-6xl font-extrabold mb-10 leading-[1.1] tracking-tight"
-                      style={{ color: currentSlide?.ColorAccent }}
-                    >
-                      {currentSlide?.SlideTitle}
-                    </motion.h2>
-                    
-                    {/* Key points in refined grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 flex-1">
-                      {currentSlide?.KeyPoints.slice(0, 6).map((point, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.18 + i * 0.07, duration: 0.35 }}
-                          className="flex items-start gap-4"
-                        >
-                          <motion.span 
-                            className="mt-2 w-3.5 h-3.5 rounded-full flex-shrink-0 shadow-sm"
-                            style={{ 
-                              backgroundColor: currentSlide?.ColorAccent,
-                              boxShadow: `0 2px 8px ${currentSlide?.ColorAccent}40`
-                            }}
-                          />
-                          <span className="text-xl text-neutral-700 leading-relaxed font-medium">
-                            {point}
-                          </span>
-                        </motion.div>
-                      ))}
-                    </div>
-                    
-                    {/* Slide number - refined */}
-                    <div className="flex items-center justify-between mt-8">
-                      <div className="flex gap-2">
-                        {slides.map((_, i) => (
-                          <div
-                            key={i}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${
-                              i === currentSlideIndex ? 'w-8' : 'w-2 opacity-30'
-                            }`}
-                            style={{ backgroundColor: currentSlide?.ColorAccent }}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm text-neutral-400 font-semibold tracking-wide">
-                        {currentSlideIndex + 1} / {slides.length}
-                      </span>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
+              {/* Main slide container - 16:9 with facecam overlay */}
+              <div className="relative w-full max-w-5xl">
+                {/* Unified slide renderer with 16:9 aspect ratio */}
+                {renderSlideContent(true)}
                 
                 {/* Facecam video - larger and positioned in bottom right corner */}
                 <motion.div
@@ -566,7 +402,7 @@ export default function VideoWithSlides({
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   whileHover={{ scale: 1.02 }}
-                  className="absolute bottom-8 right-8 w-72 rounded-2xl overflow-hidden cursor-move group"
+                  className="absolute bottom-8 right-8 w-72 rounded-2xl overflow-hidden cursor-move group z-10"
                   style={{ aspectRatio: '16/9' }}
                 >
                   {/* Multi-layer glow effect */}
@@ -660,9 +496,9 @@ export default function VideoWithSlides({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.98 }}
                       transition={{ duration: 0.2 }}
-                      className="h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50"
+                      className="h-full"
                     >
-                      {renderSlideContentPremium()}
+                      {renderSlideContent()}
                     </motion.div>
                   )}
                 </AnimatePresence>
