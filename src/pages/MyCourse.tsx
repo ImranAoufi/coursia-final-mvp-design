@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit, Video, RefreshCw, X, Eye, ChevronRight } from "lucide-react";
+import { Download, CheckCircle, Film, BookOpen, Brain, Sparkles, Play, Pause, Square, SkipBack, SkipForward, GraduationCap, Layers, Palette, Rocket, Store, Edit, Video, RefreshCw, X, Eye, ChevronRight, Wand2 } from "lucide-react";
 import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
 import { motion } from "framer-motion";
 import { pollJobStatus as apiPollJobStatus } from "@/api";
@@ -24,6 +24,7 @@ import WorkbookDisplay from "@/components/WorkbookDisplay";
 import SlideViewer from "@/components/SlideViewer";
 import TeleprompterSlidePanel, { SlideContent } from "@/components/TeleprompterSlidePanel";
 import VideoWithSlides from "@/components/VideoWithSlides";
+import { useBrandingGeneration } from "@/hooks/useBrandingGeneration";
 
 
 
@@ -58,6 +59,7 @@ const MyCourse = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const jobIdFromState = (location.state as any)?.jobId as string | undefined;
+    const { generateBranding, isGenerating: isBrandingGenerating } = useBrandingGeneration();
 
 
     const [course, setCourse] = useState<FullCourse | null>(() => {
@@ -883,7 +885,11 @@ const MyCourse = () => {
                                         </div>
                                     )}
                                     <div className="flex-1">
-                                        <p className="text-xs text-muted-foreground">Logo & banner are AI-generated based on your course content.</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            {course?.logo_url || course?.banner_url 
+                                                ? "Logo & banner generated with AI"
+                                                : "Generate premium logo & banner for your course"}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -891,9 +897,44 @@ const MyCourse = () => {
                                     variant="outline"
                                     size="sm"
                                     className="w-full glass border border-white/10"
-                                    onClick={() => alert("Open Branding editor (future)")}
+                                    disabled={isBrandingGenerating || !course?.course_title}
+                                    onClick={async () => {
+                                        if (!course?.course_title) return;
+                                        
+                                        const result = await generateBranding({
+                                            course_title: course.course_title,
+                                            course_description: course.course_description,
+                                            style: "modern",
+                                            fallback_backend_url: import.meta.env.VITE_API_BASE,
+                                        });
+
+                                        if (result.logo_url || result.banner_url) {
+                                            const updatedCourse = {
+                                                ...course,
+                                                logo_url: result.logo_url || course.logo_url,
+                                                banner_url: result.banner_url || course.banner_url,
+                                            };
+                                            setCourse(updatedCourse);
+                                            sessionStorage.setItem("coursia_full_course", JSON.stringify(updatedCourse));
+                                        }
+                                    }}
                                 >
-                                    <Palette className="w-4 h-4 mr-2" /> Customize Branding
+                                    {isBrandingGenerating ? (
+                                        <>
+                                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                            Generating...
+                                        </>
+                                    ) : course?.logo_url || course?.banner_url ? (
+                                        <>
+                                            <RefreshCw className="w-4 h-4 mr-2" />
+                                            Regenerate Branding
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Wand2 className="w-4 h-4 mr-2" />
+                                            Generate Branding
+                                        </>
+                                    )}
                                 </Button>
                             </div>
                         </Card>
