@@ -81,11 +81,11 @@ const Landing = () => {
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-slide-up leading-tight">
             Turn Your Knowledge
             <br />
-            <span className="gradient-text">Into a Course — Instantly.</span>
+            <span className="gradient-text">Into a Course. Instantly.</span>
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 animate-slide-up max-w-3xl mx-auto" style={{ animationDelay: "0.1s" }}>
-            Coursia builds your entire course — lessons, videos, quizzes, and landing page — from your words.
+            Coursia builds your entire course - lessons, videos, quizzes, and landing page. From your words.
             <span className="text-foreground font-medium"> Upload once. We handle the rest.</span>
           </p>
 
@@ -100,7 +100,7 @@ const Landing = () => {
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <p className="text-sm text-muted-foreground">
-              No tech. No templates. Just your expertise — automated.
+
             </p>
           </div>
 
@@ -181,7 +181,7 @@ const Landing = () => {
               </div>
               <h3 className="text-2xl font-semibold mb-4">Everything Auto-Generated</h3>
               <p className="text-muted-foreground">
-                Curriculum, quizzes, landing page, marketing assets — all built for you automatically.
+                Curriculum, quizzes, landing page, marketing assets - all built for you automatically.
               </p>
             </div>
 
@@ -243,7 +243,7 @@ const Landing = () => {
             <span className="gradient-text">Coursia Handles the Rest.</span>
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            No more editing, designing, or building. Just record and publish — in hours.
+            No more editing, designing, or building. Just record and publish - in hours.
           </p>
           <div className="relative z-20">
             <Button

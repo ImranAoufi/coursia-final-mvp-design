@@ -93,7 +93,7 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
           Share Your Knowledge
         </h3>
         <p className="text-muted-foreground text-sm">
-          Upload existing materials or tell us what you know — we’ll organize it for you.
+          Upload existing materials or tell us what you know - we’ll organize it for you.
         </p>
       </div>
 
@@ -106,7 +106,7 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
           </label>
         </div>
         <Textarea
-          placeholder="Share everything you want to teach — key concepts, examples, frameworks..."
+          placeholder="Share everything you want to teach - key concepts, examples, frameworks..."
           value={materials}
           onChange={(e) => setMaterials(e.target.value)}
           className="min-h-[200px] glass border-glass-border focus:border-primary resize-none text-base"
@@ -122,7 +122,7 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
           </label>
         </div>
         <Textarea
-          placeholder="Paste links (one per line) — YouTube, blogs, Google Docs..."
+          placeholder="Paste links (one per line) - YouTube, blogs, Google Docs..."
           value={links}
           onChange={(e) => setLinks(e.target.value)}
           className="min-h-[120px] glass border-glass-border focus:border-accent resize-none text-base"
@@ -228,7 +228,7 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
               setGenerationProgress(35);
 
               console.log("🚀 Sending POST to /api/generate-course ...");
-              
+
               // Simulate step progression during generation
               const progressInterval = setInterval(() => {
                 setGenerationProgress((prev) => {

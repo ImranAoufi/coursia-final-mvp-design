@@ -115,7 +115,7 @@ const MyCourse = () => {
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
     const [slidesLoading, setSlidesLoading] = useState(false);
     const [teleprompterScrollProgress, setTeleprompterScrollProgress] = useState(0);
-    
+
     // Saved slides for video playback
     const [savedSlides, setSavedSlides] = useState<SlideContent[]>([]);
     const [showVideoWithSlides, setShowVideoWithSlides] = useState(false);
@@ -224,7 +224,7 @@ const MyCourse = () => {
                         if (cancelled) return;
                         setStatus(s);
                         setProgressMsg(s);
-                        
+
                         // Map status to progress messages
                         if (s.includes("script")) setProgressMsg("Generating lesson scripts...");
                         else if (s.includes("quiz")) setProgressMsg("Creating quizzes...");
@@ -332,7 +332,7 @@ const MyCourse = () => {
         // Calculate pixels based on current speed
         const speedPxPerSecond = scrollSpeed === 1 ? 25 : scrollSpeed === 2 ? 50 : 85;
         const skipAmount = speedPxPerSecond * seconds;
-        
+
         teleprompterScrollRef.current = Math.max(0, Math.min(
             inner.scrollHeight - inner.clientHeight,
             teleprompterScrollRef.current + skipAmount
@@ -473,7 +473,7 @@ const MyCourse = () => {
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
                 {/* Hero Section with Banner & Logo */}
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
@@ -497,15 +497,15 @@ const MyCourse = () => {
                                 </div>
                             </div>
                         )}
-                        
+
                         {/* Gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-                        
+
                         {/* Content overlay */}
                         <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                             <div className="flex flex-col lg:flex-row items-start lg:items-end gap-6">
                                 {/* Logo */}
-                                <motion.div 
+                                <motion.div
                                     initial={{ scale: 0.8, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ delay: 0.2, duration: 0.5 }}
@@ -525,10 +525,10 @@ const MyCourse = () => {
                                         </div>
                                     )}
                                 </motion.div>
-                                
+
                                 {/* Title & Description */}
                                 <div className="flex-1 min-w-0">
-                                    <motion.h1 
+                                    <motion.h1
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: 0.3, duration: 0.5 }}
@@ -536,7 +536,7 @@ const MyCourse = () => {
                                     >
                                         {course?.course_title ?? "Your Course"}
                                     </motion.h1>
-                                    <motion.p 
+                                    <motion.p
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: 0.4, duration: 0.5 }}
@@ -545,9 +545,9 @@ const MyCourse = () => {
                                         {course?.course_description ?? "Your full AI-generated course will appear here once ready."}
                                     </motion.p>
                                 </div>
-                                
+
                                 {/* Action buttons */}
-                                <motion.div 
+                                <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.5, duration: 0.5 }}
@@ -562,11 +562,11 @@ const MyCourse = () => {
                                                 return;
                                             }
                                             setPublishing(true);
-                                            
+
                                             // Fetch and embed quiz/workbook content for each lesson
                                             const quizzes: any[] = [];
                                             const workbooks: string[] = [];
-                                            
+
                                             for (const lesson of course.lessons || []) {
                                                 // Fetch quiz content
                                                 if (lesson.quiz_file) {
@@ -584,7 +584,7 @@ const MyCourse = () => {
                                                 } else {
                                                     quizzes.push(null);
                                                 }
-                                                
+
                                                 // Fetch workbook content
                                                 if (lesson.workbook_file) {
                                                     try {
@@ -602,7 +602,7 @@ const MyCourse = () => {
                                                     workbooks.push("");
                                                 }
                                             }
-                                            
+
                                             // Create marketplace-compatible course object with embedded content
                                             const publishedCourse = {
                                                 id: `user-${Date.now()}`,
@@ -624,14 +624,14 @@ const MyCourse = () => {
                                                     workbooks,
                                                 },
                                             };
-                                            
+
                                             // Save to localStorage
                                             const existing = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
                                             existing.unshift(publishedCourse);
                                             localStorage.setItem("coursia_published_courses", JSON.stringify(existing));
-                                            
+
                                             toast.success("🎉 Course published to marketplace!");
-                                            
+
                                             setTimeout(() => {
                                                 navigate("/marketplace");
                                             }, 800);
@@ -641,15 +641,15 @@ const MyCourse = () => {
                                     >
                                         {/* Animated gradient background */}
                                         <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 animate-gradient-x" />
-                                        
+
                                         {/* Shimmer effect */}
                                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                         </div>
-                                        
+
                                         {/* Glow ring */}
                                         <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 rounded-xl blur-lg opacity-40 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
-                                        
+
                                         {/* Inner content */}
                                         <span className="relative flex items-center gap-2">
                                             {publishing ? (
@@ -665,7 +665,7 @@ const MyCourse = () => {
                                                 </>
                                             )}
                                         </span>
-                                        
+
                                         {/* Sparkle decorations */}
                                         <div className="absolute top-1 right-2 w-2 h-2 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping" />
                                         <div className="absolute bottom-1 left-3 w-1.5 h-1.5 bg-cyan-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping" style={{ animationDelay: "0.2s" }} />
@@ -710,7 +710,7 @@ const MyCourse = () => {
 
 
                 {/* Main Content Section */}
-                <motion.section 
+                <motion.section
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7, duration: 0.5 }}
@@ -772,8 +772,8 @@ const MyCourse = () => {
                                                 {lesson.videos?.length ? (
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                         {lesson.videos.map((v, vi) => {
-                                                            const video = typeof v === "string" 
-                                                                ? { title: `Video ${vi + 1}`, script_file: v } 
+                                                            const video = typeof v === "string"
+                                                                ? { title: `Video ${vi + 1}`, script_file: v }
                                                                 : v;
 
                                                             return (
@@ -866,7 +866,7 @@ const MyCourse = () => {
                                 </div>
                                 <h3 className="font-semibold">Branding</h3>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 <div className="flex items-center gap-4">
                                     {course?.logo_url || course?.logo_path ? (
@@ -886,9 +886,9 @@ const MyCourse = () => {
                                         <p className="text-xs text-muted-foreground">Logo & banner are AI-generated based on your course content.</p>
                                     </div>
                                 </div>
-                                
-                                <Button 
-                                    variant="outline" 
+
+                                <Button
+                                    variant="outline"
                                     size="sm"
                                     className="w-full glass border border-white/10"
                                     onClick={() => alert("Open Branding editor (future)")}
@@ -906,7 +906,7 @@ const MyCourse = () => {
                                 </div>
                                 <h3 className="font-semibold">Quick Tips</h3>
                             </div>
-                            
+
                             <div className="space-y-3">
                                 <div className="flex items-start gap-3 text-sm">
                                     <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -967,7 +967,7 @@ const MyCourse = () => {
                     <div className="flex flex-row gap-4">
                         {/* LEFT PANEL - CONTROLS */}
                         <div className="w-[160px] flex flex-col gap-3 shrink-0">
-                        {/* TELEPROMPTER CONTROLS */}
+                            {/* TELEPROMPTER CONTROLS */}
                             <Card className="p-4 glass-strong border border-white/10 shadow-xl">
                                 <h3 className="font-semibold text-sm mb-4 flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -993,11 +993,10 @@ const MyCourse = () => {
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={toggleTeleprompterPause}
                                                 className={`flex-1 py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2
-                                                    transition-all duration-300 ${
-                                                    isTeleprompterPaused 
-                                                        ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg" 
+                                                    transition-all duration-300 ${isTeleprompterPaused
+                                                        ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg"
                                                         : "bg-muted/50 text-foreground border border-border hover:bg-muted"
-                                                }`}
+                                                    }`}
                                             >
                                                 {isTeleprompterPaused ? (
                                                     <><Play className="w-4 h-4" /> Resume</>
@@ -1059,8 +1058,8 @@ const MyCourse = () => {
                                                     whileTap={{ scale: 0.95 }}
                                                     onClick={() => setScrollSpeed(speed.value)}
                                                     className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all duration-200
-                                                        ${scrollSpeed === speed.value 
-                                                            ? "bg-primary/20 text-primary border border-primary/30" 
+                                                        ${scrollSpeed === speed.value
+                                                            ? "bg-primary/20 text-primary border border-primary/30"
                                                             : "bg-muted/20 text-muted-foreground border border-transparent hover:border-border/50"
                                                         }`}
                                                 >
@@ -1124,26 +1123,26 @@ const MyCourse = () => {
                                                     <div className="absolute inset-0 bg-gradient-to-r from-violet-500/50 via-purple-500/50 to-fuchsia-500/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                                     <div className="absolute inset-[1px] rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600" />
                                                     <div className="absolute inset-[1px] rounded-2xl bg-gradient-to-b from-white/20 to-transparent opacity-60" />
-                                                    
+
                                                     {/* Shimmer effect */}
                                                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                                                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                                     </div>
-                                                    
+
                                                     {/* Content */}
                                                     <div className="relative flex items-center justify-center gap-3">
                                                         <div className="p-2 rounded-xl bg-white/20 backdrop-blur-sm">
                                                             <Layers className="w-5 h-5 text-white" />
                                                         </div>
                                                         <div className="text-left">
-                                                            <span className="text-white font-bold text-base tracking-wide">View with Slides</span>
-                                                            <span className="block text-white/70 text-xs font-medium">Synced playback experience</span>
+                                                            <span className="text-white font-bold text-base tracking-wide">Video + Slides</span>
+                                                            <span className="block text-white/70 text-xs font-medium"></span>
                                                         </div>
                                                         <ChevronRight className="w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform duration-300" />
                                                     </div>
                                                 </motion.button>
                                             )}
-                                            
+
                                             <motion.button
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
@@ -1167,22 +1166,21 @@ const MyCourse = () => {
                         {/* CENTER PANEL — VIDEO + TELEPROMPTER + SLIDES (STACKED) */}
                         <div className="flex-1 flex flex-col gap-4">
                             {/* Video Area */}
-                            <div className={`relative rounded-2xl overflow-hidden border border-border/50 shadow-xl bg-black/95 ${
-                                recordedBlob && !isRecording ? 'max-w-2xl mx-auto w-full' : 'min-h-[280px]'
-                            }`}>
+                            <div className={`relative rounded-2xl overflow-hidden border border-border/50 shadow-xl bg-black/95 ${recordedBlob && !isRecording ? 'max-w-2xl mx-auto w-full' : 'min-h-[280px]'
+                                }`}>
                                 {isRecording ? (
                                     <video id="liveVideo" autoPlay muted className="w-full h-full object-cover" />
                                 ) : recordedBlob ? (
                                     <div className="relative group">
                                         {/* Premium video container with aspect ratio */}
                                         <div className="relative aspect-video bg-gradient-to-br from-black via-black/95 to-black">
-                                            <video 
-                                                src={videoURL || ""} 
-                                                controls 
+                                            <video
+                                                src={videoURL || ""}
+                                                controls
                                                 className="w-full h-full object-contain rounded-2xl"
                                             />
                                         </div>
-                                        
+
                                         {/* Video title overlay */}
                                         <div className="absolute top-0 left-0 right-0 p-4 
                                             bg-gradient-to-b from-black/70 via-black/30 to-transparent
@@ -1222,7 +1220,7 @@ const MyCourse = () => {
                                                 background: "linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, transparent 25%, transparent 75%, rgba(0,0,0,0.95) 100%)",
                                             }}
                                         />
-                                        
+
                                         {/* Pause indicator */}
                                         {isTeleprompterPaused && (
                                             <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 
@@ -1231,7 +1229,7 @@ const MyCourse = () => {
                                                 <Pause className="w-3 h-3" /> PAUSED
                                             </div>
                                         )}
-                                        
+
                                         {/* Dismiss button */}
                                         <motion.button
                                             whileHover={{ scale: 1.1 }}
@@ -1243,7 +1241,7 @@ const MyCourse = () => {
                                         >
                                             <X className="w-3 h-3 text-white/70" />
                                         </motion.button>
-                                        
+
                                         <div
                                             id="script-scroll-inner"
                                             className="h-full flex flex-col justify-start text-4xl sm:text-5xl lg:text-6xl 
@@ -1338,8 +1336,8 @@ const MyCourse = () => {
 
                     <div className="mt-2 max-h-[70vh] overflow-y-auto pr-2">
                         {activeWorkbookContent ? (
-                            <WorkbookDisplay 
-                                workbook={activeWorkbookContent} 
+                            <WorkbookDisplay
+                                workbook={activeWorkbookContent}
                                 courseId={jobId || undefined}
                                 lessonId={activeWorkbookLessonIndex !== null ? `lesson_${activeWorkbookLessonIndex + 1}` : undefined}
                                 onClose={() => {

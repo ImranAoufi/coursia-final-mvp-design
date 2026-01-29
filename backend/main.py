@@ -104,7 +104,7 @@ You are an expert instructional designer.
 The user provided this base information:
 
 - Goal / Outcome: {req.outcome or "No outcome provided"}
-- Target Audience: {req.audience or "Not specified"} ({req.audienceLevel or "—"})
+- Target Audience: {req.audience or "Not specified"} ({req.audienceLevel or "-"})
 - Course Size: {req.format or "Standard"}
 - Materials or resources: {req.materials or "None"}
 - Reference links or files: {req.links or "None"}
@@ -471,8 +471,8 @@ async def _simulate_full_generation(job_id: str, preview_data: dict):
 
             # default if no video titles
             if not video_titles:
-                video_titles = [f"{lesson_title} — Part 1",
-                                f"{lesson_title} — Part 2"]
+                video_titles = [f"{lesson_title} - Part 1",
+                                f"{lesson_title} - Part 2"]
 
             lesson_folder = job_folder / f"lesson_{li}"
             lesson_folder.mkdir(parents=True, exist_ok=True)
