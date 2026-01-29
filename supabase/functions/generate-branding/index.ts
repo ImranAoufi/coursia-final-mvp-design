@@ -125,13 +125,14 @@ Requirements:
 - Square aspect ratio (1:1)
 - High-quality, polished design suitable for educational content
 - Simple, memorable iconography that represents the course topic
-- Professional color palette (2-3 colors max)
-- Clean, modern aesthetic like Apple or Notion branding
+- Rich, sophisticated color palette that matches the course subject matter
+- Colors should feel premium and intentional (think luxury brands, high-end apps)
+- Clean, modern aesthetic like Apple, Notion, or Masterclass branding
 - No text in the logo, just an iconic symbol
-- White or transparent background
+- Transparent or complementary background that enhances the design
 - Ultra high resolution
 
-Create a logo that instantly communicates the essence of this course.`;
+Create a stunning logo that instantly communicates expertise and premium quality.`;
 
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
