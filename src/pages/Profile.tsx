@@ -7,12 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { toast } from "sonner";
-import { 
-  ArrowLeft, 
-  Camera, 
-  User, 
-  Mail, 
-  Save, 
+import {
+  ArrowLeft,
+  Camera,
+  User,
+  Mail,
+  Save,
   Loader2,
   Check,
   Sparkles
@@ -23,7 +23,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading, updateProfile, uploadAvatar } = useProfile();
-  
+
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -169,13 +169,13 @@ export default function Profile() {
                       <User className="w-12 h-12 text-muted-foreground" />
                     )}
                   </div>
-                  
+
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Camera className="w-8 h-8 text-white" />
                   </div>
                 </motion.button>
-                
+
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -183,7 +183,7 @@ export default function Profile() {
                   onChange={handleFileChange}
                   className="hidden"
                 />
-                
+
                 {/* Sparkle decoration */}
                 <motion.div
                   className="absolute -top-2 -right-2"
