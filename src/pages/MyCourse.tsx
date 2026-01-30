@@ -870,15 +870,13 @@ const MyCourse = () => {
                             </div>
 
                             <div className="space-y-4">
-                                <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-4">
                                     {course?.logo_url || course?.logo_path ? (
-                                        <div className="w-16 h-16 rounded-xl overflow-hidden shadow-md shrink-0 bg-white">
-                                            <img
-                                                src={course.logo_url || course.logo_path}
-                                                alt="Course logo"
-                                                className="w-full h-full object-contain"
-                                            />
-                                        </div>
+                                        <img
+                                            src={course.logo_url || course.logo_path}
+                                            alt="Course logo"
+                                            className="w-16 h-16 object-contain shrink-0"
+                                        />
                                     ) : (
                                         <div className="w-16 h-16 rounded-xl bg-muted/30 flex items-center justify-center shrink-0 border border-white/10">
                                             <Sparkles className="w-6 h-6 text-muted-foreground" />
@@ -905,7 +903,6 @@ const MyCourse = () => {
                                             course_title: course.course_title,
                                             course_description: course.course_description,
                                             style: "modern",
-                                            fallback_backend_url: import.meta.env.VITE_API_BASE,
                                         });
 
                                         if (result.logo_url || result.banner_url) {

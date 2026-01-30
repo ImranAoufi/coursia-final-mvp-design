@@ -5,7 +5,7 @@ import { toast } from "sonner";
 interface BrandingResult {
   logo_url: string | null;
   banner_url: string | null;
-  source: "lovable_ai" | "fallback_backend" | "error";
+  source: "lovable_ai" | "error";
   error?: string;
 }
 
@@ -13,7 +13,6 @@ interface GenerateBrandingOptions {
   course_title: string;
   course_description?: string;
   style?: "modern" | "minimal" | "vibrant" | "professional";
-  fallback_backend_url?: string;
 }
 
 export function useBrandingGeneration() {
@@ -30,7 +29,6 @@ export function useBrandingGeneration() {
           course_title: options.course_title,
           course_description: options.course_description || "",
           style: options.style || "modern",
-          fallback_backend_url: options.fallback_backend_url,
         },
       });
 
@@ -59,7 +57,7 @@ export function useBrandingGeneration() {
         if (result.banner_url) parts.push("banner");
         
         toast.success(`Generated ${parts.join(" & ")}`, {
-          description: `Using ${result.source === "lovable_ai" ? "AI generation" : "fallback backend"}`,
+          description: "Using AI generation",
         });
       }
 
