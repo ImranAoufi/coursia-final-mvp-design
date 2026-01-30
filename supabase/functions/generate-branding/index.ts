@@ -9,13 +9,12 @@ interface GenerateBrandingRequest {
   course_title: string;
   course_description?: string;
   style?: "modern" | "minimal" | "vibrant" | "professional";
-  fallback_backend_url?: string;
 }
 
 interface BrandingResponse {
   logo_url: string | null;
   banner_url: string | null;
-  source: "lovable_ai" | "fallback_backend" | "error";
+  source: "lovable_ai" | "error";
   error?: string;
 }
 
@@ -29,8 +28,7 @@ serve(async (req) => {
     const { 
       course_title, 
       course_description = "", 
-      style = "modern",
-      fallback_backend_url 
+      style = "modern"
     } = await req.json() as GenerateBrandingRequest;
 
     if (!course_title || course_title.trim().length === 0) {
@@ -48,8 +46,16 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
-      console.warn("LOVABLE_API_KEY not configured, trying fallback backend");
-      return await tryFallbackBackend(fallback_backend_url, course_title, course_description);
+      console.error("LOVABLE_API_KEY not configured");
+      return new Response(
+        JSON.stringify({
+          logo_url: null,
+          banner_url: null,
+          source: "error",
+          error: "AI generation not configured",
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      );
     }
 
     console.log(`🎨 Generating branding for: "${course_title}"`);
@@ -63,10 +69,18 @@ serve(async (req) => {
     const logo_url = logoResult.status === "fulfilled" ? logoResult.value : null;
     const banner_url = bannerResult.status === "fulfilled" ? bannerResult.value : null;
 
-    // If both failed, try fallback backend
-    if (!logo_url && !banner_url && fallback_backend_url) {
-      console.log("Both image generations failed, trying fallback backend");
-      return await tryFallbackBackend(fallback_backend_url, course_title, course_description);
+    // If both failed, return error
+    if (!logo_url && !banner_url) {
+      console.error("Both image generations failed");
+      return new Response(
+        JSON.stringify({
+          logo_url: null,
+          banner_url: null,
+          source: "error",
+          error: "Failed to generate branding images",
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      );
     }
 
     // Log any errors
@@ -238,61 +252,4 @@ Create a stunning banner that makes people want to enroll in this course.`;
   }
 
   return imageUrl;
-}
-
-async function tryFallbackBackend(
-  backendUrl: string | undefined, 
-  courseTitle: string,
-  courseDescription: string
-): Promise<Response> {
-  if (!backendUrl) {
-    return new Response(
-      JSON.stringify({
-        logo_url: null,
-        banner_url: null,
-        source: "error",
-        error: "No fallback backend configured and primary generation failed",
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-    );
-  }
-
-  try {
-    console.log(`🔄 Trying fallback backend: ${backendUrl}`);
-    
-    const response = await fetch(`${backendUrl}/api/generate-branding`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        course_title: courseTitle,
-        course_description: courseDescription,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Fallback backend error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    return new Response(
-      JSON.stringify({
-        logo_url: data.logo_url || null,
-        banner_url: data.banner_url || null,
-        source: "fallback_backend",
-      } as BrandingResponse),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  } catch (error) {
-    console.error("Fallback backend failed:", error);
-    return new Response(
-      JSON.stringify({
-        logo_url: null,
-        banner_url: null,
-        source: "error",
-        error: "Both primary and fallback image generation failed",
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-    );
-  }
 }
