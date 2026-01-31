@@ -661,9 +661,17 @@ IMPORTANT: The quiz MUST contain at least 3 questions and no more than 5 questio
         # DISABLED: Logo and banner generation via DALL-E (costs money)
         # Lovable AI will handle branding on the frontend for free
         # No logo_path or banner_path will be returned - frontend uses Lovable AI exclusively
-        logo_abs_path = None
-        banner_abs_path = None
         print("  ℹ️ Logo/banner generation skipped - using Lovable AI on frontend instead")
+
+        # Build final result object
+        final_result = {
+            "course_title": course_out["course_title"],
+            "course_description": course_out.get("course_description", ""),
+            "lessons": course_out["lessons"],
+            "course_json": str(course_json_path.resolve()),
+            "zip": str(zip_path.resolve()),
+            # No logo_path or banner_path - Lovable AI handles branding on frontend
+        }
 
         JOBS[job_id]["status"] = "done"
         JOBS[job_id]["result"] = final_result
