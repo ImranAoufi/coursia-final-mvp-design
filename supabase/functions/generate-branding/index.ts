@@ -69,15 +69,19 @@ serve(async (req) => {
     const logo_url = logoResult.status === "fulfilled" ? logoResult.value : null;
     const banner_url = bannerResult.status === "fulfilled" ? bannerResult.value : null;
 
-    // If both failed, return error
+    // If both failed, return error with specific reason
     if (!logo_url && !banner_url) {
-      console.error("Both image generations failed");
+      const logoError = logoResult.status === "rejected" ? logoResult.reason?.message : null;
+      const bannerError = bannerResult.status === "rejected" ? bannerResult.reason?.message : null;
+      const errorMessage = logoError || bannerError || "Failed to generate branding images";
+      
+      console.error("Both image generations failed:", errorMessage);
       return new Response(
         JSON.stringify({
           logo_url: null,
           banner_url: null,
           source: "error",
-          error: "Failed to generate branding images",
+          error: errorMessage,
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
       );
