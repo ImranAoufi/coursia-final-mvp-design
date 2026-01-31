@@ -658,52 +658,12 @@ IMPORTANT: The quiz MUST contain at least 3 questions and no more than 5 questio
         shutil.make_archive(str(zip_path.with_suffix('')),
                             'zip', root_dir=job_folder)
 
-        # try logo + banner (keep your existing calls but ensure they work non-blocking)
+        # DISABLED: Logo and banner generation via DALL-E (costs money)
+        # Lovable AI will handle branding on the frontend for free
+        # No logo_path or banner_path will be returned - frontend uses Lovable AI exclusively
         logo_abs_path = None
         banner_abs_path = None
-        try:
-            dalle = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-            logo_prompt = f"Create a minimalist, modern course logo for the course titled '{course_title}'. Simple, flat, high-end."
-            logo_result = dalle.images.generate(
-                model="gpt-image-1", prompt=logo_prompt, size="1024x1024", n=1)
-            logo_b64 = logo_result.data[0].b64_json
-            logo_bytes = base64.b64decode(logo_b64)
-            logo_path = job_folder / "logo.png"
-            logo_path.write_bytes(logo_bytes)
-            logo_abs_path = str(logo_path.resolve())
-            print("  ✅ Logo generated")
-        except Exception as e:
-            print("  ⚠️ Logo generation skipped/failed:", e)
-
-        # banner (optional)
-        try:
-            dalle = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-            banner_prompt = f"Create a cinematic hero banner for the course titled '{course_title}', 16:9, modern, minimal."
-            # Note: some model endpoints accept only certain sizes; keep try/except
-            banner_result = dalle.images.generate(
-                model="gpt-image-1", prompt=banner_prompt, size="1536x1024", n=1)
-            banner_b64 = banner_result.data[0].b64_json
-            banner_bytes = base64.b64decode(banner_b64)
-            banner_path = job_folder / "banner.png"
-            banner_path.write_bytes(banner_bytes)
-            banner_abs_path = str(banner_path.resolve())
-            print("  ✅ Banner generated")
-        except Exception as e:
-            print("  ⚠️ Banner generation skipped/failed:", e)
-
-        # final result
-        final_result = {
-            "course_title": course_out.get("course_title"),
-            "course_description": course_out.get("course_description"),
-            "lessons": course_out.get("lessons"),
-            "zip": str(zip_path.resolve()),
-        }
-        if logo_abs_path:
-            final_result["logo_path"] = logo_abs_path
-            final_result["logo_url"] = f"http://127.0.0.1:8000/generated/{job_id}/logo.png"
-        if banner_abs_path:
-            final_result["banner_path"] = banner_abs_path
-            final_result["banner_url"] = f"http://127.0.0.1:8000/generated/{job_id}/banner.png"
+        print("  ℹ️ Logo/banner generation skipped - using Lovable AI on frontend instead")
 
         JOBS[job_id]["status"] = "done"
         JOBS[job_id]["result"] = final_result
@@ -723,56 +683,14 @@ IMPORTANT: The quiz MUST contain at least 3 questions and no more than 5 questio
 @app.post("/api/generate-banner")
 async def generate_banner(payload: dict):
     """
-    Generiert ein hero-style Bannerbild für den Kurs (querformatig, Apple-like).
+    DISABLED: Banner generation via DALL-E costs money.
+    Use Lovable AI on the frontend instead (free).
     """
-    job_id = payload.get("job_id")
-    course_title = payload.get("course_title", "Unnamed Course")
-    course_description = payload.get("course_description", "")
-
-    if not job_id:
-        return {"error": "job_id is required"}
-
-    job_folder = GENERATED_DIR / job_id
-    job_folder.mkdir(exist_ok=True)
-
-    banner_prompt = f"""
-Create a cinematic, premium hero banner for an online course.
-Title: "{course_title}"
-Description: "{course_description}"
-
-Style:
-- Apple.com hero section
-- ultra-clean modern gradients
-- elegant lighting
-- minimalistic composition
-- no text in the image
-- 16:9 aspect ratio
-- perfect for a website header
-
-Output: ultra-wide 2048x1152 pixels.
-"""
-
-    try:
-        dalle = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        result = dalle.images.generate(
-            model="gpt-image-1",
-            prompt=banner_prompt,
-            size="2048x1152",
-            n=1
-        )
-        image_b64 = result.data[0].b64_json
-        image_bytes = base64.b64decode(image_b64)
-
-        banner_path = job_folder / "banner.png"
-        with open(banner_path, "wb") as f:
-            f.write(image_bytes)
-
-        print(f"✅ Banner generated for {course_title} at {banner_path}")
-        return {"status": "ok", "banner_path": str(banner_path)}
-
-    except Exception as e:
-        print("💥 Error generating banner:", e)
-        return {"status": "error", "error": str(e)}
+    return {
+        "status": "disabled", 
+        "error": "Banner generation is disabled. Use Lovable AI on frontend instead.",
+        "banner_path": None
+    }
 
 
 # ============================================================
@@ -782,46 +700,14 @@ Output: ultra-wide 2048x1152 pixels.
 @app.post("/api/generate-logo")
 async def generate_logo(payload: dict):
     """
-    Generiert ein einzigartiges Logo für den Kurs mit DALL·E.
-    Speichert es im generated/<job_id>/ Ordner.
+    DISABLED: Logo generation via DALL-E costs money.
+    Use Lovable AI on the frontend instead (free).
     """
-    job_id = payload.get("job_id")
-    course_title = payload.get("course_title", "Unnamed Course")
-
-    if not job_id:
-        return {"error": "job_id is required"}
-
-    job_folder = GENERATED_DIR / job_id
-    job_folder.mkdir(exist_ok=True)
-
-    logo_prompt = f"""
-    Create a high-end, minimalist course logo in flat modern style.
-    The course title is: '{course_title}'.
-    Style: Apple aesthetic, soft gradients, elegant typography, white background, subtle 3D depth.
-    Output should be square 1024x1024, focus on the essence of the title.
-    """
-
-    try:
-        dalle = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        result = dalle.images.generate(
-            model="gpt-image-1",
-            prompt=logo_prompt,
-            size="1024x1024",
-            n=1
-        )
-        image_b64 = result.data[0].b64_json
-        image_bytes = base64.b64decode(image_b64)
-
-        logo_path = job_folder / "logo.png"
-        with open(logo_path, "wb") as f:
-            f.write(image_bytes)
-
-        print(f"✅ Logo generated for {course_title} at {logo_path}")
-        return {"status": "ok", "logo_path": str(logo_path)}
-
-    except Exception as e:
-        print("💥 Error generating logo:", e)
-        return {"status": "error", "error": str(e)}
+    return {
+        "status": "disabled", 
+        "error": "Logo generation is disabled. Use Lovable AI on frontend instead.",
+        "logo_path": None
+    }
 
 
 # ============================================================
