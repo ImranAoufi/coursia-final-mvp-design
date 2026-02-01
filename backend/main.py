@@ -695,7 +695,7 @@ async def generate_banner(payload: dict):
     Use Lovable AI on the frontend instead (free).
     """
     return {
-        "status": "disabled",
+        "status": "disabled", 
         "error": "Banner generation is disabled. Use Lovable AI on frontend instead.",
         "banner_path": None
     }
@@ -712,7 +712,7 @@ async def generate_logo(payload: dict):
     Use Lovable AI on the frontend instead (free).
     """
     return {
-        "status": "disabled",
+        "status": "disabled", 
         "error": "Logo generation is disabled. Use Lovable AI on frontend instead.",
         "logo_path": None
     }
