@@ -240,19 +240,55 @@ const MyCourse = () => {
 
 
                     if (full) {
+<<<<<<< HEAD
                         if (progressInterval) clearInterval(progressInterval);
                         setGenerationProgress(100);
 
                         // Strip backend branding paths - we only use Lovable AI generated branding
                         const courseWithoutBackendBranding = {
+=======
+                        // Generate branding during loading (before marking as done)
+                        setStatus("branding");
+                        setProgressMsg("Creating logo & banner...");
+                        
+                        let courseWithBranding = {
+>>>>>>> 3948c207253c05de79d70c80bd66b2c67fe41b97
                             ...full,
                             logo_path: undefined,
                             banner_path: undefined,
                         };
+<<<<<<< HEAD
 
                         sessionStorage.setItem("coursia_full_course", JSON.stringify(courseWithoutBackendBranding));
+=======
+                        
+                        try {
+                            console.log("🎨 Generating branding during course creation...");
+                            const brandingResult = await generateBranding({
+                                course_title: full.course_title || "Course",
+                                course_description: full.course_description,
+                                style: "modern",
+                            });
+                            
+                            if (brandingResult.logo_url || brandingResult.banner_url) {
+                                courseWithBranding = {
+                                    ...courseWithBranding,
+                                    logo_url: brandingResult.logo_url || undefined,
+                                    banner_url: brandingResult.banner_url || undefined,
+                                };
+                                console.log("✅ Branding generated successfully");
+                            }
+                        } catch (brandingErr) {
+                            console.warn("⚠️ Branding generation failed, continuing without:", brandingErr);
+                        }
+                        
+                        if (progressInterval) clearInterval(progressInterval);
+                        setGenerationProgress(100);
+                        
+                        sessionStorage.setItem("coursia_full_course", JSON.stringify(courseWithBranding));
+>>>>>>> 3948c207253c05de79d70c80bd66b2c67fe41b97
                         if (!cancelled) {
-                            setCourse(courseWithoutBackendBranding);
+                            setCourse(courseWithBranding);
                             setStatus("done");
                             toast.success("✅ Your full course is ready!");
                             navigate("/my-course", { state: { jobId } });
@@ -273,7 +309,10 @@ const MyCourse = () => {
         };
     }, [jobId]);
 
-    // Auto-trigger branding generation when course is ready but has no AI-generated branding
+
+    // Branding is now generated during the loading screen (in polling useEffect above)
+    // This useEffect is kept only to handle edge cases where course was loaded from sessionStorage
+    // without branding (e.g., old cached courses)
     useEffect(() => {
         if (
             course?.course_title &&
@@ -281,12 +320,13 @@ const MyCourse = () => {
             !course.banner_url &&
             !brandingTriggered &&
             !isBrandingGenerating &&
-            status === "done"
+            status === "done" &&
+            !jobId // Only for cached courses, not fresh generations
         ) {
             setBrandingTriggered(true);
 
             (async () => {
-                console.log("🎨 Auto-generating branding with Lovable AI...");
+                console.log("🎨 Generating branding for cached course...");
                 const result = await generateBranding({
                     course_title: course.course_title!,
                     course_description: course.course_description,
@@ -304,7 +344,8 @@ const MyCourse = () => {
                 }
             })();
         }
-    }, [course, brandingTriggered, isBrandingGenerating, status, generateBranding]);
+    }, [course, brandingTriggered, isBrandingGenerating, status, generateBranding, jobId]);
+
 
 
     // Smooth teleprompter scrolling using requestAnimationFrame
