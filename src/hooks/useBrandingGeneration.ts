@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { generateFallbackBranding } from "@/lib/generateFallbackBranding";
+import { uploadBrandingToStorage, isBase64DataUrl } from "@/lib/uploadBrandingImage";
 
 interface BrandingResult {
   logo_url: string | null;
@@ -47,16 +48,29 @@ export function useBrandingGeneration() {
         return useFallbackBranding(options.course_title, options.course_description);
       }
 
-      // Success with AI
+      // Success with AI - upload to storage for fast loading
+      let finalResult = result;
+      
+      // If images are base64, upload them to storage
+      if (isBase64DataUrl(result.logo_url) || isBase64DataUrl(result.banner_url)) {
+        setProgress("Saving branding to storage...");
+        const stored = await uploadBrandingToStorage(result.logo_url, result.banner_url);
+        finalResult = {
+          ...result,
+          logo_url: stored.logo_url,
+          banner_url: stored.banner_url,
+        };
+      }
+      
       const parts = [];
-      if (result.logo_url) parts.push("logo");
-      if (result.banner_url) parts.push("banner");
+      if (finalResult.logo_url) parts.push("logo");
+      if (finalResult.banner_url) parts.push("banner");
       
       toast.success(`Generated ${parts.join(" & ")}`, {
         description: "Using AI generation",
       });
 
-      return result;
+      return finalResult;
     } catch (err) {
       console.error("Branding generation exception:", err);
       // Fall back to SVG gradient branding
@@ -74,17 +88,20 @@ export function useBrandingGeneration() {
   };
 }
 
-function useFallbackBranding(courseTitle: string, courseDescription?: string): BrandingResult {
+async function useFallbackBranding(courseTitle: string, courseDescription?: string): Promise<BrandingResult> {
   try {
     const fallback = generateFallbackBranding(courseTitle, courseDescription || "");
+    
+    // Upload SVG fallbacks to storage for consistent fast loading
+    const stored = await uploadBrandingToStorage(fallback.logo_url, fallback.banner_url);
     
     toast.success("Generated branding", {
       description: "Using themed gradient design",
     });
     
     return {
-      logo_url: fallback.logo_url,
-      banner_url: fallback.banner_url,
+      logo_url: stored.logo_url,
+      banner_url: stored.banner_url,
       source: "fallback",
     };
   } catch (fallbackErr) {
