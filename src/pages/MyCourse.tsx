@@ -242,20 +242,20 @@ const MyCourse = () => {
                     if (full) {
                         if (progressInterval) clearInterval(progressInterval);
                         setGenerationProgress(100);
-                        
+
                         // Strip backend branding paths - we only use Lovable AI generated branding
                         const courseWithoutBackendBranding = {
                             ...full,
                             logo_path: undefined,
                             banner_path: undefined,
                         };
-                        
+
                         sessionStorage.setItem("coursia_full_course", JSON.stringify(courseWithoutBackendBranding));
                         if (!cancelled) {
                             setCourse(courseWithoutBackendBranding);
                             setStatus("done");
                             toast.success("✅ Your full course is ready!");
-                            navigate("/mycourse", { state: { jobId } });
+                            navigate("/my-course", { state: { jobId } });
                         }
                     }
                 } catch (err) {
@@ -276,15 +276,15 @@ const MyCourse = () => {
     // Auto-trigger branding generation when course is ready but has no AI-generated branding
     useEffect(() => {
         if (
-            course?.course_title && 
-            !course.logo_url && 
-            !course.banner_url && 
-            !brandingTriggered && 
+            course?.course_title &&
+            !course.logo_url &&
+            !course.banner_url &&
+            !brandingTriggered &&
             !isBrandingGenerating &&
             status === "done"
         ) {
             setBrandingTriggered(true);
-            
+
             (async () => {
                 console.log("🎨 Auto-generating branding with Lovable AI...");
                 const result = await generateBranding({
@@ -915,7 +915,7 @@ const MyCourse = () => {
                             </div>
 
                             <div className="space-y-4">
-                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-4">
                                     {course?.logo_url ? (
                                         <img
                                             src={course.logo_url}
@@ -933,9 +933,9 @@ const MyCourse = () => {
                                     )}
                                     <div className="flex-1">
                                         <p className="text-xs text-muted-foreground">
-                                            {isBrandingGenerating 
+                                            {isBrandingGenerating
                                                 ? "Generating branding with Lovable AI..."
-                                                : course?.logo_url || course?.banner_url 
+                                                : course?.logo_url || course?.banner_url
                                                     ? "Logo & banner generated with Lovable AI"
                                                     : "Premium branding will be auto-generated"}
                                         </p>
@@ -949,7 +949,7 @@ const MyCourse = () => {
                                     disabled={isBrandingGenerating || !course?.course_title}
                                     onClick={async () => {
                                         if (!course?.course_title) return;
-                                        
+
                                         const result = await generateBranding({
                                             course_title: course.course_title,
                                             course_description: course.course_description,
