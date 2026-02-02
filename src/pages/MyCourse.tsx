@@ -506,208 +506,235 @@ const MyCourse = () => {
             </div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-                {/* Hero Section with Banner & Logo */}
+                {/* Premium Course Hero Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                     className="relative"
                 >
-                    {/* Banner with Glassmorphic Overlay */}
+                    {/* Full-width cinematic banner */}
                     <div className="relative rounded-3xl overflow-hidden shadow-elevated">
+                        {/* Banner Image or Gradient */}
                         {course?.banner_url ? (
-                            <img
-                                src={course.banner_url}
-                                alt="Course banner"
-                                className="w-full h-72 sm:h-80 lg:h-96 object-cover"
-                            />
+                            <div className="relative h-64 sm:h-72 lg:h-80">
+                                <img
+                                    src={course.banner_url}
+                                    alt="Course banner"
+                                    className="w-full h-full object-cover"
+                                />
+                                {/* Cinematic gradient overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+                            </div>
                         ) : (
-                            <div className="w-full h-72 sm:h-80 lg:h-96 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center">
-                                <div className="text-center space-y-4">
-                                    <div className="w-20 h-20 mx-auto rounded-2xl bg-primary/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center">
-                                        <GraduationCap className="w-10 h-10 text-primary" />
-                                    </div>
-                                    <p className="text-muted-foreground">Your course banner will appear here</p>
-                                </div>
+                            <div className="h-64 sm:h-72 lg:h-80 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10">
+                                <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-transparent" />
                             </div>
                         )}
 
-                        {/* Gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-
-                        {/* Content overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-                            <div className="flex flex-col lg:flex-row items-start lg:items-end gap-6">
-                                {/* Logo */}
-                                <motion.div
-                                    initial={{ scale: 0.8, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    transition={{ delay: 0.2, duration: 0.5 }}
-                                    className="shrink-0"
-                                >
-                                    {course?.logo_url ? (
-                                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-lg shrink-0">
-                                            <img
-                                                src={course.logo_url}
-                                                alt="Course logo"
-                                                className="w-full h-full object-contain"
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl glass border-2 border-white/20 flex items-center justify-center">
-                                            <Sparkles className="w-10 h-10 text-primary" />
-                                        </div>
-                                    )}
-                                </motion.div>
-
-                                {/* Title & Description */}
-                                <div className="flex-1 min-w-0">
-                                    <motion.h1
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.3, duration: 0.5 }}
-                                        className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight gradient-text mb-2"
+                        {/* Floating Content Card - overlaps banner */}
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="container mx-auto px-6 sm:px-8">
+                                <div className="flex items-center gap-6 lg:gap-8 max-w-4xl">
+                                    {/* Logo - floating with glow */}
+                                    <motion.div
+                                        initial={{ scale: 0.8, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        transition={{ delay: 0.2, duration: 0.5 }}
+                                        className="shrink-0 hidden sm:block"
                                     >
-                                        {course?.course_title ?? "Your Course"}
-                                    </motion.h1>
-                                    <motion.p
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.4, duration: 0.5 }}
-                                        className="text-muted-foreground text-sm sm:text-base max-w-2xl line-clamp-2"
-                                    >
-                                        {course?.course_description ?? "Your full AI-generated course will appear here once ready."}
-                                    </motion.p>
+                                        {course?.logo_url ? (
+                                            <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl overflow-hidden shadow-elevated ring-4 ring-background/50 backdrop-blur-sm">
+                                                <img
+                                                    src={course.logo_url}
+                                                    alt="Course logo"
+                                                    className="w-full h-full object-contain bg-card"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl glass-strong border border-primary/30 flex items-center justify-center shadow-glow">
+                                                <GraduationCap className="w-10 h-10 text-primary" />
+                                            </div>
+                                        )}
+                                    </motion.div>
+
+                                    {/* Title & Meta */}
+                                    <div className="flex-1 min-w-0 space-y-3">
+                                        {/* Category badge */}
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.25, duration: 0.4 }}
+                                        >
+                                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs font-medium text-primary border border-primary/20">
+                                                <Sparkles className="w-3 h-3" />
+                                                AI-Generated Course
+                                            </span>
+                                        </motion.div>
+                                        
+                                        {/* Course Title */}
+                                        <motion.h1
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.3, duration: 0.5 }}
+                                            className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground leading-tight"
+                                        >
+                                            {course?.course_title ?? "Your Course"}
+                                        </motion.h1>
+
+                                        {/* Stats row */}
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ delay: 0.4, duration: 0.5 }}
+                                            className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
+                                        >
+                                            <span className="flex items-center gap-1.5">
+                                                <Layers className="w-4 h-4 text-primary" />
+                                                {course?.lessons?.length || 0} Lessons
+                                            </span>
+                                            <span className="flex items-center gap-1.5">
+                                                <Film className="w-4 h-4 text-secondary" />
+                                                {course?.lessons?.reduce((acc, l) => acc + (l.videos?.length || 0), 0) || 0} Videos
+                                            </span>
+                                            <span className="flex items-center gap-1.5">
+                                                <Brain className="w-4 h-4 text-accent" />
+                                                {course?.lessons?.filter(l => l.quiz_file).length || 0} Quizzes
+                                            </span>
+                                        </motion.div>
+                                    </div>
                                 </div>
-
-                                {/* Action buttons */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.5, duration: 0.5 }}
-                                    className="flex flex-wrap gap-2 sm:gap-3 shrink-0"
-                                >
-                                    <motion.button
-                                        whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(139, 92, 246, 0.5), 0 0 80px rgba(236, 72, 153, 0.3)" }}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={async () => {
-                                            if (!course) {
-                                                alert("No course data yet to publish.");
-                                                return;
-                                            }
-                                            setPublishing(true);
-
-                                            // Fetch and embed quiz/workbook content for each lesson
-                                            const quizzes: any[] = [];
-                                            const workbooks: string[] = [];
-
-                                            for (const lesson of course.lessons || []) {
-                                                // Fetch quiz content
-                                                if (lesson.quiz_file) {
-                                                    try {
-                                                        const res = await fetch(toURL(lesson.quiz_file));
-                                                        if (res.ok) {
-                                                            const quizData = await res.json();
-                                                            quizzes.push(quizData);
-                                                        } else {
-                                                            quizzes.push(null);
-                                                        }
-                                                    } catch {
-                                                        quizzes.push(null);
-                                                    }
-                                                } else {
-                                                    quizzes.push(null);
-                                                }
-
-                                                // Fetch workbook content
-                                                if (lesson.workbook_file) {
-                                                    try {
-                                                        const res = await fetch(toURL(lesson.workbook_file));
-                                                        if (res.ok) {
-                                                            const workbookText = await res.text();
-                                                            workbooks.push(workbookText);
-                                                        } else {
-                                                            workbooks.push("");
-                                                        }
-                                                    } catch {
-                                                        workbooks.push("");
-                                                    }
-                                                } else {
-                                                    workbooks.push("");
-                                                }
-                                            }
-
-                                            // Create marketplace-compatible course object with embedded content
-                                            const publishedCourse = {
-                                                id: `user-${Date.now()}`,
-                                                title: course.course_title || "Untitled Course",
-                                                instructor: "You",
-                                                rating: 5.0,
-                                                reviews: 0,
-                                                price: 99,
-                                                duration: `${course.lessons?.length || 1} lessons`,
-                                                students: 0,
-                                                category: "Technology",
-                                                level: "Intermediate" as const,
-                                                image: course.banner_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
-                                                featured: true,
-                                                isUserCourse: true,
-                                                courseData: {
-                                                    ...course,
-                                                    quizzes,
-                                                    workbooks,
-                                                },
-                                            };
-
-                                            // Save to localStorage
-                                            const existing = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
-                                            existing.unshift(publishedCourse);
-                                            localStorage.setItem("coursia_published_courses", JSON.stringify(existing));
-
-                                            toast.success("🎉 Course published to marketplace!");
-
-                                            setTimeout(() => {
-                                                navigate("/marketplace");
-                                            }, 800);
-                                        }}
-                                        disabled={!course || publishing}
-                                        className="relative group px-6 py-3 rounded-xl font-semibold text-white overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {/* Animated gradient background */}
-                                        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 animate-gradient-x" />
-
-                                        {/* Shimmer effect */}
-                                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                                        </div>
-
-                                        {/* Glow ring */}
-                                        <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 rounded-xl blur-lg opacity-40 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
-
-                                        {/* Inner content */}
-                                        <span className="relative flex items-center gap-2">
-                                            {publishing ? (
-                                                <>
-                                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                    <span>Publishing...</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Store className="w-5 h-5" />
-                                                    <span>Launch to Marketplace</span>
-                                                    <Rocket className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                                                </>
-                                            )}
-                                        </span>
-
-                                        {/* Sparkle decorations */}
-                                        <div className="absolute top-1 right-2 w-2 h-2 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping" />
-                                        <div className="absolute bottom-1 left-3 w-1.5 h-1.5 bg-cyan-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping" style={{ animationDelay: "0.2s" }} />
-                                    </motion.button>
-                                </motion.div>
                             </div>
                         </div>
                     </div>
+
+                    {/* Action Bar - Below banner */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, duration: 0.4 }}
+                        className="mt-4 flex flex-wrap items-center justify-between gap-4 glass-strong rounded-2xl p-4 sm:p-5"
+                    >
+                        {/* Left: Description snippet */}
+                        <p className="text-muted-foreground text-sm max-w-xl line-clamp-1 flex-1">
+                            {course?.course_description ?? "Your complete AI-generated course"}
+                        </p>
+
+                        {/* Right: Action buttons */}
+                        <div className="flex items-center gap-3 shrink-0">
+                            {/* Regenerate Branding */}
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={async () => {
+                                    if (!course) return;
+                                    const result = await generateBranding({
+                                        course_title: course.course_title || "Course",
+                                        course_description: course.course_description,
+                                        style: "modern",
+                                    });
+                                    if (result.logo_url || result.banner_url) {
+                                        const updatedCourse = {
+                                            ...course,
+                                            logo_url: result.logo_url || course.logo_url,
+                                            banner_url: result.banner_url || course.banner_url,
+                                        };
+                                        setCourse(updatedCourse);
+                                        sessionStorage.setItem("coursia_full_course", JSON.stringify(updatedCourse));
+                                    }
+                                }}
+                                disabled={isBrandingGenerating}
+                                className="gap-2"
+                            >
+                                <RefreshCw className={`w-4 h-4 ${isBrandingGenerating ? "animate-spin" : ""}`} />
+                                <span className="hidden sm:inline">Regenerate Branding</span>
+                            </Button>
+
+                            {/* Launch to Marketplace */}
+                            <motion.button
+                                whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(139, 92, 246, 0.4)" }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={async () => {
+                                    if (!course) {
+                                        alert("No course data yet to publish.");
+                                        return;
+                                    }
+                                    setPublishing(true);
+
+                                    const quizzes: any[] = [];
+                                    const workbooks: string[] = [];
+
+                                    for (const lesson of course.lessons || []) {
+                                        if (lesson.quiz_file) {
+                                            try {
+                                                const res = await fetch(toURL(lesson.quiz_file));
+                                                if (res.ok) {
+                                                    const quizData = await res.json();
+                                                    quizzes.push(quizData);
+                                                } else quizzes.push(null);
+                                            } catch { quizzes.push(null); }
+                                        } else quizzes.push(null);
+
+                                        if (lesson.workbook_file) {
+                                            try {
+                                                const res = await fetch(toURL(lesson.workbook_file));
+                                                if (res.ok) {
+                                                    const workbookText = await res.text();
+                                                    workbooks.push(workbookText);
+                                                } else workbooks.push("");
+                                            } catch { workbooks.push(""); }
+                                        } else workbooks.push("");
+                                    }
+
+                                    const publishedCourse = {
+                                        id: `user-${Date.now()}`,
+                                        title: course.course_title || "Untitled Course",
+                                        instructor: "You",
+                                        rating: 5.0,
+                                        reviews: 0,
+                                        price: 99,
+                                        duration: `${course.lessons?.length || 1} lessons`,
+                                        students: 0,
+                                        category: "Technology",
+                                        level: "Intermediate" as const,
+                                        image: course.banner_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
+                                        featured: true,
+                                        isUserCourse: true,
+                                        courseData: { ...course, quizzes, workbooks },
+                                    };
+
+                                    const existing = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
+                                    existing.unshift(publishedCourse);
+                                    localStorage.setItem("coursia_published_courses", JSON.stringify(existing));
+
+                                    toast.success("🎉 Course published to marketplace!");
+                                    setTimeout(() => navigate("/marketplace"), 800);
+                                }}
+                                disabled={!course || publishing}
+                                className="relative group px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden disabled:opacity-50"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500" />
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                                </div>
+                                <span className="relative flex items-center gap-2 text-sm">
+                                    {publishing ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Publishing...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Store className="w-4 h-4" />
+                                            Launch to Marketplace
+                                            <Rocket className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                        </>
+                                    )}
+                                </span>
+                            </motion.button>
+                        </div>
+                    </motion.div>
                 </motion.div>
 
                 {/* Status Card */}

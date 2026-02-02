@@ -53,6 +53,13 @@ const Preview = () => {
   const [preview, setPreview] = useState<CoursePreview | null>(null);
   const [expandedLesson, setExpandedLesson] = useState<number | null>(0);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Branding & Marketing selections
+  const [selectedTitleIndex, setSelectedTitleIndex] = useState(0);
+  const [selectedPaletteIndex, setSelectedPaletteIndex] = useState(0);
+  const [selectedCoverIndex, setSelectedCoverIndex] = useState(0);
+  const [selectedHookIndex, setSelectedHookIndex] = useState(0);
+  const [customPrice, setCustomPrice] = useState(97);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("coursia_preview") || sessionStorage.getItem("Coursera Preview");
@@ -458,15 +465,16 @@ const Preview = () => {
                       {mockBranding.titleOptions.map((title, idx) => (
                         <div
                           key={idx}
+                          onClick={() => setSelectedTitleIndex(idx)}
                           className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
-                            idx === 0 
+                            selectedTitleIndex === idx 
                               ? "border-primary bg-primary/10 shadow-glow" 
                               : "border-glass-border hover:border-primary/50 hover:bg-white/5"
                           }`}
                         >
                           <div className="flex items-center justify-between">
                             <span className="font-medium">{title}</span>
-                            {idx === 0 && <Badge className="bg-primary text-primary-foreground">Recommended</Badge>}
+                            {selectedTitleIndex === idx && <Badge className="bg-primary text-primary-foreground">Selected</Badge>}
                           </div>
                         </div>
                       ))}
@@ -485,15 +493,16 @@ const Preview = () => {
                       {mockBranding.colorPalettes.map((palette, idx) => (
                         <div
                           key={idx}
+                          onClick={() => setSelectedPaletteIndex(idx)}
                           className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
-                            idx === 0 
+                            selectedPaletteIndex === idx 
                               ? "border-primary bg-primary/10" 
                               : "border-glass-border hover:border-primary/50"
                           }`}
                         >
                           <div className="flex items-center justify-between mb-3">
                             <span className="font-medium">{palette.name}</span>
-                            {idx === 0 && <Badge variant="secondary">Selected</Badge>}
+                            {selectedPaletteIndex === idx && <Badge variant="secondary">Selected</Badge>}
                           </div>
                           <div className="flex gap-2">
                             {palette.colors.map((color, colorIdx) => (
@@ -522,13 +531,18 @@ const Preview = () => {
                         {[1, 2, 3].map((_, idx) => (
                           <div
                             key={idx}
+                            onClick={() => setSelectedCoverIndex(idx)}
                             className={`aspect-video rounded-2xl bg-gradient-to-br ${
                               idx === 0 
-                                ? "from-primary/40 to-secondary/40 ring-2 ring-primary shadow-glow" 
+                                ? "from-primary/40 to-secondary/40" 
                                 : idx === 1 
                                   ? "from-accent/40 to-primary/40" 
                                   : "from-secondary/40 to-accent/40"
-                            } flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-300`}
+                            } ${
+                              selectedCoverIndex === idx 
+                                ? "ring-2 ring-primary shadow-glow scale-105" 
+                                : "hover:scale-105"
+                            } flex items-center justify-center cursor-pointer transition-all duration-300`}
                           >
                             <div className="text-center p-6">
                               <div className="text-lg font-bold mb-2 line-clamp-2">{preview.topic}</div>
@@ -557,18 +571,28 @@ const Preview = () => {
                       {mockMarketing.hooks.map((hook, idx) => (
                         <div
                           key={idx}
-                          className="p-4 rounded-xl glass border border-glass-border hover:border-primary/30 transition-colors"
+                          onClick={() => setSelectedHookIndex(idx)}
+                          className={`p-4 rounded-xl glass border cursor-pointer transition-all duration-300 ${
+                            selectedHookIndex === idx 
+                              ? "border-primary bg-primary/10 shadow-glow" 
+                              : "border-glass-border hover:border-primary/30"
+                          }`}
                         >
                           <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-brand flex items-center justify-center shrink-0">
-                              <Megaphone className="w-5 h-5 text-white" />
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                              selectedHookIndex === idx ? "bg-gradient-brand" : "bg-muted"
+                            }`}>
+                              <Megaphone className={`w-5 h-5 ${selectedHookIndex === idx ? "text-white" : "text-muted-foreground"}`} />
                             </div>
-                            <div>
+                            <div className="flex-1">
                               <p className="font-medium">{hook}</p>
                               <p className="text-xs text-muted-foreground mt-2">
                                 Perfect for: {idx === 0 ? "Twitter/X" : idx === 1 ? "LinkedIn" : "Instagram"}
                               </p>
                             </div>
+                            {selectedHookIndex === idx && (
+                              <Badge className="bg-primary text-primary-foreground shrink-0">Selected</Badge>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -585,10 +609,13 @@ const Preview = () => {
                     </CardHeader>
                     <CardContent className="space-y-6">
                       <div className="text-center p-6 rounded-2xl bg-gradient-brand/10 border border-primary/20">
-                        <div className="text-4xl font-bold gradient-text mb-2">
-                          ${mockMarketing.suggestedPrice}
-                        </div>
-                        <p className="text-sm text-muted-foreground">Recommended price point</p>
+                        <input
+                          type="number"
+                          value={customPrice}
+                          onChange={(e) => setCustomPrice(Number(e.target.value))}
+                          className="text-4xl font-bold gradient-text mb-2 bg-transparent border-none text-center w-32 outline-none focus:ring-2 focus:ring-primary rounded-lg"
+                        />
+                        <p className="text-sm text-muted-foreground">Click to edit price</p>
                       </div>
 
                       <div className="space-y-4">
@@ -597,14 +624,14 @@ const Preview = () => {
                             <TrendingUp className="w-4 h-4 text-primary" />
                             <span className="text-sm">Monthly (30 sales)</span>
                           </div>
-                          <span className="font-bold">${mockMarketing.estimatedRevenue.monthly.toLocaleString()}</span>
+                          <span className="font-bold">${(customPrice * 30).toLocaleString()}</span>
                         </div>
                         <div className="flex items-center justify-between p-3 rounded-xl glass">
                           <div className="flex items-center gap-2">
                             <TrendingUp className="w-4 h-4 text-secondary" />
                             <span className="text-sm">Yearly Potential</span>
                           </div>
-                          <span className="font-bold">${mockMarketing.estimatedRevenue.yearly.toLocaleString()}</span>
+                          <span className="font-bold">${(customPrice * 30 * 12).toLocaleString()}</span>
                         </div>
                       </div>
                     </CardContent>
