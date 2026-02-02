@@ -243,40 +243,40 @@ const MyCourse = () => {
                             logo_path: undefined,
                             banner_path: undefined,
                         };
-                        
+
                         // Generate branding BEFORE showing the course
                         if (progressInterval) clearInterval(progressInterval);
                         setGenerationProgress(88);
                         setStatus("creating_branding");
                         setProgressMsg("Creating logo & banner...");
-                        
+
                         console.log("🎨 Generating branding during course creation...");
                         const brandingResult = await generateBranding({
                             course_title: courseWithoutBackendBranding.course_title || "Course",
                             course_description: courseWithoutBackendBranding.course_description,
                             style: "modern",
                         });
-                        
+
                         // Merge branding into course
                         const finalCourse = {
                             ...courseWithoutBackendBranding,
                             logo_url: brandingResult.logo_url || undefined,
                             banner_url: brandingResult.banner_url || undefined,
                         };
-                        
+
                         setGenerationProgress(95);
                         setStatus("polishing");
                         setProgressMsg("Polishing your course...");
-                        
+
                         // Small delay for visual polish step
                         await new Promise(resolve => setTimeout(resolve, 800));
-                        
+
                         setGenerationProgress(100);
                         sessionStorage.setItem("coursia_full_course", JSON.stringify(finalCourse));
                         setCourse(finalCourse);
                         setStatus("done");
                         toast.success("✅ Your full course is ready!");
-                        navigate("/mycourse", { state: { jobId } });
+                        navigate("/my-course", { state: { jobId } });
                     }
                 } catch (err) {
                     console.error("Polling failed:", err);
@@ -572,7 +572,7 @@ const MyCourse = () => {
                                                 AI-Generated Course
                                             </span>
                                         </motion.div>
-                                        
+
                                         {/* Course Title */}
                                         <motion.h1
                                             initial={{ opacity: 0, x: -20 }}
@@ -929,7 +929,7 @@ const MyCourse = () => {
                             </div>
 
                             <div className="space-y-4">
-                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-4">
                                     {course?.logo_url ? (
                                         <img
                                             src={course.logo_url}
@@ -947,9 +947,9 @@ const MyCourse = () => {
                                     )}
                                     <div className="flex-1">
                                         <p className="text-xs text-muted-foreground">
-                                            {isBrandingGenerating 
+                                            {isBrandingGenerating
                                                 ? "Generating branding with Lovable AI..."
-                                                : course?.logo_url || course?.banner_url 
+                                                : course?.logo_url || course?.banner_url
                                                     ? "Logo & banner generated with Lovable AI"
                                                     : "Premium branding will be auto-generated"}
                                         </p>
@@ -963,7 +963,7 @@ const MyCourse = () => {
                                     disabled={isBrandingGenerating || !course?.course_title}
                                     onClick={async () => {
                                         if (!course?.course_title) return;
-                                        
+
                                         const result = await generateBranding({
                                             course_title: course.course_title,
                                             course_description: course.course_description,
