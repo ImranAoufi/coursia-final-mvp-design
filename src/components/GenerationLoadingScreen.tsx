@@ -33,8 +33,8 @@ const defaultSteps: GenerationStep[] = [
   { id: "generating_scripts", label: "Generating lesson scripts...", icon: <FileText className="w-5 h-5" /> },
   { id: "creating_quizzes", label: "Creating quizzes...", icon: <GraduationCap className="w-5 h-5" /> },
   { id: "building_workbooks", label: "Building workbooks...", icon: <BookOpen className="w-5 h-5" /> },
+  { id: "creating_branding", label: "Creating logo & banner...", icon: <Palette className="w-5 h-5" /> },
   { id: "polishing", label: "Polishing your course...", icon: <Sparkles className="w-5 h-5" /> },
-  { id: "finalizing", label: "Finalizing...", icon: <Palette className="w-5 h-5" /> },
 ];
 
 const stepMappings: Record<string, string> = {
@@ -47,9 +47,11 @@ const stepMappings: Record<string, string> = {
   "quizzes": "creating_quizzes",
   "workbooks": "building_workbooks",
   "running": "generating_scripts",
+  "branding": "creating_branding",
+  "creating_branding": "creating_branding",
   "polishing": "polishing",
-  "finalizing": "finalizing",
-  "done": "finalizing",
+  "finalizing": "polishing",
+  "done": "polishing",
 };
 
 function getActiveStepIndex(currentStep: string, steps: GenerationStep[]): number {

@@ -199,9 +199,6 @@ const MyCourse = () => {
     };
 
 
-    // Auto-generate branding when course loads without logo_url/banner_url
-    const [brandingTriggered, setBrandingTriggered] = useState(false);
-
     useEffect(() => {
         if (course) {
             setStatus("done");
@@ -218,7 +215,7 @@ const MyCourse = () => {
             setGenerationProgress(5);
             progressInterval = setInterval(() => {
                 setGenerationProgress((prev) => {
-                    if (prev >= 90) return prev;
+                    if (prev >= 85) return prev;
                     return prev + 2;
                 });
             }, 1500);
@@ -239,10 +236,7 @@ const MyCourse = () => {
                     });
 
 
-                    if (full) {
-                        if (progressInterval) clearInterval(progressInterval);
-                        setGenerationProgress(100);
-                        
+                    if (full && !cancelled) {
                         // Strip backend branding paths - we only use Lovable AI generated branding
                         const courseWithoutBackendBranding = {
                             ...full,
@@ -250,13 +244,39 @@ const MyCourse = () => {
                             banner_path: undefined,
                         };
                         
-                        sessionStorage.setItem("coursia_full_course", JSON.stringify(courseWithoutBackendBranding));
-                        if (!cancelled) {
-                            setCourse(courseWithoutBackendBranding);
-                            setStatus("done");
-                            toast.success("✅ Your full course is ready!");
-                            navigate("/mycourse", { state: { jobId } });
-                        }
+                        // Generate branding BEFORE showing the course
+                        if (progressInterval) clearInterval(progressInterval);
+                        setGenerationProgress(88);
+                        setStatus("creating_branding");
+                        setProgressMsg("Creating logo & banner...");
+                        
+                        console.log("🎨 Generating branding during course creation...");
+                        const brandingResult = await generateBranding({
+                            course_title: courseWithoutBackendBranding.course_title || "Course",
+                            course_description: courseWithoutBackendBranding.course_description,
+                            style: "modern",
+                        });
+                        
+                        // Merge branding into course
+                        const finalCourse = {
+                            ...courseWithoutBackendBranding,
+                            logo_url: brandingResult.logo_url || undefined,
+                            banner_url: brandingResult.banner_url || undefined,
+                        };
+                        
+                        setGenerationProgress(95);
+                        setStatus("polishing");
+                        setProgressMsg("Polishing your course...");
+                        
+                        // Small delay for visual polish step
+                        await new Promise(resolve => setTimeout(resolve, 800));
+                        
+                        setGenerationProgress(100);
+                        sessionStorage.setItem("coursia_full_course", JSON.stringify(finalCourse));
+                        setCourse(finalCourse);
+                        setStatus("done");
+                        toast.success("✅ Your full course is ready!");
+                        navigate("/mycourse", { state: { jobId } });
                     }
                 } catch (err) {
                     console.error("Polling failed:", err);
@@ -271,40 +291,7 @@ const MyCourse = () => {
             cancelled = true;
             if (progressInterval) clearInterval(progressInterval);
         };
-    }, [jobId]);
-
-    // Auto-trigger branding generation when course is ready but has no AI-generated branding
-    useEffect(() => {
-        if (
-            course?.course_title && 
-            !course.logo_url && 
-            !course.banner_url && 
-            !brandingTriggered && 
-            !isBrandingGenerating &&
-            status === "done"
-        ) {
-            setBrandingTriggered(true);
-            
-            (async () => {
-                console.log("🎨 Auto-generating branding with Lovable AI...");
-                const result = await generateBranding({
-                    course_title: course.course_title!,
-                    course_description: course.course_description,
-                    style: "modern",
-                });
-
-                if (result.logo_url || result.banner_url) {
-                    const updatedCourse = {
-                        ...course,
-                        logo_url: result.logo_url || undefined,
-                        banner_url: result.banner_url || undefined,
-                    };
-                    setCourse(updatedCourse);
-                    sessionStorage.setItem("coursia_full_course", JSON.stringify(updatedCourse));
-                }
-            })();
-        }
-    }, [course, brandingTriggered, isBrandingGenerating, status, generateBranding]);
+    }, [jobId, generateBranding]);
 
 
     // Smooth teleprompter scrolling using requestAnimationFrame
