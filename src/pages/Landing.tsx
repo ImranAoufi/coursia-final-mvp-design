@@ -38,28 +38,28 @@ const Landing = () => {
         <div className="container mx-auto px-6 flex items-center justify-between">
           <Logo />
 
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#product" className="text-foreground/80 hover:text-foreground transition-colors">
+          <nav className="hidden md:flex items-center justify-center gap-8 flex-1 mx-8">
+            <a href="#product" className="text-foreground/70 hover:text-foreground transition-colors text-sm font-medium">
               Product
             </a>
-            <a href="#learn" className="text-foreground/80 hover:text-foreground transition-colors">
+            <a href="#learn" className="text-foreground/70 hover:text-foreground transition-colors text-sm font-medium">
               Learn
             </a>
             <button
               onClick={() => navigate("/pricing")}
-              className="text-foreground/80 hover:text-foreground transition-colors"
+              className="text-foreground/70 hover:text-foreground transition-colors text-sm font-medium"
             >
               Pricing
             </button>
             <button
               onClick={() => navigate("/enterprise")}
-              className="text-foreground/80 hover:text-foreground transition-colors"
+              className="text-foreground/70 hover:text-foreground transition-colors text-sm font-medium"
             >
               Enterprise
             </button>
             <button
               onClick={() => navigate("/marketplace")}
-              className="text-foreground/80 hover:text-foreground transition-colors"
+              className="relative px-4 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/30 text-primary font-semibold text-sm hover:border-primary/50 hover:shadow-glow transition-all duration-300"
             >
               Marketplace
             </button>
