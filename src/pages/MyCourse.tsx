@@ -513,103 +513,133 @@ const MyCourse = () => {
                     transition={{ duration: 0.6 }}
                     className="space-y-6"
                 >
-                    {/* Clean Full-width Banner - No text overlay */}
-                    <div className="relative rounded-3xl overflow-hidden shadow-elevated">
-                        {course?.banner_url ? (
-                            <div className="relative h-48 sm:h-56 lg:h-64">
-                                <img
-                                    src={course.banner_url}
-                                    alt="Course banner"
-                                    className="w-full h-full object-cover"
-                                />
-                                {/* Subtle bottom fade only */}
-                                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background/80 to-transparent" />
-                            </div>
-                        ) : (
-                            <div className="h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20" />
+                    {/* Title Section - Above Banner (like Preview page) */}
+                    <div className="space-y-4">
+                        {/* Category badge */}
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, duration: 0.4 }}
+                        >
+                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-xs font-medium text-primary border border-primary/20">
+                                <Sparkles className="w-3 h-3" />
+                                AI-Generated Course
+                            </span>
+                        </motion.div>
+
+                        {/* Course Title */}
+                        <motion.h1
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
+                            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight"
+                        >
+                            {course?.course_title ?? "Your Course"}
+                        </motion.h1>
+
+                        {/* Description */}
+                        {course?.course_description && (
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.35, duration: 0.5 }}
+                                className="text-lg text-muted-foreground max-w-3xl"
+                            >
+                                {course.course_description}
+                            </motion.p>
                         )}
                     </div>
 
-                    {/* Title & Actions Card - Below banner */}
-                    <div className="glass-strong rounded-2xl p-6 sm:p-8">
+                    {/* Premium Full-width Banner */}
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.4, duration: 0.6 }}
+                        className="relative rounded-3xl overflow-hidden shadow-elevated group"
+                    >
+                        {course?.banner_url ? (
+                            <div className="relative h-56 sm:h-72 lg:h-80">
+                                <img
+                                    src={course.banner_url}
+                                    alt="Course banner"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                                {/* Subtle ambient glow overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+                            </div>
+                        ) : (
+                            <div className="h-56 sm:h-72 lg:h-80 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20 animate-gradient" />
+                        )}
+                    </motion.div>
+
+                    {/* Actions & Stats Bar */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, duration: 0.5 }}
+                        className="glass-strong rounded-2xl p-4 sm:p-6"
+                    >
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                            {/* Left: Title and meta */}
-                            <div className="space-y-4 flex-1">
-                                {/* Category badge */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.2, duration: 0.4 }}
-                                >
-                                    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-xs font-medium text-primary border border-primary/20">
-                                        <Sparkles className="w-3 h-3" />
-                                        AI-Generated Course
-                                    </span>
-                                </motion.div>
-
-                                {/* Course Title */}
-                                <motion.h1
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.3, duration: 0.5 }}
-                                    className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-tight"
-                                >
-                                    {course?.course_title ?? "Your Course"}
-                                </motion.h1>
-
-                                {/* Description */}
-                                {course?.course_description && (
-                                    <motion.p
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.35, duration: 0.5 }}
-                                        className="text-muted-foreground max-w-2xl"
-                                    >
-                                        {course.course_description}
-                                    </motion.p>
-                                )}
-
-                                {/* Stats row */}
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.4, duration: 0.5 }}
-                                    className="flex flex-wrap items-center gap-6 pt-2"
-                                >
-                                    <span className="flex items-center gap-2 text-sm">
-                                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                            <Layers className="w-4 h-4 text-primary" />
-                                        </div>
-                                        <span className="font-medium">{course?.lessons?.length || 0}</span>
-                                        <span className="text-muted-foreground">Lessons</span>
-                                    </span>
-                                    <span className="flex items-center gap-2 text-sm">
-                                        <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
-                                            <Film className="w-4 h-4 text-secondary" />
-                                        </div>
-                                        <span className="font-medium">{course?.lessons?.reduce((acc, l) => acc + (l.videos?.length || 0), 0) || 0}</span>
-                                        <span className="text-muted-foreground">Videos</span>
-                                    </span>
-                                    <span className="flex items-center gap-2 text-sm">
-                                        <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                                            <Brain className="w-4 h-4 text-accent" />
-                                        </div>
-                                        <span className="font-medium">{course?.lessons?.filter(l => l.quiz_file).length || 0}</span>
-                                        <span className="text-muted-foreground">Quizzes</span>
-                                    </span>
-                                </motion.div>
+                            {/* Stats row */}
+                            <div className="flex flex-wrap items-center gap-6">
+                                <span className="flex items-center gap-2 text-sm">
+                                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                                        <Layers className="w-4 h-4 text-primary" />
+                                    </div>
+                                    <span className="font-medium">{course?.lessons?.length || 0}</span>
+                                    <span className="text-muted-foreground">Lessons</span>
+                                </span>
+                                <span className="flex items-center gap-2 text-sm">
+                                    <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
+                                        <Film className="w-4 h-4 text-secondary" />
+                                    </div>
+                                    <span className="font-medium">{course?.lessons?.reduce((acc, l) => acc + (l.videos?.length || 0), 0) || 0}</span>
+                                    <span className="text-muted-foreground">Videos</span>
+                                </span>
+                                <span className="flex items-center gap-2 text-sm">
+                                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                                        <Brain className="w-4 h-4 text-accent" />
+                                    </div>
+                                    <span className="font-medium">{course?.lessons?.filter(l => l.quiz_file).length || 0}</span>
+                                    <span className="text-muted-foreground">Quizzes</span>
+                                </span>
                             </div>
 
-                            {/* Right: Launch button */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.5, duration: 0.4 }}
-                                className="shrink-0"
-                            >
+                            {/* Action buttons */}
+                            <div className="flex items-center gap-3">
+                                {/* Regenerate Branding button */}
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={isBrandingGenerating}
+                                    onClick={async () => {
+                                        if (!course) return;
+                                        const result = await generateBranding({
+                                            course_title: course.course_title || "Course",
+                                            course_description: course.course_description,
+                                            style: "modern",
+                                        });
+                                        if (result.logo_url || result.banner_url) {
+                                            const updated = {
+                                                ...course,
+                                                logo_url: result.logo_url || course.logo_url,
+                                                banner_url: result.banner_url || course.banner_url,
+                                            };
+                                            setCourse(updated);
+                                            sessionStorage.setItem("coursia_full_course", JSON.stringify(updated));
+                                        }
+                                    }}
+                                    className="flex items-center gap-2"
+                                >
+                                    <RefreshCw className={`w-4 h-4 ${isBrandingGenerating ? 'animate-spin' : ''}`} />
+                                    {isBrandingGenerating ? 'Regenerating...' : 'Regenerate Branding'}
+                                </Button>
+
+                                {/* Premium Launch to Marketplace button with animations */}
                                 <motion.button
-                                    whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(139, 92, 246, 0.5)" }}
-                                    whileTap={{ scale: 0.98 }}
+                                    whileHover={{ scale: 1.03 }}
+                                    whileTap={{ scale: 0.97 }}
                                     onClick={async () => {
                                         if (!course) {
                                             alert("No course data yet to publish.");
@@ -667,30 +697,47 @@ const MyCourse = () => {
                                         setTimeout(() => navigate("/marketplace"), 800);
                                     }}
                                     disabled={!course || publishing}
-                                    className="relative group px-8 py-4 rounded-2xl font-semibold text-white overflow-hidden disabled:opacity-50"
+                                    className="relative group px-6 py-3 rounded-2xl font-semibold text-white overflow-hidden disabled:opacity-50 shadow-lg hover:shadow-[0_0_40px_rgba(139,92,246,0.5)] transition-shadow duration-500"
                                 >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500" />
+                                    {/* Animated gradient background */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 animate-gradient-x" />
+                                    
+                                    {/* Glow effect */}
                                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-violet-500/50 via-fuchsia-500/50 to-pink-500/50 blur-xl" />
                                     </div>
-                                    <span className="relative flex items-center gap-3 text-base">
+                                    
+                                    {/* Shimmer effect */}
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                                    </div>
+
+                                    {/* Sparkle particles */}
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                                        <div className="absolute top-1 left-4 w-1 h-1 bg-white rounded-full animate-ping" style={{ animationDuration: '1.5s' }} />
+                                        <div className="absolute top-3 right-6 w-1.5 h-1.5 bg-white rounded-full animate-ping" style={{ animationDuration: '2s', animationDelay: '0.3s' }} />
+                                        <div className="absolute bottom-2 left-8 w-1 h-1 bg-white rounded-full animate-ping" style={{ animationDuration: '1.8s', animationDelay: '0.5s' }} />
+                                    </div>
+                                    
+                                    {/* Content */}
+                                    <span className="relative flex items-center gap-3 text-sm">
                                         {publishing ? (
                                             <>
-                                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                                 Publishing...
                                             </>
                                         ) : (
                                             <>
-                                                <Store className="w-5 h-5" />
+                                                <Store className="w-4 h-4" />
                                                 Launch to Marketplace
-                                                <Rocket className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                                <Rocket className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                                             </>
                                         )}
                                     </span>
                                 </motion.button>
-                            </motion.div>
+                            </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </motion.div>
 
 
