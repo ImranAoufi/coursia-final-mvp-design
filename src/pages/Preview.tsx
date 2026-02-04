@@ -61,6 +61,16 @@ const Preview = () => {
   const [selectedHookIndex, setSelectedHookIndex] = useState(0);
   const [customPrice, setCustomPrice] = useState(97);
 
+  // Color palettes configuration
+  const colorPalettes = [
+    { name: "Ocean Depth", colors: ["#0EA5E9", "#0D9488", "#1E3A5F"], gradient: "from-[#0EA5E9] via-[#0D9488] to-[#1E3A5F]" },
+    { name: "Sunset Glow", colors: ["#F97316", "#EC4899", "#8B5CF6"], gradient: "from-[#F97316] via-[#EC4899] to-[#8B5CF6]" },
+    { name: "Forest Calm", colors: ["#22C55E", "#059669", "#065F46"], gradient: "from-[#22C55E] via-[#059669] to-[#065F46]" }
+  ];
+
+  // Get currently selected palette
+  const activePalette = colorPalettes[selectedPaletteIndex];
+
   useEffect(() => {
     const raw = sessionStorage.getItem("coursia_preview") || sessionStorage.getItem("Coursera Preview");
     if (raw) {
@@ -87,7 +97,34 @@ const Preview = () => {
         console.error("Failed to parse preview from sessionStorage", e);
       }
     }
+
+    // Load saved selections from sessionStorage
+    const savedSelections = sessionStorage.getItem("coursia_preview_selections");
+    if (savedSelections) {
+      try {
+        const selections = JSON.parse(savedSelections);
+        if (selections.titleIndex !== undefined) setSelectedTitleIndex(selections.titleIndex);
+        if (selections.paletteIndex !== undefined) setSelectedPaletteIndex(selections.paletteIndex);
+        if (selections.coverIndex !== undefined) setSelectedCoverIndex(selections.coverIndex);
+        if (selections.hookIndex !== undefined) setSelectedHookIndex(selections.hookIndex);
+        if (selections.price !== undefined) setCustomPrice(selections.price);
+      } catch (e) {
+        console.error("Failed to parse saved selections", e);
+      }
+    }
   }, []);
+
+  // Save selections to sessionStorage whenever they change
+  useEffect(() => {
+    const selections = {
+      titleIndex: selectedTitleIndex,
+      paletteIndex: selectedPaletteIndex,
+      coverIndex: selectedCoverIndex,
+      hookIndex: selectedHookIndex,
+      price: customPrice
+    };
+    sessionStorage.setItem("coursia_preview_selections", JSON.stringify(selections));
+  }, [selectedTitleIndex, selectedPaletteIndex, selectedCoverIndex, selectedHookIndex, customPrice]);
 
   const handleGenerateFullCourse = async () => {
     try {
@@ -119,19 +156,15 @@ const Preview = () => {
   const totalQuizzes = preview?.lessons?.filter(l => l.quiz).length ?? 0;
   const totalWorkbooks = preview?.lessons?.filter(l => l.workbook).length ?? 0;
 
-  // Generate mock branding data based on topic
-  const mockBranding = {
-    titleOptions: [
-      preview?.topic || "Your Course",
-      `Master ${preview?.topic || "This Skill"}`,
-      `The Complete ${preview?.topic || "Course"} Guide`
-    ],
-    colorPalettes: [
-      { name: "Ocean Depth", colors: ["#0EA5E9", "#0D9488", "#1E3A5F"] },
-      { name: "Sunset Glow", colors: ["#F97316", "#EC4899", "#8B5CF6"] },
-      { name: "Forest Calm", colors: ["#22C55E", "#059669", "#065F46"] }
-    ]
-  };
+  // Generate branding data based on topic
+  const titleOptions = [
+    preview?.topic || "Your Course",
+    `Master ${preview?.topic || "This Skill"}`,
+    `The Complete ${preview?.topic || "Course"} Guide`
+  ];
+
+  // Get the currently selected title
+  const activeTitle = titleOptions[selectedTitleIndex];
 
   const mockMarketing = {
     hooks: [
@@ -145,6 +178,9 @@ const Preview = () => {
       yearly: 34800
     }
   };
+
+  // Get selected hook
+  const activeHook = mockMarketing.hooks[selectedHookIndex];
 
   if (!preview) {
     return (
@@ -199,18 +235,25 @@ const Preview = () => {
               <span className="text-sm">Your course structure is ready!</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-3">
-              <span className="gradient-text">{preview.topic ?? 'Your Course'}</span>
+              <span 
+                className="bg-clip-text text-transparent bg-gradient-to-r"
+                style={{ 
+                  backgroundImage: `linear-gradient(to right, ${activePalette.colors[0]}, ${activePalette.colors[1]}, ${activePalette.colors[2]})`
+                }}
+              >
+                {activeTitle}
+              </span>
             </h1>
             
             {/* Subline: Verb + Outcome + Target Audience/Context */}
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
-              Master {preview.topic || "this skill"} and transform your expertise into actionable knowledge for aspiring professionals and lifelong learners.
+              {activeHook}
             </p>
             
             {/* Course Promise: Result + Speed + Clarity */}
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl glass-strong border border-primary/20 mb-4">
               <div className="flex items-center gap-2 text-sm">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: activePalette.colors[0] }} />
                 <span className="font-medium text-foreground">
                   Achieve real-world results in {Math.ceil((totalVideos * 8) / 60) || 2} hours with crystal-clear, step-by-step guidance
                 </span>
@@ -462,7 +505,7 @@ const Preview = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      {mockBranding.titleOptions.map((title, idx) => (
+                      {titleOptions.map((title, idx) => (
                         <div
                           key={idx}
                           onClick={() => setSelectedTitleIndex(idx)}
@@ -490,7 +533,7 @@ const Preview = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      {mockBranding.colorPalettes.map((palette, idx) => (
+                      {colorPalettes.map((palette, idx) => (
                         <div
                           key={idx}
                           onClick={() => setSelectedPaletteIndex(idx)}
@@ -528,28 +571,32 @@ const Preview = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-3 gap-6">
-                        {[1, 2, 3].map((_, idx) => (
-                          <div
-                            key={idx}
-                            onClick={() => setSelectedCoverIndex(idx)}
-                            className={`aspect-video rounded-2xl bg-gradient-to-br ${
-                              idx === 0 
-                                ? "from-primary/40 to-secondary/40" 
-                                : idx === 1 
-                                  ? "from-accent/40 to-primary/40" 
-                                  : "from-secondary/40 to-accent/40"
-                            } ${
-                              selectedCoverIndex === idx 
-                                ? "ring-2 ring-primary shadow-glow scale-105" 
-                                : "hover:scale-105"
-                            } flex items-center justify-center cursor-pointer transition-all duration-300`}
-                          >
-                            <div className="text-center p-6">
-                              <div className="text-lg font-bold mb-2 line-clamp-2">{preview.topic}</div>
-                              <div className="text-sm text-muted-foreground">Online Course</div>
+                        {["Minimal", "Bold", "Elegant"].map((style, idx) => {
+                          // Use selected palette colors for each cover style
+                          const coverStyles = [
+                            { bg: `linear-gradient(135deg, ${activePalette.colors[0]}40, ${activePalette.colors[1]}40)` },
+                            { bg: `linear-gradient(135deg, ${activePalette.colors[1]}60, ${activePalette.colors[2]}60)` },
+                            { bg: `linear-gradient(135deg, ${activePalette.colors[2]}40, ${activePalette.colors[0]}40)` }
+                          ];
+                          return (
+                            <div
+                              key={idx}
+                              onClick={() => setSelectedCoverIndex(idx)}
+                              style={{ background: coverStyles[idx].bg }}
+                              className={`aspect-video rounded-2xl ${
+                                selectedCoverIndex === idx 
+                                  ? "ring-2 ring-primary shadow-glow scale-105" 
+                                  : "hover:scale-105"
+                              } flex items-center justify-center cursor-pointer transition-all duration-300`}
+                            >
+                              <div className="text-center p-6">
+                                <div className="text-lg font-bold mb-2 line-clamp-2">{activeTitle}</div>
+                                <div className="text-xs text-muted-foreground mb-1">{style} Style</div>
+                                <div className="text-sm text-muted-foreground">Online Course</div>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </CardContent>
                   </Card>
@@ -666,13 +713,24 @@ const Preview = () => {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="aspect-[21/9] rounded-2xl bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/30 flex items-center justify-center relative overflow-hidden">
+                      <div 
+                        className="aspect-[21/9] rounded-2xl flex items-center justify-center relative overflow-hidden"
+                        style={{ 
+                          background: `linear-gradient(135deg, ${activePalette.colors[0]}50, ${activePalette.colors[1]}30, ${activePalette.colors[2]}50)`
+                        }}
+                      >
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                         <div className="relative z-10 text-center p-8">
-                          <h3 className="text-3xl font-bold mb-4">{preview.topic}</h3>
-                          <p className="text-muted-foreground mb-6">Transform your knowledge into actionable skills</p>
-                          <Button variant="gradient" size="lg" className="pointer-events-none">
-                            Enroll Now
+                          <h3 className="text-3xl font-bold mb-4">{activeTitle}</h3>
+                          <p className="text-muted-foreground mb-6">{activeHook}</p>
+                          <Button 
+                            size="lg" 
+                            className="pointer-events-none text-white"
+                            style={{ 
+                              background: `linear-gradient(135deg, ${activePalette.colors[0]}, ${activePalette.colors[1]})`
+                            }}
+                          >
+                            Enroll Now - ${customPrice}
                           </Button>
                         </div>
                       </div>
