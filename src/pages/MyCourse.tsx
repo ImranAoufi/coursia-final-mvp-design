@@ -56,12 +56,38 @@ interface FullCourse {
 }
 
 
+// Helper to derive category from course title/description
+const deriveCategory = (title?: string, description?: string): string => {
+    const text = `${title || ""} ${description || ""}`.toLowerCase();
+    const categoryMap: Record<string, string[]> = {
+        "Technology": ["coding", "programming", "software", "tech", "ai", "machine learning", "data", "developer", "web", "app", "computer", "python", "javascript"],
+        "Business": ["business", "entrepreneur", "startup", "marketing", "sales", "management", "finance", "money", "investing", "leadership"],
+        "Creative Arts": ["art", "design", "creative", "music", "photography", "video", "drawing", "painting", "animation", "graphic"],
+        "Health & Wellness": ["health", "fitness", "wellness", "yoga", "meditation", "nutrition", "mental", "exercise", "diet", "mindfulness"],
+        "Personal Development": ["personal", "productivity", "habits", "growth", "motivation", "mindset", "success", "confidence", "communication", "self"],
+        "Language": ["language", "english", "spanish", "french", "german", "japanese", "chinese", "speaking", "writing", "grammar"],
+        "Education": ["teaching", "learning", "education", "academic", "study", "course", "training", "skills"],
+    };
+    
+    for (const [category, keywords] of Object.entries(categoryMap)) {
+        if (keywords.some(keyword => text.includes(keyword))) {
+            return category;
+        }
+    }
+    return "Personal Development"; // Default fallback
+};
+
 const MyCourse = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const jobIdFromState = (location.state as any)?.jobId as string | undefined;
     const { generateBranding, isGenerating: isBrandingGenerating } = useBrandingGeneration();
 
+    // Load wizard data for marketplace publishing
+    const [wizardData] = useState(() => {
+        const saved = sessionStorage.getItem("coursia_wizard_data");
+        return saved ? JSON.parse(saved) : {};
+    });
 
     const [course, setCourse] = useState<FullCourse | null>(() => {
         const saved = sessionStorage.getItem("coursia_full_course");
@@ -672,6 +698,15 @@ const MyCourse = () => {
                                             } else workbooks.push("");
                                         }
 
+                                        // Map wizard audienceLevel to marketplace level format
+                                        const levelMap: Record<string, "Beginner" | "Intermediate" | "Advanced"> = {
+                                            "Beginner": "Beginner",
+                                            "Intermediate": "Intermediate", 
+                                            "Advanced": "Advanced",
+                                        };
+                                        const courseLevel = levelMap[wizardData.audienceLevel] || "Intermediate";
+                                        const courseCategory = deriveCategory(course.course_title, course.course_description);
+
                                         const publishedCourse = {
                                             id: `user-${Date.now()}`,
                                             title: course.course_title || "Untitled Course",
@@ -681,11 +716,18 @@ const MyCourse = () => {
                                             price: 99,
                                             duration: `${course.lessons?.length || 1} lessons`,
                                             students: 0,
-                                            category: "Technology",
-                                            level: "Intermediate" as const,
+                                            category: courseCategory,
+                                            level: courseLevel,
                                             image: course.banner_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
                                             featured: true,
                                             isUserCourse: true,
+                                            // Include wizard metadata for full context
+                                            wizardData: {
+                                                audience: wizardData.audience,
+                                                audienceLevel: wizardData.audienceLevel,
+                                                outcome: wizardData.outcome,
+                                                courseSize: wizardData.courseSize,
+                                            },
                                             courseData: { ...course, quizzes, workbooks },
                                         };
 
