@@ -109,6 +109,17 @@ Generate a realistic, engaging, English-only JSON course structure with:
         parsed = preview;
       }
 
+      // 💾 Store wizard data for use throughout the flow (Preview, MyCourse, Marketplace)
+      const wizardMetadata = {
+        outcome: data.outcome || "Untitled Course",
+        audience: data.audience || "",
+        audienceLevel: data.audienceLevel || "Intermediate",
+        courseSize: data.courseSize || "standard",
+        materials: data.materials || "",
+        links: data.links || "",
+      };
+      sessionStorage.setItem("coursia_wizard_data", JSON.stringify(wizardMetadata));
+      
       // 💾 Speichern für Preview-Seite
       sessionStorage.setItem(
         "coursia_preview",
