@@ -25,6 +25,10 @@ import SlideViewer from "@/components/SlideViewer";
 import TeleprompterSlidePanel, { SlideContent } from "@/components/TeleprompterSlidePanel";
 import VideoWithSlides from "@/components/VideoWithSlides";
 import { useBrandingGeneration } from "@/hooks/useBrandingGeneration";
+import { useCourseDatabase, CourseData } from "@/hooks/useCourseDatabase";
+import { CourseEditableHeader } from "@/components/course/CourseEditableHeader";
+import { CourseActionsBar } from "@/components/course/CourseActionsBar";
+import { supabase } from "@/integrations/supabase/client";
 
 
 
@@ -82,9 +86,10 @@ const MyCourse = () => {
     const location = useLocation();
     const jobIdFromState = (location.state as any)?.jobId as string | undefined;
     const { generateBranding, isGenerating: isBrandingGenerating } = useBrandingGeneration();
+    const { saveCourse, updateCourse, publishCourse, isSaving } = useCourseDatabase();
 
     // Load wizard data for marketplace publishing
-    const [wizardData] = useState(() => {
+    const [wizardData, setWizardData] = useState(() => {
         const saved = sessionStorage.getItem("coursia_wizard_data");
         return saved ? JSON.parse(saved) : {};
     });
@@ -99,6 +104,21 @@ const MyCourse = () => {
     const [downloading, setDownloading] = useState(false);
     const [publishing, setPublishing] = useState(false);
     const [generationProgress, setGenerationProgress] = useState(0);
+    
+    // Database state
+    const [savedCourseId, setSavedCourseId] = useState<string | null>(null);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [isSavedToDb, setIsSavedToDb] = useState(false);
+    const [customPrice, setCustomPrice] = useState<number>(() => {
+        const saved = sessionStorage.getItem("coursia_preview_price");
+        return saved ? parseFloat(saved) : 49.00;
+    });
+    const [category, setCategory] = useState<string>(() => {
+        return deriveCategory(course?.course_title, course?.course_description);
+    });
+    const [audienceLevel, setAudienceLevel] = useState<string>(() => {
+        return wizardData.audienceLevel || "Intermediate";
+    });
 
 
     const [openScript, setOpenScript] = useState(false);
@@ -532,255 +552,221 @@ const MyCourse = () => {
             </div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-                {/* Premium Course Hero Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="space-y-6"
-                >
-                    {/* Title Section - Above Banner (like Preview page) */}
-                    <div className="space-y-4">
-                        {/* Category badge */}
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2, duration: 0.4 }}
-                        >
-                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-xs font-medium text-primary border border-primary/20">
-                                <Sparkles className="w-3 h-3" />
-                                AI-Generated Course
-                            </span>
-                        </motion.div>
+                {/* Editable Course Header */}
+                <CourseEditableHeader
+                    title={course?.course_title || "Your Course"}
+                    description={course?.course_description}
+                    category={category}
+                    audienceLevel={audienceLevel}
+                    price={customPrice}
+                    bannerUrl={course?.banner_url}
+                    isSaving={isSaving}
+                    onUpdate={async (updates) => {
+                        if (!course) return;
+                        
+                        // Update local state
+                        const updatedCourse = { ...course };
+                        if (updates.title) updatedCourse.course_title = updates.title;
+                        if (updates.description !== undefined) updatedCourse.course_description = updates.description;
+                        if (updates.category) setCategory(updates.category);
+                        if (updates.audience_level) setAudienceLevel(updates.audience_level);
+                        if (updates.custom_price !== undefined) {
+                            setCustomPrice(updates.custom_price);
+                            sessionStorage.setItem("coursia_preview_price", updates.custom_price.toString());
+                        }
+                        
+                        setCourse(updatedCourse);
+                        sessionStorage.setItem("coursia_full_course", JSON.stringify(updatedCourse));
+                        setHasUnsavedChanges(true);
+                        
+                        // If saved to DB, update there too
+                        if (savedCourseId) {
+                            await updateCourse(savedCourseId, {
+                                ...updates,
+                                title: updates.title || course.course_title || "Untitled",
+                            });
+                        }
+                    }}
+                />
 
-                        {/* Course Title */}
-                        <motion.h1
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3, duration: 0.5 }}
-                            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight"
-                        >
-                            {course?.course_title ?? "Your Course"}
-                        </motion.h1>
+                {/* Actions & Stats Bar */}
+                <CourseActionsBar
+                    lessonsCount={course?.lessons?.length || 0}
+                    videosCount={course?.lessons?.reduce((acc, l) => acc + (l.videos?.length || 0), 0) || 0}
+                    quizzesCount={course?.lessons?.filter(l => l.quiz_file).length || 0}
+                    isBrandingGenerating={isBrandingGenerating}
+                    isPublishing={publishing}
+                    isSaving={isSaving}
+                    isSaved={isSavedToDb}
+                    hasUnsavedChanges={hasUnsavedChanges}
+                    onRegenerateBranding={async () => {
+                        if (!course) return;
+                        const result = await generateBranding({
+                            course_title: course.course_title || "Course",
+                            course_description: course.course_description,
+                            style: "modern",
+                        });
+                        if (result.logo_url || result.banner_url) {
+                            const updated = {
+                                ...course,
+                                logo_url: result.logo_url || course.logo_url,
+                                banner_url: result.banner_url || course.banner_url,
+                            };
+                            setCourse(updated);
+                            sessionStorage.setItem("coursia_full_course", JSON.stringify(updated));
+                            setHasUnsavedChanges(true);
+                        }
+                    }}
+                    onSave={async () => {
+                        if (!course) return;
+                        
+                        const { data: { user } } = await supabase.auth.getUser();
+                        if (!user) {
+                            toast.error("Please sign in to save your course");
+                            navigate("/auth");
+                            return;
+                        }
+                        
+                        const courseData: CourseData = {
+                            title: course.course_title || "Untitled Course",
+                            description: course.course_description,
+                            category,
+                            outcome: wizardData.outcome,
+                            target_audience: wizardData.audience,
+                            audience_level: audienceLevel,
+                            course_size: wizardData.courseSize,
+                            materials: wizardData.materials,
+                            links: wizardData.links,
+                            logo_url: course.logo_url,
+                            banner_url: course.banner_url,
+                            custom_price: customPrice,
+                            lessons: course.lessons,
+                            status: "draft",
+                        };
+                        
+                        if (savedCourseId) {
+                            const updated = await updateCourse(savedCourseId, courseData);
+                            if (updated) {
+                                setHasUnsavedChanges(false);
+                                toast.success("Course updated!");
+                            }
+                        } else {
+                            const saved = await saveCourse(courseData);
+                            if (saved?.id) {
+                                setSavedCourseId(saved.id);
+                                setIsSavedToDb(true);
+                                setHasUnsavedChanges(false);
+                            }
+                        }
+                    }}
+                    onPublish={async () => {
+                        if (!course) {
+                            toast.error("No course data yet to publish.");
+                            return;
+                        }
+                        
+                        const { data: { user } } = await supabase.auth.getUser();
+                        if (!user) {
+                            toast.error("Please sign in to publish your course");
+                            navigate("/auth");
+                            return;
+                        }
+                        
+                        setPublishing(true);
 
-                        {/* Description */}
-                        {course?.course_description && (
-                            <motion.p
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.35, duration: 0.5 }}
-                                className="text-lg text-muted-foreground max-w-3xl"
-                            >
-                                {course.course_description}
-                            </motion.p>
-                        )}
-                    </div>
+                        // First save/update to database
+                        const courseData: CourseData = {
+                            title: course.course_title || "Untitled Course",
+                            description: course.course_description,
+                            category,
+                            outcome: wizardData.outcome,
+                            target_audience: wizardData.audience,
+                            audience_level: audienceLevel,
+                            course_size: wizardData.courseSize,
+                            materials: wizardData.materials,
+                            links: wizardData.links,
+                            logo_url: course.logo_url,
+                            banner_url: course.banner_url,
+                            custom_price: customPrice,
+                            lessons: course.lessons,
+                            status: "published",
+                            published_at: new Date().toISOString(),
+                        };
+                        
+                        let dbCourseId = savedCourseId;
+                        
+                        if (savedCourseId) {
+                            await updateCourse(savedCourseId, { ...courseData, status: "published", published_at: new Date().toISOString() });
+                        } else {
+                            const saved = await saveCourse({ ...courseData, status: "published" });
+                            if (saved?.id) {
+                                dbCourseId = saved.id;
+                                setSavedCourseId(saved.id);
+                                setIsSavedToDb(true);
+                            }
+                        }
 
-                    {/* Premium Full-width Banner */}
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.4, duration: 0.6 }}
-                        className="relative rounded-3xl overflow-hidden shadow-elevated group"
-                    >
-                        {course?.banner_url ? (
-                            <div className="relative h-56 sm:h-72 lg:h-80">
-                                <img
-                                    src={course.banner_url}
-                                    alt="Course banner"
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                />
-                                {/* Subtle ambient glow overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
-                            </div>
-                        ) : (
-                            <div className="h-56 sm:h-72 lg:h-80 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20 animate-gradient" />
-                        )}
-                    </motion.div>
+                        // Gather quizzes and workbooks for localStorage marketplace (for backward compatibility)
+                        const quizzes: any[] = [];
+                        const workbooks: string[] = [];
 
-                    {/* Actions & Stats Bar */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5, duration: 0.5 }}
-                        className="glass-strong rounded-2xl p-4 sm:p-6"
-                    >
-                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                            {/* Stats row */}
-                            <div className="flex flex-wrap items-center gap-6">
-                                <span className="flex items-center gap-2 text-sm">
-                                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                        <Layers className="w-4 h-4 text-primary" />
-                                    </div>
-                                    <span className="font-medium">{course?.lessons?.length || 0}</span>
-                                    <span className="text-muted-foreground">Lessons</span>
-                                </span>
-                                <span className="flex items-center gap-2 text-sm">
-                                    <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
-                                        <Film className="w-4 h-4 text-secondary" />
-                                    </div>
-                                    <span className="font-medium">{course?.lessons?.reduce((acc, l) => acc + (l.videos?.length || 0), 0) || 0}</span>
-                                    <span className="text-muted-foreground">Videos</span>
-                                </span>
-                                <span className="flex items-center gap-2 text-sm">
-                                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                                        <Brain className="w-4 h-4 text-accent" />
-                                    </div>
-                                    <span className="font-medium">{course?.lessons?.filter(l => l.quiz_file).length || 0}</span>
-                                    <span className="text-muted-foreground">Quizzes</span>
-                                </span>
-                            </div>
+                        for (const lesson of course.lessons || []) {
+                            if (lesson.quiz_file) {
+                                try {
+                                    const res = await fetch(toURL(lesson.quiz_file));
+                                    if (res.ok) {
+                                        const quizData = await res.json();
+                                        quizzes.push(quizData);
+                                    } else quizzes.push(null);
+                                } catch { quizzes.push(null); }
+                            } else quizzes.push(null);
 
-                            {/* Action buttons */}
-                            <div className="flex items-center gap-3">
-                                {/* Regenerate Branding button */}
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    disabled={isBrandingGenerating}
-                                    onClick={async () => {
-                                        if (!course) return;
-                                        const result = await generateBranding({
-                                            course_title: course.course_title || "Course",
-                                            course_description: course.course_description,
-                                            style: "modern",
-                                        });
-                                        if (result.logo_url || result.banner_url) {
-                                            const updated = {
-                                                ...course,
-                                                logo_url: result.logo_url || course.logo_url,
-                                                banner_url: result.banner_url || course.banner_url,
-                                            };
-                                            setCourse(updated);
-                                            sessionStorage.setItem("coursia_full_course", JSON.stringify(updated));
-                                        }
-                                    }}
-                                    className="flex items-center gap-2"
-                                >
-                                    <RefreshCw className={`w-4 h-4 ${isBrandingGenerating ? 'animate-spin' : ''}`} />
-                                    {isBrandingGenerating ? 'Regenerating...' : 'Regenerate Branding'}
-                                </Button>
+                            if (lesson.workbook_file) {
+                                try {
+                                    const res = await fetch(toURL(lesson.workbook_file));
+                                    if (res.ok) {
+                                        const workbookText = await res.text();
+                                        workbooks.push(workbookText);
+                                    } else workbooks.push("");
+                                } catch { workbooks.push(""); }
+                            } else workbooks.push("");
+                        }
 
-                                {/* Premium Launch to Marketplace button with animations */}
-                                <motion.button
-                                    whileHover={{ scale: 1.03 }}
-                                    whileTap={{ scale: 0.97 }}
-                                    onClick={async () => {
-                                        if (!course) {
-                                            alert("No course data yet to publish.");
-                                            return;
-                                        }
-                                        setPublishing(true);
+                        const publishedCourse = {
+                            id: dbCourseId || `user-${Date.now()}`,
+                            title: course.course_title || "Untitled Course",
+                            instructor: "You",
+                            rating: 5.0,
+                            reviews: 0,
+                            price: customPrice,
+                            duration: `${course.lessons?.length || 1} lessons`,
+                            students: 0,
+                            category,
+                            level: audienceLevel as "Beginner" | "Intermediate" | "Advanced",
+                            image: course.banner_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
+                            featured: true,
+                            isUserCourse: true,
+                            wizardData: {
+                                audience: wizardData.audience,
+                                audienceLevel,
+                                outcome: wizardData.outcome,
+                                courseSize: wizardData.courseSize,
+                            },
+                            courseData: { ...course, quizzes, workbooks },
+                        };
 
-                                        const quizzes: any[] = [];
-                                        const workbooks: string[] = [];
+                        const existing = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
+                        // Remove existing course with same id if updating
+                        const filtered = existing.filter((c: any) => c.id !== publishedCourse.id);
+                        filtered.unshift(publishedCourse);
+                        localStorage.setItem("coursia_published_courses", JSON.stringify(filtered));
 
-                                        for (const lesson of course.lessons || []) {
-                                            if (lesson.quiz_file) {
-                                                try {
-                                                    const res = await fetch(toURL(lesson.quiz_file));
-                                                    if (res.ok) {
-                                                        const quizData = await res.json();
-                                                        quizzes.push(quizData);
-                                                    } else quizzes.push(null);
-                                                } catch { quizzes.push(null); }
-                                            } else quizzes.push(null);
-
-                                            if (lesson.workbook_file) {
-                                                try {
-                                                    const res = await fetch(toURL(lesson.workbook_file));
-                                                    if (res.ok) {
-                                                        const workbookText = await res.text();
-                                                        workbooks.push(workbookText);
-                                                    } else workbooks.push("");
-                                                } catch { workbooks.push(""); }
-                                            } else workbooks.push("");
-                                        }
-
-                                        // Map wizard audienceLevel to marketplace level format
-                                        const levelMap: Record<string, "Beginner" | "Intermediate" | "Advanced"> = {
-                                            "Beginner": "Beginner",
-                                            "Intermediate": "Intermediate", 
-                                            "Advanced": "Advanced",
-                                        };
-                                        const courseLevel = levelMap[wizardData.audienceLevel] || "Intermediate";
-                                        const courseCategory = deriveCategory(course.course_title, course.course_description);
-
-                                        const publishedCourse = {
-                                            id: `user-${Date.now()}`,
-                                            title: course.course_title || "Untitled Course",
-                                            instructor: "You",
-                                            rating: 5.0,
-                                            reviews: 0,
-                                            price: 99,
-                                            duration: `${course.lessons?.length || 1} lessons`,
-                                            students: 0,
-                                            category: courseCategory,
-                                            level: courseLevel,
-                                            image: course.banner_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
-                                            featured: true,
-                                            isUserCourse: true,
-                                            // Include wizard metadata for full context
-                                            wizardData: {
-                                                audience: wizardData.audience,
-                                                audienceLevel: wizardData.audienceLevel,
-                                                outcome: wizardData.outcome,
-                                                courseSize: wizardData.courseSize,
-                                            },
-                                            courseData: { ...course, quizzes, workbooks },
-                                        };
-
-                                        const existing = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
-                                        existing.unshift(publishedCourse);
-                                        localStorage.setItem("coursia_published_courses", JSON.stringify(existing));
-
-                                        toast.success("🎉 Course published to marketplace!");
-                                        setTimeout(() => navigate("/marketplace"), 800);
-                                    }}
-                                    disabled={!course || publishing}
-                                    className="relative group px-6 py-3 rounded-2xl font-semibold text-white overflow-hidden disabled:opacity-50 shadow-lg hover:shadow-[0_0_40px_rgba(139,92,246,0.5)] transition-shadow duration-500"
-                                >
-                                    {/* Animated gradient background */}
-                                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 animate-gradient-x" />
-                                    
-                                    {/* Glow effect */}
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-violet-500/50 via-fuchsia-500/50 to-pink-500/50 blur-xl" />
-                                    </div>
-                                    
-                                    {/* Shimmer effect */}
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                                    </div>
-
-                                    {/* Sparkle particles */}
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                                        <div className="absolute top-1 left-4 w-1 h-1 bg-white rounded-full animate-ping" style={{ animationDuration: '1.5s' }} />
-                                        <div className="absolute top-3 right-6 w-1.5 h-1.5 bg-white rounded-full animate-ping" style={{ animationDuration: '2s', animationDelay: '0.3s' }} />
-                                        <div className="absolute bottom-2 left-8 w-1 h-1 bg-white rounded-full animate-ping" style={{ animationDuration: '1.8s', animationDelay: '0.5s' }} />
-                                    </div>
-                                    
-                                    {/* Content */}
-                                    <span className="relative flex items-center gap-3 text-sm">
-                                        {publishing ? (
-                                            <>
-                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                Publishing...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Store className="w-4 h-4" />
-                                                Launch to Marketplace
-                                                <Rocket className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                                            </>
-                                        )}
-                                    </span>
-                                </motion.button>
-                            </div>
-                        </div>
-                    </motion.div>
-                </motion.div>
+                        setPublishing(false);
+                        setHasUnsavedChanges(false);
+                        toast.success("🎉 Course published to marketplace!");
+                        setTimeout(() => navigate("/marketplace"), 800);
+                    }}
+                />
 
 
                 {/* Main Content Section */}

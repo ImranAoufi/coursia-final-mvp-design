@@ -53,6 +53,78 @@ export type Database = {
         }
         Relationships: []
       }
+      courses: {
+        Row: {
+          audience_level: string | null
+          banner_url: string | null
+          category: string | null
+          color_palette: Json | null
+          course_size: string | null
+          created_at: string
+          custom_price: number | null
+          description: string | null
+          id: string
+          lessons: Json | null
+          links: string | null
+          logo_url: string | null
+          marketing_hook: string | null
+          materials: string | null
+          outcome: string | null
+          published_at: string | null
+          status: string | null
+          target_audience: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audience_level?: string | null
+          banner_url?: string | null
+          category?: string | null
+          color_palette?: Json | null
+          course_size?: string | null
+          created_at?: string
+          custom_price?: number | null
+          description?: string | null
+          id?: string
+          lessons?: Json | null
+          links?: string | null
+          logo_url?: string | null
+          marketing_hook?: string | null
+          materials?: string | null
+          outcome?: string | null
+          published_at?: string | null
+          status?: string | null
+          target_audience?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audience_level?: string | null
+          banner_url?: string | null
+          category?: string | null
+          color_palette?: Json | null
+          course_size?: string | null
+          created_at?: string
+          custom_price?: number | null
+          description?: string | null
+          id?: string
+          lessons?: Json | null
+          links?: string | null
+          logo_url?: string | null
+          marketing_hook?: string | null
+          materials?: string | null
+          outcome?: string | null
+          published_at?: string | null
+          status?: string | null
+          target_audience?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lesson_slides: {
         Row: {
           course_id: string
