@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { Layers, Film, Brain, RefreshCw, Store, Rocket, Save, Eye } from "lucide-react";
+import { Layers, Film, Brain, RefreshCw, Store, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 
 interface CourseActionsBarProps {
   lessonsCount: number;
@@ -9,12 +8,8 @@ interface CourseActionsBarProps {
   quizzesCount: number;
   onRegenerateBranding: () => void;
   onPublish: () => void;
-  onSave: () => void;
   isBrandingGenerating?: boolean;
   isPublishing?: boolean;
-  isSaving?: boolean;
-  isSaved?: boolean;
-  hasUnsavedChanges?: boolean;
 }
 
 export function CourseActionsBar({
@@ -23,15 +18,9 @@ export function CourseActionsBar({
   quizzesCount,
   onRegenerateBranding,
   onPublish,
-  onSave,
   isBrandingGenerating = false,
   isPublishing = false,
-  isSaving = false,
-  isSaved = false,
-  hasUnsavedChanges = false,
 }: CourseActionsBarProps) {
-  const navigate = useNavigate();
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -67,29 +56,6 @@ export function CourseActionsBar({
 
         {/* Action buttons */}
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Save button */}
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={isSaving || (!hasUnsavedChanges && isSaved)}
-            onClick={onSave}
-            className="flex items-center gap-2"
-          >
-            <Save className={`w-4 h-4 ${isSaving ? 'animate-pulse' : ''}`} />
-            {isSaving ? 'Saving...' : hasUnsavedChanges ? 'Save Changes' : isSaved ? 'Saved' : 'Save to Cloud'}
-          </Button>
-
-          {/* Preview Page button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate("/preview")}
-            className="flex items-center gap-2"
-          >
-            <Eye className="w-4 h-4" />
-            Customize Marketing
-          </Button>
-
           {/* Regenerate Branding button */}
           <Button
             variant="outline"
@@ -108,14 +74,14 @@ export function CourseActionsBar({
             whileTap={{ scale: 0.97 }}
             onClick={onPublish}
             disabled={isPublishing}
-            className="relative group px-6 py-3 rounded-2xl font-semibold text-white overflow-hidden disabled:opacity-50 shadow-lg hover:shadow-[0_0_40px_rgba(139,92,246,0.5)] transition-shadow duration-500"
+            className="relative group px-6 py-3 rounded-2xl font-semibold text-white overflow-hidden disabled:opacity-50 shadow-lg hover:shadow-glow transition-shadow duration-500"
           >
             {/* Animated gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 animate-gradient-x" />
+            <div className="absolute inset-0 bg-gradient-brand animate-gradient-x" />
             
             {/* Glow effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-500/50 via-fuchsia-500/50 to-pink-500/50 blur-xl" />
+              <div className="absolute inset-0 bg-gradient-brand opacity-50 blur-xl" />
             </div>
             
             {/* Shimmer effect */}
