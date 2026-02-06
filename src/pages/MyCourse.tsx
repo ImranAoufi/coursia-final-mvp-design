@@ -560,6 +560,8 @@ const MyCourse = () => {
                     marketingHook={course?.marketing_hook}
                     category={category}
                     audienceLevel={audienceLevel}
+                    outcome={wizardData.outcome}
+                    lessonsCount={course?.lessons?.length || 0}
                     price={customPrice}
                     bannerUrl={course?.banner_url}
                     isSaving={isSaving}

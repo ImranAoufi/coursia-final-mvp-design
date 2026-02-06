@@ -215,6 +215,23 @@ export default function CourseDetail() {
             </div>
 
             <div className="p-6 md:p-8">
+              {/* Marketing Description - Premium Display */}
+              {courseData?.marketing_hook && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.15 }}
+                  className="relative mb-8 p-6 rounded-2xl bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 border border-primary/10"
+                >
+                  <div className="absolute top-4 right-4">
+                    <Sparkles className="w-5 h-5 text-primary/50" />
+                  </div>
+                  <p className="text-lg text-foreground/90 leading-relaxed font-medium italic">
+                    "{courseData.marketing_hook}"
+                  </p>
+                </motion.div>
+              )}
+
               {/* Course Description */}
               {courseData?.course_description && (
                 <p className="text-muted-foreground mb-6 text-lg">
