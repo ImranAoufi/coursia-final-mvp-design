@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Edit2, Check, X, DollarSign } from "lucide-react";
+import { Sparkles, Edit2, Check, X, DollarSign, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface CourseEditableHeaderProps {
   title: string;
@@ -13,6 +15,8 @@ interface CourseEditableHeaderProps {
   marketingHook?: string;
   category?: string;
   audienceLevel?: string;
+  outcome?: string;
+  lessonsCount?: number;
   price?: number;
   bannerUrl?: string;
   onUpdate: (updates: {
@@ -44,6 +48,8 @@ export function CourseEditableHeader({
   marketingHook,
   category = "Personal Development",
   audienceLevel = "Intermediate",
+  outcome,
+  lessonsCount,
   price = 49,
   bannerUrl,
   onUpdate,
@@ -53,6 +59,7 @@ export function CourseEditableHeader({
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [isEditingMarketingHook, setIsEditingMarketingHook] = useState(false);
   const [isEditingPrice, setIsEditingPrice] = useState(false);
+  const [isGeneratingHook, setIsGeneratingHook] = useState(false);
   
   const [editTitle, setEditTitle] = useState(title);
   const [editDescription, setEditDescription] = useState(description || "");
@@ -65,6 +72,35 @@ export function CourseEditableHeader({
     setEditMarketingHook(marketingHook || "");
     setEditPrice(price.toString());
   }, [title, description, marketingHook, price]);
+
+  const handleGenerateMarketingHook = async () => {
+    setIsGeneratingHook(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-marketing-description', {
+        body: {
+          courseTitle: title,
+          courseDescription: description,
+          audienceLevel,
+          category,
+          outcome,
+          lessonsCount,
+        },
+      });
+
+      if (error) throw error;
+      
+      if (data?.marketing_description) {
+        setEditMarketingHook(data.marketing_description);
+        onUpdate({ marketing_hook: data.marketing_description });
+        toast.success("Marketing description generated!");
+      }
+    } catch (err) {
+      console.error('Error generating marketing description:', err);
+      toast.error("Failed to generate description");
+    } finally {
+      setIsGeneratingHook(false);
+    }
+  };
 
   const handleSaveTitle = () => {
     if (editTitle.trim() && editTitle !== title) {
@@ -282,18 +318,39 @@ export function CourseEditableHeader({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.37, duration: 0.5 }}
-        className="glass-strong rounded-2xl p-4 space-y-3"
+        className="glass-strong rounded-2xl p-5 space-y-4"
       >
-        <div className="flex items-center gap-2 text-sm font-medium text-primary">
-          <Sparkles className="w-4 h-4" />
-          Marketplace Description
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-medium text-primary">
+            <Sparkles className="w-4 h-4" />
+            Marketplace Description
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleGenerateMarketingHook}
+            disabled={isGeneratingHook || isSaving}
+            className="flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 border-primary/30"
+          >
+            {isGeneratingHook ? (
+              <>
+                <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Wand2 className="w-4 h-4" />
+                AI Generate
+              </>
+            )}
+          </Button>
         </div>
         {isEditingMarketingHook ? (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Textarea
               value={editMarketingHook}
               onChange={(e) => setEditMarketingHook(e.target.value)}
-              className="text-base bg-transparent border-primary/30 min-h-[120px]"
+              className="text-base bg-transparent border-primary/30 min-h-[140px]"
               placeholder="Write a compelling sales pitch for potential buyers. What will they learn? Why should they enroll?"
               autoFocus
             />
@@ -310,13 +367,21 @@ export function CourseEditableHeader({
             </div>
           </div>
         ) : (
-          <p 
-            className="text-base text-muted-foreground cursor-pointer hover:text-foreground transition-colors flex items-start gap-2 group/hook"
+          <div 
+            className="cursor-pointer hover:bg-muted/30 rounded-xl p-3 -m-3 transition-colors group/hook"
             onClick={() => setIsEditingMarketingHook(true)}
           >
-            {marketingHook || "Click to add a compelling sales pitch for the marketplace..."}
-            <Edit2 className="w-4 h-4 opacity-0 group-hover/hook:opacity-50 transition-opacity shrink-0 mt-1" />
-          </p>
+            {marketingHook ? (
+              <p className="text-base text-foreground/80 leading-relaxed">
+                {marketingHook}
+              </p>
+            ) : (
+              <p className="text-base text-muted-foreground italic">
+                Click to add a compelling sales pitch, or use AI Generate to create one automatically...
+              </p>
+            )}
+            <Edit2 className="w-4 h-4 opacity-0 group-hover/hook:opacity-50 transition-opacity mt-2 text-muted-foreground" />
+          </div>
         )}
       </motion.div>
 

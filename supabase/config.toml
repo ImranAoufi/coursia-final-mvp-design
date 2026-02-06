@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.generate-branding]
 verify_jwt = false
+
+[functions.generate-marketing-description]
+verify_jwt = false
