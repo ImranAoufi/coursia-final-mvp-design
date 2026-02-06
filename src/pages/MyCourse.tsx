@@ -50,6 +50,7 @@ interface Lesson {
 interface FullCourse {
     course_title?: string;
     course_description?: string;
+    marketing_hook?: string; // Sales pitch for marketplace buyers
     // Backend paths are deprecated - branding is now exclusively via Lovable AI
     logo_path?: string; // @deprecated - ignored, use logo_url instead
     banner_path?: string; // @deprecated - ignored, use banner_url instead
@@ -556,6 +557,7 @@ const MyCourse = () => {
                 <CourseEditableHeader
                     title={course?.course_title || "Your Course"}
                     description={course?.course_description}
+                    marketingHook={course?.marketing_hook}
                     category={category}
                     audienceLevel={audienceLevel}
                     price={customPrice}
@@ -568,6 +570,7 @@ const MyCourse = () => {
                         const updatedCourse = { ...course };
                         if (updates.title) updatedCourse.course_title = updates.title;
                         if (updates.description !== undefined) updatedCourse.course_description = updates.description;
+                        if (updates.marketing_hook !== undefined) updatedCourse.marketing_hook = updates.marketing_hook;
                         if (updates.category) setCategory(updates.category);
                         if (updates.audience_level) setAudienceLevel(updates.audience_level);
                         if (updates.custom_price !== undefined) {
@@ -596,9 +599,6 @@ const MyCourse = () => {
                     quizzesCount={course?.lessons?.filter(l => l.quiz_file).length || 0}
                     isBrandingGenerating={isBrandingGenerating}
                     isPublishing={publishing}
-                    isSaving={isSaving}
-                    isSaved={isSavedToDb}
-                    hasUnsavedChanges={hasUnsavedChanges}
                     onRegenerateBranding={async () => {
                         if (!course) return;
                         const result = await generateBranding({
@@ -615,48 +615,6 @@ const MyCourse = () => {
                             setCourse(updated);
                             sessionStorage.setItem("coursia_full_course", JSON.stringify(updated));
                             setHasUnsavedChanges(true);
-                        }
-                    }}
-                    onSave={async () => {
-                        if (!course) return;
-                        
-                        const { data: { user } } = await supabase.auth.getUser();
-                        if (!user) {
-                            toast.error("Please sign in to save your course");
-                            navigate("/auth");
-                            return;
-                        }
-                        
-                        const courseData: CourseData = {
-                            title: course.course_title || "Untitled Course",
-                            description: course.course_description,
-                            category,
-                            outcome: wizardData.outcome,
-                            target_audience: wizardData.audience,
-                            audience_level: audienceLevel,
-                            course_size: wizardData.courseSize,
-                            materials: wizardData.materials,
-                            links: wizardData.links,
-                            logo_url: course.logo_url,
-                            banner_url: course.banner_url,
-                            custom_price: customPrice,
-                            lessons: course.lessons,
-                            status: "draft",
-                        };
-                        
-                        if (savedCourseId) {
-                            const updated = await updateCourse(savedCourseId, courseData);
-                            if (updated) {
-                                setHasUnsavedChanges(false);
-                                toast.success("Course updated!");
-                            }
-                        } else {
-                            const saved = await saveCourse(courseData);
-                            if (saved?.id) {
-                                setSavedCourseId(saved.id);
-                                setIsSavedToDb(true);
-                                setHasUnsavedChanges(false);
-                            }
                         }
                     }}
                     onPublish={async () => {

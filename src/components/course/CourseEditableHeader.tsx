@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 interface CourseEditableHeaderProps {
   title: string;
   description?: string;
+  marketingHook?: string;
   category?: string;
   audienceLevel?: string;
   price?: number;
@@ -17,6 +18,7 @@ interface CourseEditableHeaderProps {
   onUpdate: (updates: {
     title?: string;
     description?: string;
+    marketing_hook?: string;
     category?: string;
     audience_level?: string;
     custom_price?: number;
@@ -39,6 +41,7 @@ const LEVELS = ["Beginner", "Intermediate", "Advanced"];
 export function CourseEditableHeader({
   title,
   description,
+  marketingHook,
   category = "Personal Development",
   audienceLevel = "Intermediate",
   price = 49,
@@ -48,17 +51,20 @@ export function CourseEditableHeader({
 }: CourseEditableHeaderProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [isEditingMarketingHook, setIsEditingMarketingHook] = useState(false);
   const [isEditingPrice, setIsEditingPrice] = useState(false);
   
   const [editTitle, setEditTitle] = useState(title);
   const [editDescription, setEditDescription] = useState(description || "");
+  const [editMarketingHook, setEditMarketingHook] = useState(marketingHook || "");
   const [editPrice, setEditPrice] = useState(price.toString());
 
   useEffect(() => {
     setEditTitle(title);
     setEditDescription(description || "");
+    setEditMarketingHook(marketingHook || "");
     setEditPrice(price.toString());
-  }, [title, description, price]);
+  }, [title, description, marketingHook, price]);
 
   const handleSaveTitle = () => {
     if (editTitle.trim() && editTitle !== title) {
@@ -72,6 +78,13 @@ export function CourseEditableHeader({
       onUpdate({ description: editDescription.trim() || undefined });
     }
     setIsEditingDescription(false);
+  };
+
+  const handleSaveMarketingHook = () => {
+    if (editMarketingHook !== marketingHook) {
+      onUpdate({ marketing_hook: editMarketingHook.trim() || undefined });
+    }
+    setIsEditingMarketingHook(false);
   };
 
   const handleSavePrice = () => {
@@ -260,6 +273,49 @@ export function CourseEditableHeader({
           >
             {description || "Click to add a description..."}
             <Edit2 className="w-4 h-4 opacity-0 group-hover:opacity-50 transition-opacity shrink-0 mt-1" />
+          </p>
+        )}
+      </motion.div>
+
+      {/* Editable Marketing Hook for Marketplace */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.37, duration: 0.5 }}
+        className="glass-strong rounded-2xl p-4 space-y-3"
+      >
+        <div className="flex items-center gap-2 text-sm font-medium text-primary">
+          <Sparkles className="w-4 h-4" />
+          Marketplace Description
+        </div>
+        {isEditingMarketingHook ? (
+          <div className="space-y-2">
+            <Textarea
+              value={editMarketingHook}
+              onChange={(e) => setEditMarketingHook(e.target.value)}
+              className="text-base bg-transparent border-primary/30 min-h-[120px]"
+              placeholder="Write a compelling sales pitch for potential buyers. What will they learn? Why should they enroll?"
+              autoFocus
+            />
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={handleSaveMarketingHook} disabled={isSaving}>
+                <Check className="w-4 h-4 mr-1" /> Save
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => {
+                setEditMarketingHook(marketingHook || "");
+                setIsEditingMarketingHook(false);
+              }}>
+                <X className="w-4 h-4 mr-1" /> Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <p 
+            className="text-base text-muted-foreground cursor-pointer hover:text-foreground transition-colors flex items-start gap-2 group/hook"
+            onClick={() => setIsEditingMarketingHook(true)}
+          >
+            {marketingHook || "Click to add a compelling sales pitch for the marketplace..."}
+            <Edit2 className="w-4 h-4 opacity-0 group-hover/hook:opacity-50 transition-opacity shrink-0 mt-1" />
           </p>
         )}
       </motion.div>
