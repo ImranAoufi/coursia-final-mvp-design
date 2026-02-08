@@ -1147,3 +1147,13 @@ async def slides_signed_urls(lesson_id: str):
     ]
 
     return {"slides": slides}
+
+FRONTEND_DIST = os.path.join(os.getcwd(), "frontend", "dist")
+
+
+@app.get("/{full_path:path}")
+def serve_spa(full_path: str):
+    index_path = os.path.join(FRONTEND_DIST, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"error": "Frontend not built"}

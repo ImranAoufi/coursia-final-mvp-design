@@ -112,3 +112,6 @@ Return ONLY valid JSON. Do NOT wrap output in markdown code fences or add explan
 
 UPLOAD_DIR = Path("uploaded_files")
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+
+"http://127.0.0.1:8000"
