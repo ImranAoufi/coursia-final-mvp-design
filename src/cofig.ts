@@ -1,1 +1,1 @@
-export const API_BASE = "https://coursia-final-mvp-design-1.onrender.com";
+export const API_BASE = "http://127.0.0.1:8000";

@@ -1147,29 +1147,3 @@ async def slides_signed_urls(lesson_id: str):
     ]
 
     return {"slides": slides}
-
-FRONTEND_DIST = os.path.join(os.getcwd(), "frontend", "dist")
-
-
-@app.get("/{full_path:path}")
-def serve_spa(full_path: str):
-    index_path = os.path.join(FRONTEND_DIST, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    return {"error": "Frontend not built"}
-
-
-@app.get("/api/health")
-def health():
-    return {"status": "ok"}
-
-
-DIST_DIR = os.path.join(os.getcwd(), "dist")
-
-
-@app.get("/{path:path}")
-def serve_frontend(path: str):
-    index_file = os.path.join(DIST_DIR, "index.html")
-    if os.path.exists(index_file):
-        return FileResponse(index_file)
-    return {"error": "index.html not found"}
