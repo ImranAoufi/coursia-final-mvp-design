@@ -33,18 +33,11 @@ import docx
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-GENERATED_DIR = Path(os.getcwd()) / "generated"
-GENERATED_DIR.mkdir(parents=True, exist_ok=True)
-
 # OpenAI Client initialisieren
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 app = FastAPI()
-app.mount(
-    "/generated",
-    StaticFiles(directory=str(GENERATED_DIR)),
-    name="generated"
-)
-
+app.mount("/generated", StaticFiles(directory=os.path.join(os.getcwd(),
+          "generated")), name="generated")
 
 # --- CORS (Frontend darf Backend ansprechen) ---
 app.add_middleware(
@@ -702,7 +695,7 @@ async def generate_banner(payload: dict):
     Use Lovable AI on the frontend instead (free).
     """
     return {
-        "status": "disabled",
+        "status": "disabled", 
         "error": "Banner generation is disabled. Use Lovable AI on frontend instead.",
         "banner_path": None
     }
@@ -719,7 +712,7 @@ async def generate_logo(payload: dict):
     Use Lovable AI on the frontend instead (free).
     """
     return {
-        "status": "disabled",
+        "status": "disabled", 
         "error": "Logo generation is disabled. Use Lovable AI on frontend instead.",
         "logo_path": None
     }
