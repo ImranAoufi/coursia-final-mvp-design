@@ -28,6 +28,7 @@ import { useBrandingGeneration } from "@/hooks/useBrandingGeneration";
 import { useCourseDatabase, CourseData } from "@/hooks/useCourseDatabase";
 import { CourseEditableHeader } from "@/components/course/CourseEditableHeader";
 import { CourseActionsBar } from "@/components/course/CourseActionsBar";
+import { PreLaunchChecklist, PreLaunchData } from "@/components/course/PreLaunchChecklist";
 import { supabase } from "@/integrations/supabase/client";
 
 
@@ -104,6 +105,7 @@ const MyCourse = () => {
     const [progressMsg, setProgressMsg] = useState<string>("Waiting...");
     const [downloading, setDownloading] = useState(false);
     const [publishing, setPublishing] = useState(false);
+    const [showPreLaunch, setShowPreLaunch] = useState(false);
     const [generationProgress, setGenerationProgress] = useState(0);
     
     // Database state
@@ -619,11 +621,35 @@ const MyCourse = () => {
                             setHasUnsavedChanges(true);
                         }
                     }}
-                    onPublish={async () => {
+                    onPublish={() => {
                         if (!course) {
                             toast.error("No course data yet to publish.");
                             return;
                         }
+                        setShowPreLaunch(true);
+                    }}
+                />
+
+                {/* Pre-Launch Checklist Dialog */}
+                <PreLaunchChecklist
+                    open={showPreLaunch}
+                    onOpenChange={setShowPreLaunch}
+                    isPublishing={publishing}
+                    initialData={{
+                        title: course?.course_title || "Untitled Course",
+                        description: course?.course_description,
+                        category,
+                        audienceLevel,
+                        price: customPrice,
+                        marketingHook: course?.marketing_hook,
+                        lessonsCount: course?.lessons?.length || 0,
+                        videosCount: course?.lessons?.reduce((acc, l) => acc + (l.videos?.length || 0), 0) || 0,
+                        quizzesCount: course?.lessons?.filter(l => l.quiz_file).length || 0,
+                        hasLogo: !!course?.logo_url,
+                        hasBanner: !!course?.banner_url,
+                    }}
+                    onConfirmPublish={async (data: PreLaunchData) => {
+                        if (!course) return;
                         
                         const { data: { user } } = await supabase.auth.getUser();
                         if (!user) {
@@ -634,20 +660,33 @@ const MyCourse = () => {
                         
                         setPublishing(true);
 
-                        // First save/update to database
+                        // Apply pre-launch data to course
+                        const updatedCourse = {
+                            ...course,
+                            course_title: data.title,
+                            course_description: data.description,
+                            marketing_hook: data.marketingHook,
+                        };
+                        setCourse(updatedCourse);
+                        setCategory(data.category);
+                        setAudienceLevel(data.audienceLevel);
+                        setCustomPrice(data.price);
+
+                        // Save to database
                         const courseData: CourseData = {
-                            title: course.course_title || "Untitled Course",
-                            description: course.course_description,
-                            category,
+                            title: data.title,
+                            description: data.description,
+                            category: data.category,
                             outcome: wizardData.outcome,
                             target_audience: wizardData.audience,
-                            audience_level: audienceLevel,
+                            audience_level: data.audienceLevel,
                             course_size: wizardData.courseSize,
                             materials: wizardData.materials,
                             links: wizardData.links,
                             logo_url: course.logo_url,
                             banner_url: course.banner_url,
-                            custom_price: customPrice,
+                            custom_price: data.price,
+                            marketing_hook: data.marketingHook,
                             lessons: course.lessons,
                             status: "published",
                             published_at: new Date().toISOString(),
@@ -666,7 +705,7 @@ const MyCourse = () => {
                             }
                         }
 
-                        // Gather quizzes and workbooks for localStorage marketplace (for backward compatibility)
+                        // Gather quizzes and workbooks for localStorage marketplace
                         const quizzes: any[] = [];
                         const workbooks: string[] = [];
 
@@ -694,34 +733,34 @@ const MyCourse = () => {
 
                         const publishedCourse = {
                             id: dbCourseId || `user-${Date.now()}`,
-                            title: course.course_title || "Untitled Course",
+                            title: data.title,
                             instructor: "You",
                             rating: 5.0,
                             reviews: 0,
-                            price: customPrice,
+                            price: data.price,
                             duration: `${course.lessons?.length || 1} lessons`,
                             students: 0,
-                            category,
-                            level: audienceLevel as "Beginner" | "Intermediate" | "Advanced",
+                            category: data.category,
+                            level: data.audienceLevel as "Beginner" | "Intermediate" | "Advanced",
                             image: course.banner_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
                             featured: true,
                             isUserCourse: true,
                             wizardData: {
                                 audience: wizardData.audience,
-                                audienceLevel,
+                                audienceLevel: data.audienceLevel,
                                 outcome: wizardData.outcome,
                                 courseSize: wizardData.courseSize,
                             },
-                            courseData: { ...course, quizzes, workbooks },
+                            courseData: { ...updatedCourse, quizzes, workbooks },
                         };
 
                         const existing = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
-                        // Remove existing course with same id if updating
                         const filtered = existing.filter((c: any) => c.id !== publishedCourse.id);
                         filtered.unshift(publishedCourse);
                         localStorage.setItem("coursia_published_courses", JSON.stringify(filtered));
 
                         setPublishing(false);
+                        setShowPreLaunch(false);
                         setHasUnsavedChanges(false);
                         toast.success("🎉 Course published to marketplace!");
                         setTimeout(() => navigate("/marketplace"), 800);
