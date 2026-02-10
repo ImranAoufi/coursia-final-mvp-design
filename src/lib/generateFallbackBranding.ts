@@ -124,39 +124,45 @@ function getIconPath(icon: string, cx: number, cy: number, size: number): string
 function generateLogoSVG(title: string, theme: Theme): string {
   const initials = getInitials(title);
   const h = hashStr(title);
-  const rotation = (h % 45) + 10;
-  const sealPoints = 8 + (h % 5);
+  const rotation = (h % 60) + 15;
 
-  // Seal polygon
-  const cx = 256, cy = 256, outerR = 210, innerR = 185;
-  const pts: string[] = [];
-  for (let i = 0; i < sealPoints * 2; i++) {
-    const angle = (Math.PI * i) / sealPoints - Math.PI / 2;
-    const r = i % 2 === 0 ? outerR : innerR;
-    pts.push(`${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`);
-  }
+  const cx = 256, cy = 256;
 
-  // Floating particles
-  const particles = Array.from({ length: 12 }, (_, i) => {
-    const a = (Math.PI * 2 * i) / 12 + (h % 100) * 0.01;
-    const dist = 170 + (h * (i + 1)) % 70;
+  // Outer decorative ring segments
+  const ringSegments = Array.from({ length: 6 }, (_, i) => {
+    const startAngle = (Math.PI * 2 * i) / 6 + (h % 100) * 0.01;
+    const endAngle = startAngle + Math.PI / 4.5;
+    const r = 230;
+    const x1 = cx + r * Math.cos(startAngle);
+    const y1 = cy + r * Math.sin(startAngle);
+    const x2 = cx + r * Math.cos(endAngle);
+    const y2 = cy + r * Math.sin(endAngle);
+    const colors = [theme.primary, theme.secondary, theme.accent];
+    return `<path d="M${x1},${y1} A${r},${r} 0 0 1 ${x2},${y2}" fill="none" stroke="${colors[i % 3]}" stroke-width="2.5" opacity="${0.25 + (i % 3) * 0.1}" stroke-linecap="round"/>`;
+  }).join('');
+
+  // Floating particles in orbit
+  const particles = Array.from({ length: 18 }, (_, i) => {
+    const a = (Math.PI * 2 * i) / 18 + (h % 100) * 0.02;
+    const dist = 195 + ((h * (i + 1)) % 50);
     const px = cx + dist * Math.cos(a);
     const py = cy + dist * Math.sin(a);
-    const r = 1.5 + ((h * (i + 2)) % 4);
-    const op = 0.15 + ((h * (i + 3)) % 40) / 100;
-    const color = i % 3 === 0 ? theme.accent : i % 3 === 1 ? theme.primary : theme.secondary;
-    return `<circle cx="${px}" cy="${py}" r="${r}" fill="${color}" opacity="${op}"/>`;
+    const r = 1 + ((h * (i + 2)) % 3);
+    const op = 0.1 + ((h * (i + 3)) % 30) / 100;
+    const colors = [theme.accent, theme.primary, theme.secondary];
+    return `<circle cx="${px}" cy="${py}" r="${r}" fill="${colors[i % 3]}" opacity="${op}"/>`;
   }).join('');
 
-  // Orbital rings
-  const rings = Array.from({ length: 3 }, (_, i) => {
-    const r = 130 + i * 30;
-    const op = 0.06 + i * 0.03;
-    const dash = 8 + i * 4;
-    return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${i % 2 === 0 ? theme.primary : theme.accent}" stroke-width="0.8" opacity="${op}" stroke-dasharray="${dash} ${dash * 2}" transform="rotate(${rotation + i * 30} ${cx} ${cy})"/>`;
-  }).join('');
+  // The main icon rendered large and prominent
+  const mainIcon = getIconPath(theme.icon, cx, cy - 15, 140);
 
-  const iconSvg = getIconPath(theme.icon, cx, cy - 30, 80);
+  // Small decorative corner icons
+  const cornerPositions = [
+    { x: 85, y: 85 }, { x: 427, y: 85 }, { x: 85, y: 427 }, { x: 427, y: 427 },
+  ];
+  const cornerIcons = cornerPositions.map(({ x, y }, i) =>
+    `<g stroke="${[theme.primary, theme.accent, theme.secondary, theme.primary][i]}" fill="${[theme.primary, theme.accent, theme.secondary, theme.primary][i]}" opacity="0.08">${getIconPath(theme.icon, x, y, 28)}</g>`
+  ).join('');
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
@@ -166,68 +172,88 @@ function generateLogoSVG(title: string, theme: Theme): string {
       <stop offset="100%" stop-color="${theme.accent}"/>
     </linearGradient>
     <linearGradient id="lg2" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="${theme.accent}" stop-opacity="0.5"/>
+      <stop offset="0%" stop-color="${theme.accent}" stop-opacity="0.6"/>
       <stop offset="100%" stop-color="${theme.primary}" stop-opacity="0"/>
     </linearGradient>
-    <radialGradient id="rg1" cx="35%" cy="30%">
-      <stop offset="0%" stop-color="white" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    <radialGradient id="bgGlow" cx="50%" cy="45%">
+      <stop offset="0%" stop-color="${theme.primary}" stop-opacity="0.25"/>
+      <stop offset="60%" stop-color="${theme.secondary}" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="${theme.bg}" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="bgGlow" cx="50%" cy="50%">
-      <stop offset="0%" stop-color="${theme.primary}" stop-opacity="0.15"/>
-      <stop offset="70%" stop-color="${theme.bg}" stop-opacity="0"/>
+    <radialGradient id="innerGlow" cx="50%" cy="42%">
+      <stop offset="0%" stop-color="${theme.accent}" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="${theme.bg}" stop-opacity="0"/>
     </radialGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <filter id="dshadow"><feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#000" flood-opacity="0.5"/></filter>
-    <filter id="innerGlow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="circGrad" cx="40%" cy="35%">
+      <stop offset="0%" stop-color="${theme.primary}" stop-opacity="0.9"/>
+      <stop offset="70%" stop-color="${theme.secondary}" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="${theme.accent}" stop-opacity="0.5"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="bigGlow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="dshadow"><feDropShadow dx="0" dy="6" stdDeviation="16" flood-color="#000" flood-opacity="0.45"/></filter>
+    <filter id="iconShadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="${theme.primary}" flood-opacity="0.5"/></filter>
+    <clipPath id="circleClip"><circle cx="${cx}" cy="${cy}" r="165"/></clipPath>
   </defs>
 
-  <rect width="512" height="512" rx="90" fill="${theme.bg}"/>
-  <rect width="512" height="512" rx="90" fill="url(#bgGlow)"/>
+  <!-- Dark rounded background -->
+  <rect width="512" height="512" rx="96" fill="${theme.bg}"/>
+  <rect width="512" height="512" rx="96" fill="url(#bgGlow)"/>
 
-  <!-- Subtle hex grid -->
-  <g opacity="0.04" stroke="${theme.primary}" stroke-width="0.5" fill="none">
-    ${Array.from({ length: 8 }, (_, r) =>
-      Array.from({ length: 8 }, (_, c) => {
-        const hx = 40 + c * 60 + (r % 2 ? 30 : 0);
-        const hy = 30 + r * 55;
+  <!-- Subtle hex grid background -->
+  <g opacity="0.03" stroke="${theme.primary}" stroke-width="0.5" fill="none">
+    ${Array.from({ length: 9 }, (_, r) =>
+      Array.from({ length: 9 }, (_, c) => {
+        const hx = 30 + c * 56 + (r % 2 ? 28 : 0);
+        const hy = 20 + r * 52;
         return `<polygon points="${[0,1,2,3,4,5].map(i => {
           const a = Math.PI / 3 * i - Math.PI / 6;
-          return `${hx + 22 * Math.cos(a)},${hy + 22 * Math.sin(a)}`;
+          return `${hx + 20 * Math.cos(a)},${hy + 20 * Math.sin(a)}`;
         }).join(' ')}"/>`;
       }).join('')
     ).join('')}
   </g>
 
-  <!-- Decorative rotated rectangles -->
-  <rect x="156" y="156" width="200" height="200" rx="25" fill="none" stroke="url(#lg1)" stroke-width="1" opacity="0.12" transform="rotate(${rotation} 256 256)"/>
-  <rect x="176" y="176" width="160" height="160" rx="20" fill="none" stroke="url(#lg2)" stroke-width="0.8" opacity="0.08" transform="rotate(-${rotation * 0.7} 256 256)"/>
+  <!-- Outer decorative ring segments -->
+  <g transform="rotate(${rotation} ${cx} ${cy})">${ringSegments}</g>
 
-  ${rings}
+  <!-- Floating particles -->
   ${particles}
 
-  <!-- Seal polygon -->
-  <polygon points="${pts.join(' ')}" fill="url(#lg1)" filter="url(#dshadow)" opacity="0.1"/>
+  <!-- Corner icons -->
+  ${cornerIcons}
 
-  <!-- Main circle -->
-  <circle cx="${cx}" cy="${cy}" r="155" fill="url(#lg1)" filter="url(#dshadow)"/>
-  <circle cx="${cx}" cy="${cy}" r="155" fill="url(#rg1)"/>
+  <!-- Decorative geometric shapes -->
+  <rect x="${cx - 120}" y="${cy - 120}" width="240" height="240" rx="30" fill="none" stroke="url(#lg1)" stroke-width="0.8" opacity="0.1" transform="rotate(45 ${cx} ${cy})"/>
+  <rect x="${cx - 100}" y="${cy - 100}" width="200" height="200" rx="25" fill="none" stroke="url(#lg2)" stroke-width="0.6" opacity="0.06" transform="rotate(${rotation * 0.5} ${cx} ${cy})"/>
 
-  <!-- Glass inner ring -->
-  <circle cx="${cx}" cy="${cy}" r="135" fill="none" stroke="white" stroke-width="0.8" opacity="0.12"/>
-  <circle cx="${cx}" cy="${cy}" r="148" fill="none" stroke="url(#lg2)" stroke-width="1.5" opacity="0.3"/>
+  <!-- Main circle with gradient fill -->
+  <circle cx="${cx}" cy="${cy}" r="165" fill="url(#circGrad)" filter="url(#dshadow)"/>
+  
+  <!-- Glass overlay on circle -->
+  <circle cx="${cx}" cy="${cy}" r="165" fill="url(#innerGlow)"/>
+  
+  <!-- Glass highlight arc -->
+  <path d="M${cx - 130},${cy - 85} A165,165 0 0,1 ${cx + 130},${cy - 85}" fill="white" opacity="0.06"/>
 
-  <!-- Topic icon (subtle, behind initials) -->
-  <g stroke="${theme.accent}" fill="${theme.accent}" opacity="0.12" filter="url(#innerGlow)">
-    ${iconSvg}
+  <!-- Inner ring accents -->
+  <circle cx="${cx}" cy="${cy}" r="150" fill="none" stroke="white" stroke-width="0.6" opacity="0.15"/>
+  <circle cx="${cx}" cy="${cy}" r="160" fill="none" stroke="white" stroke-width="0.4" opacity="0.08" stroke-dasharray="8 12"/>
+
+  <!-- MAIN TOPIC ICON - large and prominent -->
+  <g stroke="white" fill="white" opacity="0.9" filter="url(#iconShadow)">
+    ${mainIcon}
   </g>
 
-  <!-- Initials -->
-  <text x="${cx}" y="${cy + 18}" font-family="'SF Pro Display','Inter',system-ui,sans-serif" font-size="110" font-weight="800" fill="white" text-anchor="middle" letter-spacing="-3" filter="url(#glow)">${initials}</text>
+  <!-- Initials below the icon -->
+  <text x="${cx}" y="${cy + 75}" font-family="'SF Pro Display','Inter',system-ui,sans-serif" font-size="42" font-weight="800" fill="white" text-anchor="middle" letter-spacing="6" opacity="0.85" filter="url(#glow)">${initials}</text>
 
-  <!-- Bottom badge -->
-  <rect x="${cx - 60}" y="395" width="120" height="24" rx="12" fill="${theme.primary}" opacity="0.15"/>
-  <text x="${cx}" y="412" font-family="'SF Pro Display','Inter',system-ui,sans-serif" font-size="11" font-weight="700" fill="${theme.accent}" text-anchor="middle" letter-spacing="4" opacity="0.8">COURSE</text>
+  <!-- Bottom label badge -->
+  <rect x="${cx - 55}" y="420" width="110" height="22" rx="11" fill="white" opacity="0.08"/>
+  <text x="${cx}" y="435" font-family="'SF Pro Display','Inter',system-ui,sans-serif" font-size="9" font-weight="700" fill="${theme.accent}" text-anchor="middle" letter-spacing="4" opacity="0.7">COURSE</text>
+
+  <!-- Top subtle accent line -->
+  <rect x="${cx - 40}" y="52" width="80" height="2" rx="1" fill="url(#lg1)" opacity="0.25"/>
 </svg>`;
 
   return `data:image/svg+xml;base64,${btoa(svg)}`;
