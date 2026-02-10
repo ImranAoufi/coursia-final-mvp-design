@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
+import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
@@ -131,23 +132,64 @@ export default function Marketplace() {
   const [allCourses, setAllCourses] = useState<Course[]>(mockCourses);
   const [showMyCourses, setShowMyCourses] = useState(false);
   const [myCourses, setMyCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load user-published courses from localStorage
+  // Load courses from both localStorage and database
   useEffect(() => {
-    loadUserCourses();
+    loadAllCourses();
   }, []);
 
-  const loadUserCourses = () => {
-    const published = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
-    setMyCourses(published);
-    if (published.length > 0) {
-      setAllCourses([...published, ...mockCourses]);
-      // Show toast if just published
-      const justPublished = sessionStorage.getItem("just_published");
-      if (!justPublished && published.length > 0) {
-        sessionStorage.setItem("just_published", "true");
-        toast.success("🎉 Your course is now live on the marketplace!");
+  const loadAllCourses = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch published courses from database
+      const { data: dbCourses, error } = await supabase
+        .from("courses")
+        .select("*")
+        .eq("status", "published")
+        .order("published_at", { ascending: false });
+
+      const dbMapped: Course[] = (dbCourses || []).map((c) => ({
+        id: c.id,
+        title: c.title,
+        instructor: c.target_audience || "Coursia Creator",
+        rating: 4.7 + Math.random() * 0.3,
+        reviews: Math.floor(100 + Math.random() * 2000),
+        price: Number(c.custom_price) || 49,
+        duration: `${(c.lessons as any[])?.length || 0} lessons`,
+        students: Math.floor(500 + Math.random() * 10000),
+        category: c.category || "Personal Development",
+        level: (c.audience_level as Course["level"]) || "Intermediate",
+        image: c.banner_url || c.logo_url || "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
+        isUserCourse: false,
+        courseData: c,
+      }));
+
+      // Load user-published courses from localStorage
+      const published: Course[] = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
+      setMyCourses(published);
+
+      // Merge: localStorage courses first (marked as user's), then DB courses (deduplicated), then mock
+      const dbIds = new Set(dbMapped.map(c => c.id));
+      const localNotInDb = published.filter(c => !dbIds.has(c.id));
+      const combined = [...localNotInDb, ...dbMapped, ...mockCourses];
+      setAllCourses(combined);
+
+      if (!error && published.length > 0) {
+        const justPublished = sessionStorage.getItem("just_published");
+        if (!justPublished) {
+          sessionStorage.setItem("just_published", "true");
+          toast.success("🎉 Your course is now live on the marketplace!");
+        }
       }
+    } catch (err) {
+      console.error("Failed to load courses:", err);
+      // Fallback to localStorage + mock
+      const published: Course[] = JSON.parse(localStorage.getItem("coursia_published_courses") || "[]");
+      setMyCourses(published);
+      setAllCourses([...published, ...mockCourses]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,17 +197,34 @@ export default function Marketplace() {
     const updatedCourses = myCourses.filter(c => c.id !== courseId);
     localStorage.setItem("coursia_published_courses", JSON.stringify(updatedCourses));
     setMyCourses(updatedCourses);
-    setAllCourses([...updatedCourses, ...mockCourses]);
+    setAllCourses(prev => prev.filter(c => c.id !== courseId || !c.isUserCourse));
     toast.success("Course removed from marketplace");
   };
 
-  const filteredCourses = allCourses.filter((course) => {
-    const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         course.instructor.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
-    const matchesLevel = selectedLevel === "All Levels" || course.level === selectedLevel;
-    return matchesSearch && matchesCategory && matchesLevel;
-  });
+  const filteredCourses = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return allCourses.filter((course) => {
+      const matchesSearch = !q || 
+        course.title.toLowerCase().includes(q) ||
+        course.instructor.toLowerCase().includes(q) ||
+        course.category.toLowerCase().includes(q);
+      const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
+      const matchesLevel = selectedLevel === "All Levels" || course.level === selectedLevel;
+      return matchesSearch && matchesCategory && matchesLevel;
+    });
+  }, [allCourses, searchQuery, selectedCategory, selectedLevel]);
+
+  const sortedCourses = useMemo(() => {
+    const sorted = [...filteredCourses];
+    switch (sortBy) {
+      case "Highest Rated": sorted.sort((a, b) => b.rating - a.rating); break;
+      case "Price: Low to High": sorted.sort((a, b) => a.price - b.price); break;
+      case "Price: High to Low": sorted.sort((a, b) => b.price - a.price); break;
+      case "Newest": sorted.sort((a, b) => (b.isUserCourse ? 1 : 0) - (a.isUserCourse ? 1 : 0)); break;
+      default: sorted.sort((a, b) => b.students - a.students); break;
+    }
+    return sorted;
+  }, [filteredCourses, sortBy]);
 
   const featuredCourses = allCourses.filter(c => c.featured);
 
@@ -357,7 +416,7 @@ export default function Marketplace() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-3xl font-bold mb-2">All Courses</h2>
-              <p className="text-muted-foreground">{filteredCourses.length} courses available</p>
+              <p className="text-muted-foreground">{sortedCourses.length} courses available</p>
             </div>
             <div className="relative">
               <button
@@ -418,7 +477,21 @@ export default function Marketplace() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course, index) => (
+            {isLoading ? (
+              <div className="col-span-full text-center py-20">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-muted-foreground">Loading courses...</p>
+              </div>
+            ) : sortedCourses.length === 0 ? (
+              <div className="col-span-full text-center py-20">
+                <Search className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No courses found</h3>
+                <p className="text-muted-foreground mb-4">Try adjusting your search or filters</p>
+                <Button variant="glass" onClick={() => { setSearchQuery(""); setSelectedCategory("All"); setSelectedLevel("All Levels"); }}>
+                  Clear Filters
+                </Button>
+              </div>
+            ) : sortedCourses.map((course, index) => (
               <motion.div
                 key={course.id}
                 initial={{ opacity: 0, y: 20 }}
