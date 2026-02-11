@@ -17,6 +17,7 @@ import Marketplace from "@/pages/Marketplace";
 import CourseDetail from "@/pages/CourseDetail";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import QuizEditorPage from "./pages/QuizEditorPage";
 
 // ✅ Hier kommt dein Wizard aus src/components/
 import IntakeWizard from "./components/IntakeWizard";
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/preview" element={<Preview />} />
 
               <Route path="/my-course" element={<MyCourse />} />
+              <Route path="/my-course/quiz" element={<QuizEditorPage />} />
               
               {/* ✅ Marketplace */}
               <Route path="/marketplace" element={<Marketplace />} />

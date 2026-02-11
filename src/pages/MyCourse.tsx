@@ -19,7 +19,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { QuizDisplay } from "@/components/QuizDisplay";
+import { QuizDisplay } from "@/components/QuizDisplay"; // kept for CourseDetail usage
 import WorkbookDisplay from "@/components/WorkbookDisplay";
 import SlideViewer from "@/components/SlideViewer";
 import TeleprompterSlidePanel, { SlideContent } from "@/components/TeleprompterSlidePanel";
@@ -499,16 +499,25 @@ const MyCourse = () => {
     };
 
 
-    const handleViewQuiz = async (title: string, path?: string) => {
+    const handleViewQuiz = async (title: string, path?: string, lessonIndex?: number) => {
         if (!path) return alert("No quiz file found.");
         try {
             const res = await fetch(toURL(path));
             if (!res.ok) throw new Error("Failed to load quiz file");
             const text = await res.text();
+            let quizData = JSON.parse(text);
 
+            // Check if there are saved edits for this lesson
+            if (lessonIndex !== undefined) {
+                const quizUpdates = JSON.parse(sessionStorage.getItem("coursia_quiz_updates") || "{}");
+                if (quizUpdates[lessonIndex]) {
+                    quizData = quizUpdates[lessonIndex];
+                }
+            }
 
-            setActiveQuizTitle(title);
-            setActiveQuizContent(text);
+            // Store quiz data for the editor page
+            sessionStorage.setItem("coursia_edit_quiz", JSON.stringify(quizData));
+            navigate(`/my-course/quiz?title=${encodeURIComponent(title)}&lessonIndex=${lessonIndex ?? 0}`);
         } catch (err) {
             console.error(err);
             alert("Failed to load quiz — check console.");
@@ -875,9 +884,9 @@ const MyCourse = () => {
                                                             <Button
                                                                 size="sm"
                                                                 className="w-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
-                                                                onClick={() => handleViewQuiz(lesson.lesson_title || "Quiz", lesson.quiz_file)}
+                                                                onClick={() => handleViewQuiz(lesson.lesson_title || "Quiz", lesson.quiz_file, li)}
                                                             >
-                                                                Take Quiz
+                                                                <Edit className="w-3 h-3 mr-1" /> Edit Quiz
                                                             </Button>
                                                         </div>
                                                     )}
@@ -1354,23 +1363,7 @@ const MyCourse = () => {
 
 
 
-            {/* Quiz Modal (sibling) */}
-            <Dialog open={!!activeQuizTitle} onOpenChange={() => setActiveQuizTitle(null)}>
-                <DialogContent className="max-w-xl max-h-[85vh] overflow-y-auto scrollbar-glow rounded-2xl shadow-2xl border bg-background/95 backdrop-blur-md">
-                    <DialogHeader>
-                        <DialogTitle className="text-center text-xl font-semibold tracking-tight">
-                            {activeQuizTitle}
-                        </DialogTitle>
-                    </DialogHeader>
-
-
-                    {activeQuizContent ? (
-                        <QuizDisplay quizData={JSON.parse(activeQuizContent)} />
-                    ) : (
-                        <p className="text-sm text-muted-foreground text-center">Loading quiz...</p>
-                    )}
-                </DialogContent>
-            </Dialog>
+            {/* Quiz is now a full-page editor - no dialog needed */}
 
 
             {/* Workbook Modal (sibling) */}
