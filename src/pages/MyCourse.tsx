@@ -532,9 +532,8 @@ const MyCourse = () => {
             if (!res.ok) throw new Error("Failed to load workbook file");
             const text = await res.text();
 
-            setActiveWorkbookTitle(title);
-            setActiveWorkbookContent(text);
-            setActiveWorkbookLessonIndex(lessonIndex ?? null);
+            sessionStorage.setItem("coursia_edit_workbook", text);
+            navigate(`/my-course/workbook?title=${encodeURIComponent(title)}&lessonIndex=${lessonIndex ?? 0}&courseId=${jobId || ""}`);
         } catch (err) {
             console.error(err);
             alert("Failed to load workbook — check console.");
@@ -1366,36 +1365,7 @@ const MyCourse = () => {
             {/* Quiz is now a full-page editor - no dialog needed */}
 
 
-            {/* Workbook Modal (sibling) */}
-            <Dialog open={!!activeWorkbookTitle} onOpenChange={() => {
-                setActiveWorkbookTitle(null);
-                setActiveWorkbookLessonIndex(null);
-            }}>
-                <DialogContent className="max-w-3xl max-h-[85vh]">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                            <BookOpen className="w-5 h-5 text-secondary" />
-                            {activeWorkbookTitle}
-                        </DialogTitle>
-                    </DialogHeader>
-
-                    <div className="mt-2 max-h-[70vh] overflow-y-auto pr-2">
-                        {activeWorkbookContent ? (
-                            <WorkbookDisplay
-                                workbook={activeWorkbookContent}
-                                courseId={jobId || undefined}
-                                lessonId={activeWorkbookLessonIndex !== null ? `lesson_${activeWorkbookLessonIndex + 1}` : undefined}
-                                onClose={() => {
-                                    setActiveWorkbookTitle(null);
-                                    setActiveWorkbookLessonIndex(null);
-                                }}
-                            />
-                        ) : (
-                            <p className="text-sm text-muted-foreground">Loading workbook...</p>
-                        )}
-                    </div>
-                </DialogContent>
-            </Dialog>
+            {/* Workbook is now a full-page view - no dialog needed */}
 
 
             {/* --- Slide Viewer Modal --- */}
