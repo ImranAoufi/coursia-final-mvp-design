@@ -19,6 +19,7 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import QuizEditorPage from "./pages/QuizEditorPage";
 import WorkbookEditorPage from "./pages/WorkbookEditorPage";
+import SlidesViewerPage from "./pages/SlidesViewerPage";
 
 // ✅ Hier kommt dein Wizard aus src/components/
 import IntakeWizard from "./components/IntakeWizard";
@@ -47,6 +48,7 @@ const App = () => (
               <Route path="/my-course" element={<MyCourse />} />
               <Route path="/my-course/quiz" element={<QuizEditorPage />} />
               <Route path="/my-course/workbook" element={<WorkbookEditorPage />} />
+              <Route path="/my-course/slides" element={<SlidesViewerPage />} />
               
               {/* ✅ Marketplace */}
               <Route path="/marketplace" element={<Marketplace />} />
