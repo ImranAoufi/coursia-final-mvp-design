@@ -21,7 +21,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import { QuizDisplay } from "@/components/QuizDisplay"; // kept for CourseDetail usage
 import WorkbookDisplay from "@/components/WorkbookDisplay";
-import SlideViewer from "@/components/SlideViewer";
+// SlideViewer removed - slides now use full-page route
 import TeleprompterSlidePanel, { SlideContent } from "@/components/TeleprompterSlidePanel";
 import VideoWithSlides from "@/components/VideoWithSlides";
 import { useBrandingGeneration } from "@/hooks/useBrandingGeneration";
@@ -228,11 +228,11 @@ const MyCourse = () => {
     };
 
 
-    // Slides are now generated via Supabase edge function
-    const handleViewSlides = (lessonId: string, scriptText?: string) => {
-        setActiveLessonId(lessonId);
-        setActiveScriptContent(scriptText || activeScriptContent);
-        setOpenSlidesForLesson(lessonId);
+    // Slides are now a full-page view
+    const handleViewSlides = (lessonId: string, scriptText?: string, lessonTitle?: string) => {
+        const script = scriptText || activeScriptContent || "";
+        sessionStorage.setItem("coursia_edit_slides_script", script);
+        navigate(`/my-course/slides?title=${encodeURIComponent(lessonTitle || "Slides")}&lessonId=${encodeURIComponent(lessonId)}`);
     };
 
 
@@ -1368,14 +1368,7 @@ const MyCourse = () => {
             {/* Workbook is now a full-page view - no dialog needed */}
 
 
-            {/* --- Slide Viewer Modal --- */}
-            <SlideViewer
-                open={!!openSlidesForLesson}
-                onOpenChange={(v) => { if (!v) setOpenSlidesForLesson(null); }}
-                lessonId={openSlidesForLesson}
-                scriptText={activeScriptContent || undefined}
-                lessonTitle={activeScriptTitle || undefined}
-            />
+            {/* Slides is now a full-page view - no dialog needed */}
 
             {/* --- Video with Slides Modal --- */}
             {videoURL && (
