@@ -20,6 +20,38 @@ interface SlideViewerProps {
   lessonTitle?: string;
 }
 
+function generateFallbackSlides(scriptText: string, title: string): SlideContent[] {
+  const paragraphs = scriptText.split(/\n\n+/).filter(p => p.trim().length > 20);
+  const slides: SlideContent[] = [];
+  const colors = ["#4A90E2", "#7C3AED", "#10B981", "#F59E0B", "#EF4444"];
+
+  slides.push({
+    SlideTitle: title || "Course Overview",
+    KeyPoints: ["Welcome to this lesson", "Let's explore the key concepts", "Ready to learn!"],
+    IconDescription: "book icon",
+    ColorAccent: "#4A90E2"
+  });
+
+  for (let i = 0; i < Math.min(paragraphs.length, 6); i++) {
+    const sentences = paragraphs[i].split(/[.!?]+/).filter(s => s.trim().length > 10).slice(0, 4);
+    slides.push({
+      SlideTitle: `Key Point ${i + 1}`,
+      KeyPoints: sentences.map(s => s.trim().substring(0, 60)),
+      IconDescription: "lightbulb icon",
+      ColorAccent: colors[i % colors.length]
+    });
+  }
+
+  slides.push({
+    SlideTitle: "Summary",
+    KeyPoints: ["Review the key concepts", "Practice what you learned", "Ready for the next lesson"],
+    IconDescription: "checkmark icon",
+    ColorAccent: "#10B981"
+  });
+
+  return slides;
+}
+
 export default function SlideViewer({
   open,
   onOpenChange,
@@ -35,21 +67,20 @@ export default function SlideViewer({
   useEffect(() => {
     if (!open || !lessonId) return;
     
-    // If we already have slides for this lesson, don't regenerate
     if (slides.length > 0) {
       setIdx(0);
       return;
     }
 
     if (!scriptText || scriptText.trim().length === 0) {
-      setError("No script content available to generate slides");
+      setSlides(generateFallbackSlides(scriptText || "", lessonTitle || "Lesson"));
+      setIdx(0);
       return;
     }
 
     setLoading(true);
     setError(null);
 
-    // Call the edge function to generate slides
     supabase.functions.invoke("generate-slides", {
       body: {
         lesson_id: lessonId,
@@ -59,22 +90,19 @@ export default function SlideViewer({
       }
     })
       .then(({ data, error: fnError }) => {
-        if (fnError) {
-          console.error("Edge function error:", fnError);
-          setError("Failed to generate slides");
+        if (fnError || !data?.slides || !Array.isArray(data.slides) || data.slides.length === 0) {
+          console.warn("AI slides failed, using fallback:", fnError);
+          setSlides(generateFallbackSlides(scriptText, lessonTitle || "Lesson"));
+          setIdx(0);
           return;
         }
-        
-        if (data?.slides && Array.isArray(data.slides)) {
-          setSlides(data.slides);
-          setIdx(0);
-        } else {
-          setError("No slides returned from AI");
-        }
+        setSlides(data.slides);
+        setIdx(0);
       })
       .catch((e) => {
-        console.error("Slides generation error:", e);
-        setError("Failed to generate slides");
+        console.warn("Slides generation error, using fallback:", e);
+        setSlides(generateFallbackSlides(scriptText, lessonTitle || "Lesson"));
+        setIdx(0);
       })
       .finally(() => setLoading(false));
   }, [open, lessonId, scriptText, lessonTitle]);
