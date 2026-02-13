@@ -115,7 +115,7 @@ export async function uploadMaterialsToBackend(files: File[]) {
 export async function generateFullCourse(courseData?: any) {
     try {
         console.log("📤 Sending full course generation request to backend...");
-        const response = await fetch("http://127.0.0.1:8000/api/generate-full-course", {
+        const response = await fetch(`${base}/api/generate-full-course`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(courseData || {}),
@@ -141,7 +141,7 @@ export async function pollJobStatus(jobId: string, onProgress?: (status: string)
     console.log(`⏳ Polling job status for ${jobId}...`);
 
     while (true) {
-        const res = await fetch(`http://127.0.0.1:8000/api/job-status/${jobId}`);
+        const res = await fetch(`${base}/api/job-status/${jobId}`);
         const data = await res.json();
 
         if (onProgress) onProgress(data.status);

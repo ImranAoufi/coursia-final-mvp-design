@@ -123,6 +123,41 @@ const MyCourse = () => {
 
     const [openSlidesForLesson, setOpenSlidesForLesson] = useState<string | null>(null);
 
+    // Poll for job completion when we have a jobId but no course yet
+    useEffect(() => {
+        if (!jobId || course) return;
+
+        let cancelled = false;
+
+        const poll = async () => {
+            try {
+                setStatus("processing");
+                const result = await apiPollJobStatus(jobId, (s) => {
+                    if (!cancelled) {
+                        setStatus(s);
+                        setProgressMsg(s);
+                    }
+                });
+
+                if (!cancelled && result) {
+                    setCourse(result);
+                    setStatus("done");
+                    sessionStorage.setItem("coursia_full_course", JSON.stringify(result));
+                    toast.success("Course generated successfully!");
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    console.error("Polling failed:", err);
+                    setStatus("error");
+                    toast.error("Course generation failed. Please try again.");
+                }
+            }
+        };
+
+        poll();
+
+        return () => { cancelled = true; };
+    }, [jobId, course]);
 
     // Slides are now generated via Supabase edge function
     const handleViewSlides = (lessonId: string, scriptText?: string) => {
