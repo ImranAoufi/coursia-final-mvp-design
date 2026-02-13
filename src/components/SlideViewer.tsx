@@ -67,19 +67,31 @@ export default function SlideViewer({
   useEffect(() => {
     if (!open || !lessonId) return;
     
+    // Already have slides for this session
     if (slides.length > 0) {
       setIdx(0);
       return;
     }
 
+    // No script text at all — use fallback immediately
     if (!scriptText || scriptText.trim().length === 0) {
-      setSlides(generateFallbackSlides(scriptText || "", lessonTitle || "Lesson"));
+      setSlides(generateFallbackSlides("", lessonTitle || "Lesson"));
       setIdx(0);
       return;
     }
 
     setLoading(true);
     setError(null);
+
+    // Set a timeout so if AI takes too long, we fallback
+    const timeout = setTimeout(() => {
+      if (slides.length === 0) {
+        console.warn("AI slides timed out, using fallback");
+        setSlides(generateFallbackSlides(scriptText, lessonTitle || "Lesson"));
+        setIdx(0);
+        setLoading(false);
+      }
+    }, 15000);
 
     supabase.functions.invoke("generate-slides", {
       body: {
@@ -90,6 +102,7 @@ export default function SlideViewer({
       }
     })
       .then(({ data, error: fnError }) => {
+        clearTimeout(timeout);
         if (fnError || !data?.slides || !Array.isArray(data.slides) || data.slides.length === 0) {
           console.warn("AI slides failed, using fallback:", fnError);
           setSlides(generateFallbackSlides(scriptText, lessonTitle || "Lesson"));
@@ -100,11 +113,14 @@ export default function SlideViewer({
         setIdx(0);
       })
       .catch((e) => {
+        clearTimeout(timeout);
         console.warn("Slides generation error, using fallback:", e);
         setSlides(generateFallbackSlides(scriptText, lessonTitle || "Lesson"));
         setIdx(0);
       })
       .finally(() => setLoading(false));
+
+    return () => clearTimeout(timeout);
   }, [open, lessonId, scriptText, lessonTitle]);
 
   // Reset when closed

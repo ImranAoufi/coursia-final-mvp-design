@@ -60,7 +60,7 @@ export async function generatePreviewCourse(payload: PreviewRequest) {
 
 export async function sendOutcomeToBackend(outcome: string) {
     try {
-        const res = await fetch("http://localhost:8080/api/preview-course", {
+        const res = await fetch(`${base}/api/preview-course`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -81,7 +81,7 @@ export async function sendOutcomeToBackend(outcome: string) {
 
 export async function sendAudienceToBackend(audience: string, audienceLevel: string) {
     try {
-        const res = await fetch("http://127.0.0.1:8000/api/audience", {
+        const res = await fetch(`${base}/api/audience`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ audience, audienceLevel }),
@@ -103,7 +103,7 @@ export async function uploadMaterialsToBackend(files: File[]) {
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
 
-    const res = await fetch("http://127.0.0.1:8000/api/materials", {
+    const res = await fetch(`${base}/api/materials`, {
         method: "POST",
         body: formData,
     });
