@@ -92,16 +92,26 @@ async function useFallbackBranding(courseTitle: string, courseDescription?: stri
   try {
     const fallback = generateFallbackBranding(courseTitle, courseDescription || "");
     
-    // Upload SVG fallbacks to storage for consistent fast loading
-    const stored = await uploadBrandingToStorage(fallback.logo_url, fallback.banner_url);
+    // Try to upload SVG fallbacks to storage, but use data URLs directly if upload fails
+    let logoUrl = fallback.logo_url;
+    let bannerUrl = fallback.banner_url;
+    
+    try {
+      const stored = await uploadBrandingToStorage(fallback.logo_url, fallback.banner_url);
+      logoUrl = stored.logo_url || fallback.logo_url;
+      bannerUrl = stored.banner_url || fallback.banner_url;
+    } catch (uploadErr) {
+      console.warn("Storage upload failed, using data URLs directly:", uploadErr);
+      // Keep the SVG data URLs as-is - they work fine inline
+    }
     
     toast.success("Generated branding", {
       description: "Using themed gradient design",
     });
     
     return {
-      logo_url: stored.logo_url,
-      banner_url: stored.banner_url,
+      logo_url: logoUrl,
+      banner_url: bannerUrl,
       source: "fallback",
     };
   } catch (fallbackErr) {

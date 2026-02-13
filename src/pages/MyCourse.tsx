@@ -123,6 +123,23 @@ const MyCourse = () => {
 
     const [openSlidesForLesson, setOpenSlidesForLesson] = useState<string | null>(null);
 
+    // Map status strings to progress percentages
+    const statusToProgress = (s: string): number => {
+        const map: Record<string, number> = {
+            queued: 5, starting: 8, processing: 12, analyzing: 15,
+            structuring: 25, generating: 35, scripts: 45, generating_scripts: 45,
+            running: 50, quizzes: 60, creating_quizzes: 60,
+            workbooks: 72, building_workbooks: 72,
+            branding: 82, creating_branding: 82,
+            polishing: 90, finalizing: 95, done: 100,
+        };
+        const lower = s.toLowerCase();
+        for (const [key, val] of Object.entries(map)) {
+            if (lower.includes(key)) return val;
+        }
+        return 10;
+    };
+
     // Poll for job completion when we have a jobId but no course yet
     useEffect(() => {
         if (!jobId || course) return;
@@ -132,14 +149,17 @@ const MyCourse = () => {
         const poll = async () => {
             try {
                 setStatus("processing");
+                setGenerationProgress(5);
                 const result = await apiPollJobStatus(jobId, (s) => {
                     if (!cancelled) {
                         setStatus(s);
                         setProgressMsg(s);
+                        setGenerationProgress(statusToProgress(s));
                     }
                 });
 
                 if (!cancelled && result) {
+                    setGenerationProgress(100);
                     setCourse(result);
                     setStatus("done");
                     sessionStorage.setItem("coursia_full_course", JSON.stringify(result));
