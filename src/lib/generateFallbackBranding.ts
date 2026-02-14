@@ -256,7 +256,11 @@ function generateLogoSVG(title: string, theme: Theme): string {
   <rect x="${cx - 40}" y="52" width="80" height="2" rx="1" fill="url(#lg1)" opacity="0.25"/>
 </svg>`;
 
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
+  try {
+    return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+  } catch {
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  }
 }
 
 function generateBannerSVG(title: string, theme: Theme): string {
@@ -410,7 +414,11 @@ function generateBannerSVG(title: string, theme: Theme): string {
   <circle cx="1860" cy="1020" r="4" fill="${theme.accent}" opacity="0.2"/>
 </svg>`;
 
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
+  try {
+    return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+  } catch {
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  }
 }
 
 export function generateFallbackBranding(

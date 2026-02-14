@@ -26,17 +26,26 @@ export function useBrandingGeneration() {
     setProgress("Generating premium logo & banner...");
 
     try {
-      const { data, error } = await supabase.functions.invoke("generate-branding", {
-        body: {
-          course_title: options.course_title,
-          course_description: options.course_description || "",
-          style: options.style || "modern",
-        },
-      });
+      let data: any = null;
+      let error: any = null;
+      
+      try {
+        const response = await supabase.functions.invoke("generate-branding", {
+          body: {
+            course_title: options.course_title,
+            course_description: options.course_description || "",
+            style: options.style || "modern",
+          },
+        });
+        data = response.data;
+        error = response.error;
+      } catch (invokeErr) {
+        console.warn("Branding invoke failed, using fallback:", invokeErr);
+        return useFallbackBranding(options.course_title, options.course_description);
+      }
 
-      if (error) {
-        console.error("Branding generation error:", error);
-        // Fall back to SVG gradient branding
+      if (error || !data) {
+        console.warn("Branding generation error, using fallback:", error);
         return useFallbackBranding(options.course_title, options.course_description);
       }
 
@@ -44,7 +53,6 @@ export function useBrandingGeneration() {
 
       if (result.source === "error" || (!result.logo_url && !result.banner_url)) {
         console.warn("AI branding failed, using fallback:", result.error);
-        // Fall back to SVG gradient branding
         return useFallbackBranding(options.course_title, options.course_description);
       }
 
@@ -73,7 +81,6 @@ export function useBrandingGeneration() {
       return finalResult;
     } catch (err) {
       console.error("Branding generation exception:", err);
-      // Fall back to SVG gradient branding
       return useFallbackBranding(options.course_title, options.course_description);
     } finally {
       setIsGenerating(false);
