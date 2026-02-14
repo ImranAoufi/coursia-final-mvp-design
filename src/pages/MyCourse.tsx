@@ -179,6 +179,31 @@ const MyCourse = () => {
         return () => { cancelled = true; };
     }, [jobId, course]);
 
+    // Auto-generate fallback branding if course has no logo/banner
+    useEffect(() => {
+        if (!course || isBrandingGenerating) return;
+        if (course.logo_url && course.banner_url) return;
+        
+        const autoGenerate = async () => {
+            const result = await generateBranding({
+                course_title: course.course_title || "Course",
+                course_description: course.course_description,
+                style: "modern",
+            });
+            if (result.logo_url || result.banner_url) {
+                const updated = {
+                    ...course,
+                    logo_url: result.logo_url || course.logo_url,
+                    banner_url: result.banner_url || course.banner_url,
+                };
+                setCourse(updated);
+                sessionStorage.setItem("coursia_full_course", JSON.stringify(updated));
+                setHasUnsavedChanges(true);
+            }
+        };
+        autoGenerate();
+    }, [course?.course_title, !course?.logo_url || !course?.banner_url]);
+
     // Slides are now generated via Supabase edge function
     const handleViewSlides = (lessonId: string, scriptText?: string) => {
         setActiveScriptContent(scriptText || activeScriptContent);

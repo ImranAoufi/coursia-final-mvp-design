@@ -101,16 +101,28 @@ export default function SlideViewer({
         preferred_style: "apple"
       }
     })
-      .then(({ data, error: fnError }) => {
+      .then((response) => {
         clearTimeout(timeout);
-        if (fnError || !data?.slides || !Array.isArray(data.slides) || data.slides.length === 0) {
-          console.warn("AI slides failed, using fallback:", fnError);
+        try {
+          const { data, error: fnError } = response || {};
+          if (fnError || !data?.slides || !Array.isArray(data.slides) || data.slides.length === 0) {
+            console.warn("AI slides failed, using fallback:", fnError);
+            setSlides(generateFallbackSlides(scriptText, lessonTitle || "Lesson"));
+            setIdx(0);
+            return;
+          }
+          // Validate slide structure
+          const validSlides = data.slides.filter((s: any) => s?.SlideTitle && Array.isArray(s?.KeyPoints));
+          if (validSlides.length === 0) {
+            setSlides(generateFallbackSlides(scriptText, lessonTitle || "Lesson"));
+          } else {
+            setSlides(validSlides);
+          }
+          setIdx(0);
+        } catch {
           setSlides(generateFallbackSlides(scriptText, lessonTitle || "Lesson"));
           setIdx(0);
-          return;
         }
-        setSlides(data.slides);
-        setIdx(0);
       })
       .catch((e) => {
         clearTimeout(timeout);
