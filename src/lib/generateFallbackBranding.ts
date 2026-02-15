@@ -248,9 +248,8 @@ function generateLogoSVG(title: string, theme: Theme): string {
   <!-- Initials below the icon -->
   <text x="${cx}" y="${cy + 75}" font-family="'SF Pro Display','Inter',system-ui,sans-serif" font-size="42" font-weight="800" fill="white" text-anchor="middle" letter-spacing="6" opacity="0.85" filter="url(#glow)">${initials}</text>
 
-  <!-- Bottom label badge -->
-  <rect x="${cx - 55}" y="420" width="110" height="22" rx="11" fill="white" opacity="0.08"/>
-  <text x="${cx}" y="435" font-family="'SF Pro Display','Inter',system-ui,sans-serif" font-size="9" font-weight="700" fill="${theme.accent}" text-anchor="middle" letter-spacing="4" opacity="0.7">COURSE</text>
+  <!-- Bottom accent line -->
+  <rect x="${cx - 30}" y="428" width="60" height="2" rx="1" fill="url(#lg1)" opacity="0.3"/>
 
   <!-- Top subtle accent line -->
   <rect x="${cx - 40}" y="52" width="80" height="2" rx="1" fill="url(#lg1)" opacity="0.25"/>
@@ -399,9 +398,12 @@ function generateBannerSVG(title: string, theme: Theme): string {
   <!-- Accent divider -->
   <rect x="860" y="565" width="200" height="3" rx="1.5" fill="url(#accent)" opacity="0.5"/>
 
-  <!-- Subtitle badge -->
-  <rect x="830" y="600" width="260" height="36" rx="18" fill="${theme.primary}" opacity="0.12"/>
-  <text x="960" y="624" font-family="'SF Pro Display','Inter',system-ui,sans-serif" font-size="14" font-weight="600" fill="${theme.accent}" text-anchor="middle" letter-spacing="5" opacity="0.75">PREMIUM COURSE</text>
+  <!-- Subtitle accent dots -->
+  <g opacity="0.3">
+    <circle cx="940" cy="618" r="3" fill="${theme.primary}"/>
+    <circle cx="960" cy="618" r="3" fill="${theme.secondary}"/>
+    <circle cx="980" cy="618" r="3" fill="${theme.accent}"/>
+  </g>
 
   <!-- Top & bottom fades -->
   <rect width="1920" height="1080" fill="url(#fade)"/>
