@@ -92,9 +92,11 @@ ${script_text.substring(0, 8000)}`;
     if (!response.ok) {
       const errorText = await response.text();
       console.error("AI Gateway error:", errorText);
+      // Return fallback slides instead of an error
+      const fallback = generateFallbackSlides(script_text, title);
       return new Response(
-        JSON.stringify({ error: "Failed to generate slides", details: errorText, slides: [] }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+        JSON.stringify({ status: "ok", lesson_id, slides: fallback.slides }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
