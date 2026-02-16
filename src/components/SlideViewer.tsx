@@ -20,33 +20,77 @@ interface SlideViewerProps {
   lessonTitle?: string;
 }
 
-function generateFallbackSlides(scriptText: string, title: string): SlideContent[] {
-  const paragraphs = scriptText.split(/\n\n+/).filter(p => p.trim().length > 20);
-  const slides: SlideContent[] = [];
-  const colors = ["#4A90E2", "#7C3AED", "#10B981", "#F59E0B", "#EF4444"];
+function generateColorPalette(title: string): string[] {
+  // Generate a unique but cohesive palette from the title
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = title.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const baseHue = Math.abs(hash) % 360;
+  return [
+    `hsl(${baseHue}, 65%, 50%)`,
+    `hsl(${(baseHue + 30) % 360}, 55%, 45%)`,
+    `hsl(${(baseHue + 60) % 360}, 60%, 48%)`,
+    `hsl(${(baseHue + 150) % 360}, 50%, 42%)`,
+    `hsl(${(baseHue + 210) % 360}, 58%, 46%)`,
+  ];
+}
 
+function extractSmartTitle(sentence: string): string {
+  // Extract a short, meaningful title from a sentence
+  const cleaned = sentence.trim().replace(/^(in this video,?|welcome to|let's|now,?|next,?|first,?|finally,?|remember,?)/i, '').trim();
+  const words = cleaned.split(/\s+/).slice(0, 6);
+  let t = words.join(' ');
+  // Capitalize first letter
+  t = t.charAt(0).toUpperCase() + t.slice(1);
+  // Remove trailing punctuation
+  t = t.replace(/[.,;:!?]+$/, '');
+  return t || 'Key Insight';
+}
+
+function generateFallbackSlides(scriptText: string, title: string): SlideContent[] {
+  const colors = generateColorPalette(title || "Lesson");
+  const sentences = scriptText
+    .split(/[.!?]+/)
+    .map(s => s.trim())
+    .filter(s => s.length > 15);
+
+  const slides: SlideContent[] = [];
+
+  // Title slide with extracted intro points
+  const introPoints = sentences.slice(0, 3).map(s => s.length > 55 ? s.substring(0, 52) + '…' : s);
   slides.push({
-    SlideTitle: title || "Course Overview",
-    KeyPoints: ["Welcome to this lesson", "Let's explore the key concepts", "Ready to learn!"],
+    SlideTitle: title || "Lesson Overview",
+    KeyPoints: introPoints.length > 0 ? introPoints : ["Let's explore the key concepts"],
     IconDescription: "book icon",
-    ColorAccent: "#4A90E2"
+    ColorAccent: colors[0]
   });
 
-  for (let i = 0; i < Math.min(paragraphs.length, 6); i++) {
-    const sentences = paragraphs[i].split(/[.!?]+/).filter(s => s.trim().length > 10).slice(0, 4);
+  // Content slides — group sentences into chunks of 3-4
+  const contentSentences = sentences.slice(3);
+  const chunkSize = Math.max(3, Math.ceil(contentSentences.length / 5));
+  for (let i = 0; i < contentSentences.length && slides.length < 7; i += chunkSize) {
+    const chunk = contentSentences.slice(i, i + chunkSize);
+    const slideTitle = extractSmartTitle(chunk[0]);
     slides.push({
-      SlideTitle: `Key Point ${i + 1}`,
-      KeyPoints: sentences.map(s => s.trim().substring(0, 60)),
+      SlideTitle: slideTitle,
+      KeyPoints: chunk.map(s => s.length > 55 ? s.substring(0, 52) + '…' : s),
       IconDescription: "lightbulb icon",
-      ColorAccent: colors[i % colors.length]
+      ColorAccent: colors[slides.length % colors.length]
     });
   }
 
+  // Closing slide with last sentence as takeaway
+  const lastSentence = sentences[sentences.length - 1];
   slides.push({
-    SlideTitle: "Summary",
-    KeyPoints: ["Review the key concepts", "Practice what you learned", "Ready for the next lesson"],
+    SlideTitle: "Key Takeaways",
+    KeyPoints: [
+      lastSentence && lastSentence.length > 55 ? lastSentence.substring(0, 52) + '…' : (lastSentence || "Review what you learned"),
+      "Practice and apply these concepts",
+      "Continue to the next lesson"
+    ],
     IconDescription: "checkmark icon",
-    ColorAccent: "#10B981"
+    ColorAccent: colors[colors.length - 1]
   });
 
   return slides;
