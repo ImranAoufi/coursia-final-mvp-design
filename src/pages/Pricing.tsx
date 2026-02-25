@@ -5,7 +5,7 @@ import { Check, Sparkles, ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
-import { supabase } from "@/integrations/supabase/client";
+import { generateFullCourse } from "@/api";
 import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
 interface PricingTier {
   name: string;
@@ -330,22 +330,16 @@ const Pricing = () => {
                       });
                     }, 1500);
 
-                    const { data: fullCourse, error } = await supabase.functions.invoke("generate-course", {
-                      body: {
-                        outcome: wizardData.outcome || previewData.topic || "Course",
-                        audience: wizardData.audience || "",
-                        audience_level: wizardData.audienceLevel || "Intermediate",
-                        course_size: wizardData.courseSize || "standard",
-                        materials: wizardData.materials || "",
-                        links: wizardData.links || "",
-                      }
+                    const fullCourse = await generateFullCourse({
+                      outcome: wizardData.outcome || previewData.topic || "Course",
+                      audience: wizardData.audience || "",
+                      audience_level: wizardData.audienceLevel || "Intermediate",
+                      course_size: wizardData.courseSize || "standard",
+                      materials: wizardData.materials || "",
+                      links: wizardData.links || "",
                     });
 
                     clearInterval(progressInterval);
-
-                    if (error) throw error;
-
-                    sessionStorage.setItem("coursia_full_course", JSON.stringify(fullCourse));
                     setGenerationProgress(100);
                     setGenerationStep("done");
 

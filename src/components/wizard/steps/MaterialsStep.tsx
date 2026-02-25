@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Upload, Link2, FileText, CheckCircle2, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
-import { supabase } from "@/integrations/supabase/client";
+import { generateFullCourse, uploadMaterialsToBackend } from "@/api";
 
 interface MaterialsStepProps {
   onNext: (data: { materials: string; links: string; files?: string[] }) => void;
@@ -28,19 +28,13 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
     if (!selected?.length) return;
 
     setUploading(true);
-    const uploaded: string[] = [];
-    
-    for (const file of Array.from(selected)) {
-      const filePath = `uploads/${Date.now()}_${file.name}`;
-      const { error } = await supabase.storage.from("course-branding").upload(filePath, file);
-      if (!error) {
-        uploaded.push(file.name);
-      } else {
-        console.error("Upload error:", error);
-      }
+    try {
+      const result = await uploadMaterialsToBackend(Array.from(selected));
+      const uploaded = result.materials?.map((m: any) => m.filename) || [];
+      setFiles((prev) => [...prev, ...uploaded]);
+    } catch (err) {
+      console.error("Upload error:", err);
     }
-
-    setFiles((prev) => [...prev, ...uploaded]);
     setUploading(false);
   };
 
@@ -169,22 +163,20 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
                 });
               }, 800);
 
-              // Call Supabase edge function
-              const { data, error } = await supabase.functions.invoke("generate-course", {
-                body: {
-                  outcome: wizardData.outcome || "Course",
-                  audience: wizardData.audience || "",
-                  audience_level: wizardData.audienceLevel || "Intermediate",
-                  course_size: wizardData.courseSize || "standard",
-                  materials: materials,
-                  links: links,
-                }
+              // Use dual-mode API (local FastAPI or edge function)
+              const data = await generateFullCourse({
+                outcome: wizardData.outcome || "Course",
+                audience: wizardData.audience || "",
+                audience_level: wizardData.audienceLevel || "Intermediate",
+                course_size: wizardData.courseSize || "standard",
+                materials: materials,
+                links: links,
               });
 
               clearInterval(progressInterval);
 
-              if (error) {
-                console.error("❌ Edge function error:", error);
+              if (!data) {
+                console.error("❌ Course generation returned no data");
                 setIsGenerating(false);
                 alert("Error generating course. Please try again.");
                 return;
