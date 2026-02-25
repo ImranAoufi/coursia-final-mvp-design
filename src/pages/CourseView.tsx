@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function CourseView() {
     const [course, setCourse] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Hole Kursdaten aus SessionStorage (vom letzten Schritt)
         const data = sessionStorage.getItem("coursia_preview");
         if (data) {
             setCourse(JSON.parse(data));
@@ -18,14 +18,14 @@ export default function CourseView() {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-screen text-gray-500">
+            <div className="flex justify-center items-center h-screen text-muted-foreground">
                 <Loader2 className="animate-spin mr-2" /> Loading Course...
             </div>
         );
     }
 
     if (!course) {
-        return <div className="text-center text-gray-400 mt-10">No course loaded.</div>;
+        return <div className="text-center text-muted-foreground mt-10">No course loaded.</div>;
     }
 
     const courseData = course.course || course.preview || course;
@@ -40,9 +40,9 @@ export default function CourseView() {
             >
                 {/* Banner */}
                 <div className="relative w-full h-64 bg-gradient-to-r from-primary/70 to-accent/70">
-                    {courseData.banner_path && (
+                    {courseData.banner_url && (
                         <img
-                            src={`http://127.0.0.1:8000/${courseData.banner_path}`}
+                            src={courseData.banner_url}
                             alt="Course banner"
                             className="w-full h-64 object-cover"
                         />
@@ -55,10 +55,10 @@ export default function CourseView() {
                 </div>
 
                 {/* Logo */}
-                {courseData.logo_path && (
+                {courseData.logo_url && (
                     <div className="flex justify-center -mt-12">
                         <img
-                            src={`http://127.0.0.1:8000/${courseData.logo_path}`}
+                            src={courseData.logo_url}
                             alt="Course logo"
                             className="w-24 h-24 rounded-xl border-4 border-background shadow-lg bg-white"
                         />
@@ -75,7 +75,7 @@ export default function CourseView() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.1 }}
-                                className="bg-white/5 rounded-xl border border-border p-5 hover:bg-white/10 transition"
+                                className="bg-muted/50 rounded-xl border border-border p-5 hover:bg-muted transition"
                             >
                                 <h3 className="text-lg font-semibold text-primary">
                                     {lesson.lesson_title}
@@ -88,12 +88,12 @@ export default function CourseView() {
 
                                 <div className="flex gap-3 mt-3">
                                     {lesson.quiz && (
-                                        <span className="text-green-500 flex items-center text-sm">
+                                        <span className="text-primary flex items-center text-sm">
                                             <CheckCircle2 className="w-4 h-4 mr-1" /> Quiz
                                         </span>
                                     )}
                                     {lesson.workbook && (
-                                        <span className="text-blue-400 flex items-center text-sm">
+                                        <span className="text-accent flex items-center text-sm">
                                             <CheckCircle2 className="w-4 h-4 mr-1" /> Workbook
                                         </span>
                                     )}
@@ -111,20 +111,20 @@ export default function CourseView() {
                         onClick={async () => {
                             setLoading(true);
                             try {
-                                const res = await fetch("http://127.0.0.1:8000/api/generate-full-course", {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ course: courseData }),
+                                const { data, error } = await supabase.functions.invoke("generate-course", {
+                                    body: {
+                                        outcome: courseData.course_title || courseData.topic || "Course",
+                                        materials: "",
+                                    }
                                 });
 
-                                if (!res.ok) throw new Error("Fehler beim Generieren");
-                                const data = await res.json();
+                                if (error) throw error;
 
                                 sessionStorage.setItem("coursia_full", JSON.stringify(data));
-                                alert("✅ Full Course erfolgreich generiert!");
+                                alert("✅ Full Course successfully generated!");
                             } catch (err) {
                                 console.error(err);
-                                alert("❌ Fehler beim Generieren des Full Courses");
+                                alert("❌ Error generating Full Course");
                             } finally {
                                 setLoading(false);
                             }
