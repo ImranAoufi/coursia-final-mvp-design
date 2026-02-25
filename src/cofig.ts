@@ -1,1 +1,2 @@
-export const API_BASE = "http://127.0.0.1:8000";
+// API calls now go through Supabase edge functions — no external backend needed
+export const API_BASE = "";

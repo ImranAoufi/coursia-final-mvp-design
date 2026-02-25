@@ -5,7 +5,7 @@ import { Check, Sparkles, ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BackgroundOrbs } from "@/components/BackgroundOrbs";
-import { pollJobStatus } from "@/api";
+import { supabase } from "@/integrations/supabase/client";
 import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
 interface PricingTier {
   name: string;
@@ -34,12 +34,11 @@ const Pricing = () => {
 
     const interval = setInterval(async () => {
       try {
-        const status = await pollJobStatus(jobId);
-        console.log("📡 Job status:", status);
-
-        if (status === "completed") {
+        // No polling needed — course generation is synchronous via edge functions
+        const courseData = sessionStorage.getItem("coursia_full_course");
+        if (courseData) {
           clearInterval(interval);
-          alert("🎉 Your full course is ready! Redirecting you now...");
+          console.log("✅ Course ready in session");
           navigate("/my-course");
         }
       } catch (e) {
@@ -308,68 +307,53 @@ const Pricing = () => {
                   try {
                     console.log("🚀 Starting full course generation...");
 
+                    const wizardData = JSON.parse(sessionStorage.getItem("coursia_wizard_data") || "{}");
                     const previewData = JSON.parse(sessionStorage.getItem("coursia_preview") || "{}");
 
                     setGenerationStep("structuring");
                     setGenerationProgress(10);
+                    setGenerationProgress(10);
 
-                    const res = await fetch("http://127.0.0.1:8000/api/generate-full-course", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ course: previewData }),
-                    });
-
-                    const data = await res.json();
-
-                    if (!data.jobId && !data.job_id) throw new Error("No job ID returned from backend");
-                    
-                    const jobId = data.jobId || data.job_id;
-                    console.log("⏳ Job started, polling for status...", jobId);
-                    sessionStorage.setItem("coursia_job_id", jobId);
-
-                    // Start polling with progress updates
-                    let currentProgress = 15;
+                    // Simulate progress during AI generation
                     const progressInterval = setInterval(() => {
                       setGenerationProgress((prev) => {
                         if (prev >= 95) {
                           clearInterval(progressInterval);
                           return prev;
                         }
-                        // Progress through steps based on progress percentage
-                        if (prev < 30) {
-                          setGenerationStep("generating_scripts");
-                        } else if (prev < 50) {
-                          setGenerationStep("creating_quizzes");
-                        } else if (prev < 70) {
-                          setGenerationStep("building_workbooks");
-                        } else if (prev < 85) {
-                          setGenerationStep("polishing");
-                        } else {
-                          setGenerationStep("finalizing");
-                        }
+                        if (prev < 30) setGenerationStep("generating_scripts");
+                        else if (prev < 50) setGenerationStep("creating_quizzes");
+                        else if (prev < 70) setGenerationStep("building_workbooks");
+                        else if (prev < 85) setGenerationStep("polishing");
+                        else setGenerationStep("finalizing");
                         return prev + 2;
                       });
                     }, 1500);
 
-                    const fullCourse = await pollJobStatus(jobId, (s) => {
-                      console.log("📡 Status:", s);
-                      // Map backend status to our steps
-                      if (s.includes("script")) setGenerationStep("generating_scripts");
-                      else if (s.includes("quiz")) setGenerationStep("creating_quizzes");
-                      else if (s.includes("workbook")) setGenerationStep("building_workbooks");
-                      else if (s === "done") setGenerationStep("finalizing");
+                    const { data: fullCourse, error } = await supabase.functions.invoke("generate-course", {
+                      body: {
+                        outcome: wizardData.outcome || previewData.topic || "Course",
+                        audience: wizardData.audience || "",
+                        audience_level: wizardData.audienceLevel || "Intermediate",
+                        course_size: wizardData.courseSize || "standard",
+                        materials: wizardData.materials || "",
+                        links: wizardData.links || "",
+                      }
                     });
 
                     clearInterval(progressInterval);
+
+                    if (error) throw error;
+
+                    sessionStorage.setItem("coursia_full_course", JSON.stringify(fullCourse));
                     setGenerationProgress(100);
                     setGenerationStep("done");
 
                     console.log("✅ Full course ready:", fullCourse);
 
-                    // Small delay to show completion
                     setTimeout(() => {
                       setIsGenerating(false);
-                      navigate("/my-course", { state: { jobId } });
+                      navigate("/my-course");
                     }, 1000);
                   } catch (err) {
                     console.error("❌ Error generating course:", err);

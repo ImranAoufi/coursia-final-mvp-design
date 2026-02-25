@@ -212,9 +212,9 @@ const MyCourse = () => {
 
     const toURL = (path?: string) => {
         if (!path) return "";
-        return path
-            .replace(/^.*generated[\\/]/, "http://127.0.0.1:8000/generated/")
-            .replace(/\\/g, "/");
+        // URLs from Supabase storage are already absolute
+        if (path.startsWith("http")) return path;
+        return path;
     };
 
     const handleDownloadZip = async () => {
