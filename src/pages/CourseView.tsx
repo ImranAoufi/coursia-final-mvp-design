@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle2 } from "lucide-react";
-import { generateFullCourse } from "@/api";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function CourseView() {
     const [course, setCourse] = useState<any>(null);
@@ -111,10 +111,14 @@ export default function CourseView() {
                         onClick={async () => {
                             setLoading(true);
                             try {
-                                const data = await generateFullCourse({
-                                    outcome: courseData.course_title || courseData.topic || "Course",
-                                    materials: "",
+                                const { data, error } = await supabase.functions.invoke("generate-course", {
+                                    body: {
+                                        outcome: courseData.course_title || courseData.topic || "Course",
+                                        materials: "",
+                                    }
                                 });
+
+                                if (error) throw error;
 
                                 sessionStorage.setItem("coursia_full", JSON.stringify(data));
                                 alert("✅ Full Course successfully generated!");
