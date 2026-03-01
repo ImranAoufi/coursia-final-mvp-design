@@ -83,13 +83,25 @@ const Preview = () => {
               lesson_title: l.lesson_title || l.title,
               video_titles: Array.isArray(l.videos)
                 ? l.videos.map((v: any) => (typeof v === "string" ? v : v.title || v.url))
-                : [],
+                : Array.isArray(l.video_titles) ? l.video_titles : [],
+              quiz: !!l.quiz,
+              workbook: !!l.workbook
+            })),
+          });
+        } else if (parsed.topic && parsed.lessons) {
+          // Already in the right format (from wizard fallback)
+          setPreview({
+            topic: parsed.topic,
+            lessons: parsed.lessons.map((l: any) => ({
+              lesson_title: l.lesson_title || l.title || "Untitled",
+              video_titles: Array.isArray(l.video_titles) ? l.video_titles : [],
               quiz: !!l.quiz,
               workbook: !!l.workbook
             })),
           });
         } else if (parsed.preview) {
-          setPreview(JSON.parse(parsed.preview));
+          const inner = typeof parsed.preview === "string" ? JSON.parse(parsed.preview) : parsed.preview;
+          setPreview(inner);
         } else {
           setPreview(parsed as CoursePreview);
         }
@@ -132,14 +144,18 @@ const Preview = () => {
       const previewData = JSON.parse(sessionStorage.getItem("coursia_preview") || "{}");
       const result = await generateFullCourse(previewData);
 
-      if (!result?.jobId) {
-        console.error("No jobId returned from backend:", result);
-        alert("Generation started but no job ID received.");
-        return;
+      if (result?.jobId) {
+        // Backend mode with polling
+        sessionStorage.setItem("coursia_job_id", result.jobId);
+        navigate("/my-course", { state: { jobId: result.jobId } });
+      } else if (result?.course_title || result?.lessons) {
+        // Fallback/direct mode — course data returned directly
+        sessionStorage.setItem("coursia_full_course", JSON.stringify(result));
+        navigate("/my-course");
+      } else {
+        console.error("Unexpected result from generateFullCourse:", result);
+        alert("Something went wrong generating the course.");
       }
-
-      sessionStorage.setItem("coursia_job_id", result.jobId);
-      navigate("/my-course", { state: { jobId: result.jobId } });
     } catch (err) {
       console.error("Error starting full course generation:", err);
       alert("There was a problem generating the full course.");
