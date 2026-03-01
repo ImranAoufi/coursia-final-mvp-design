@@ -12,6 +12,7 @@ import MaterialsStep from "./wizard/steps/MaterialsStep";
 import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 import { soundEngine } from "@/lib/sounds";
+import { generatePreviewCourse } from "@/api";
 
 
 interface WizardData {
@@ -44,7 +45,6 @@ const IntakeWizard = () => {
   const handleComplete = async (data: WizardData) => {
     console.log("🧩 handleComplete triggered! wizardData:", data);
 
-    // Store wizard data for use throughout the flow
     const wizardMetadata = {
       outcome: data.outcome || "Untitled Course",
       audience: data.audience || "",
@@ -55,7 +55,33 @@ const IntakeWizard = () => {
     };
     sessionStorage.setItem("coursia_wizard_data", JSON.stringify(wizardMetadata));
 
-    // Navigate to preview — course generation happens in MaterialsStep or Pricing
+    // Generate preview course before navigating
+    try {
+      const sizeMap: Record<string, "Micro" | "Standard" | "Masterclass"> = {
+        micro: "Micro",
+        standard: "Standard",
+        masterclass: "Masterclass",
+      };
+      const result = await generatePreviewCourse({
+        prompt: wizardMetadata.outcome,
+        include_quiz: true,
+        include_workbook: true,
+        audience: wizardMetadata.audience,
+        level: wizardMetadata.audienceLevel,
+        format: sizeMap[wizardMetadata.courseSize] || "Standard",
+      });
+
+      // Store preview data
+      const previewData = result.preview || result;
+      const parsed = typeof previewData === "string" ? JSON.parse(previewData) : previewData;
+      sessionStorage.setItem("coursia_preview", JSON.stringify({
+        topic: parsed.course_title || wizardMetadata.outcome,
+        lessons: parsed.lessons || [],
+      }));
+    } catch (err) {
+      console.warn("Preview generation failed, will use fallback on preview page:", err);
+    }
+
     navigate("/preview", { state: { wizardData: wizardMetadata } });
   };
 
