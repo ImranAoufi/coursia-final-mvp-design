@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { API_BASE, isLocalBackend } from "@/cofig";
+import { generateFallbackCourse } from "@/lib/fallbackCourseGenerator";
 
 // ✅ Dual-mode: Uses localhost FastAPI when available, otherwise Supabase edge functions
 
@@ -63,8 +64,15 @@ export async function generatePreviewCourse(payload: PreviewRequest) {
     if (error) throw error;
     return { preview: data };
   } catch (err) {
-    console.error("generatePreviewCourse error:", err);
-    throw err;
+    console.warn("⚠️ Cloud generation failed, using free fallback:", err);
+    const size = payload.format === "Micro" ? "micro" : payload.format === "Masterclass" ? "masterclass" : "standard";
+    const fallback = generateFallbackCourse(
+      payload.prompt,
+      payload.audience,
+      payload.level,
+      size,
+    );
+    return { preview: fallback };
   }
 }
 
@@ -162,8 +170,16 @@ export async function generateFullCourse(courseData?: any) {
     sessionStorage.setItem("coursia_full_course", JSON.stringify(data));
     return data;
   } catch (err) {
-    console.error("💥 Full course generation failed:", err);
-    throw err;
+    console.warn("⚠️ Full course cloud generation failed, using free fallback:", err);
+    const outcome = JSON.parse(sessionStorage.getItem("coursia_wizard_data") || "{}");
+    const fallback = generateFallbackCourse(
+      outcome.outcome || "Course",
+      outcome.audience,
+      outcome.audienceLevel,
+      outcome.courseSize,
+    );
+    sessionStorage.setItem("coursia_full_course", JSON.stringify(fallback));
+    return fallback;
   }
 }
 
