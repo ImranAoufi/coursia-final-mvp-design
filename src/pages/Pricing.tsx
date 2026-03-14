@@ -197,7 +197,7 @@ const Pricing = () => {
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {tiers.map((tier, index) => {
               const price = isAnnual ? tier.priceAnnual : tier.price;
               const isRecommended = recommended === tier.name;
