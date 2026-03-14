@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, Link2, FileText, CheckCircle2, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { uploadMaterialsToBackend } from "@/api";
 import GenerationLoadingScreen from "@/components/GenerationLoadingScreen";
-import { supabase } from "@/integrations/supabase/client";
 
 interface MaterialsStepProps {
   onNext: (data: { materials: string; links: string; files?: string[] }) => void;
@@ -22,21 +22,58 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
   const [generationProgress, setGenerationProgress] = useState(0);
 
   const canProceed = materials.trim().length >= 50;
+  const handleContinue = async () => {
+    try {
+      setUploading(true);
+
+      const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+      let uploadedMaterials: any[] = [];
+
+      // Wenn Dateien hochgeladen wurden → ans Backend schicken
+      if (fileInput?.files && fileInput.files.length > 0) {
+        const filesArray = Array.from(fileInput.files);
+        console.log("📂 Uploading files to backend:", filesArray.map(f => f.name));
+        const res = await uploadMaterialsToBackend(filesArray);
+        console.log("✅ Uploaded materials:", res);
+        uploadedMaterials = res.materials || [];
+      }
+
+      // Jetzt Wizard weiterführen
+      onNext({
+        materials: materials,
+        links: links,
+        files: uploadedMaterials.map((m) => m.filename),
+      });
+
+      setUploading(false);
+    } catch (err) {
+      console.error("❌ Error uploading materials:", err);
+      setUploading(false);
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files;
     if (!selected?.length) return;
 
     setUploading(true);
+
     const uploaded: string[] = [];
-    
     for (const file of Array.from(selected)) {
-      const filePath = `uploads/${Date.now()}_${file.name}`;
-      const { error } = await supabase.storage.from("course-branding").upload(filePath, file);
-      if (!error) {
-        uploaded.push(file.name);
-      } else {
-        console.error("Upload error:", error);
+      const formData = new FormData();
+      formData.append("files", file);
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) throw new Error("Upload failed");
+        const data = await res.json();
+        uploaded.push(...data.files);
+      } catch (err) {
+        console.error("Upload error:", err);
       }
     }
 
@@ -56,7 +93,7 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
           Share Your Knowledge
         </h3>
         <p className="text-muted-foreground text-sm">
-          Upload existing materials or tell us what you know - we'll organize it for you.
+          Upload existing materials or tell us what you know - we’ll organize it for you.
         </p>
       </div>
 
@@ -145,68 +182,113 @@ const MaterialsStep = ({ onNext, onBack }: MaterialsStepProps) => {
               setGenerationStep("analyzing");
               setGenerationProgress(5);
 
-              // Store materials in wizard data
-              const wizardData = JSON.parse(sessionStorage.getItem("coursia_wizard_data") || "{}");
-              wizardData.materials = materials;
-              wizardData.links = links;
-              sessionStorage.setItem("coursia_wizard_data", JSON.stringify(wizardData));
+              console.log("🧩 Create Course clicked");
+              console.log("🧠 Materials length:", materials.length);
+              console.log("🔗 Links length:", links.length);
 
+              const formData = new FormData();
+              formData.append("materials", materials);
+              formData.append("links", links);
+              formData.append("courseSize", sessionStorage.getItem("courseSize") || "standard");
+
+              // Process uploaded files
+              setGenerationStep("processing");
+              setGenerationProgress(15);
+
+              const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+              if (fileInput?.files?.length) {
+                const totalFiles = fileInput.files.length;
+                for (let i = 0; i < totalFiles; i++) {
+                  const file = fileInput.files[i];
+                  console.log("📎 Uploading file to backend for reading:", file.name);
+
+                  const uploadData = new FormData();
+                  uploadData.append("file", file);
+
+                  const uploadRes = await fetch("http://127.0.0.1:8000/api/read-file", {
+                    method: "POST",
+                    body: uploadData,
+                  });
+
+                  if (!uploadRes.ok) throw new Error("File upload for reading failed");
+                  const uploadResult = await uploadRes.json();
+                  console.log("✅ File processed by backend:", uploadResult);
+
+                  if (uploadResult.text) {
+                    formData.append("file_texts", uploadResult.text);
+                  }
+
+                  // Update progress based on file processing
+                  setGenerationProgress(15 + ((i + 1) / totalFiles) * 15);
+                }
+              }
+
+              // Generate course structure
               setGenerationStep("structuring");
-              setGenerationProgress(20);
+              setGenerationProgress(35);
 
-              // Simulate progress during AI generation
+              console.log("🚀 Sending POST to /api/generate-course ...");
+
+              // Simulate step progression during generation
               const progressInterval = setInterval(() => {
                 setGenerationProgress((prev) => {
                   if (prev >= 90) {
                     clearInterval(progressInterval);
                     return prev;
                   }
-                  if (prev < 50) setGenerationStep("generating_scripts");
-                  else if (prev < 65) setGenerationStep("creating_quizzes");
-                  else if (prev < 80) setGenerationStep("building_workbooks");
-                  else setGenerationStep("polishing");
+                  // Progress through steps
+                  if (prev < 50) {
+                    setGenerationStep("generating_scripts");
+                  } else if (prev < 65) {
+                    setGenerationStep("creating_quizzes");
+                  } else if (prev < 80) {
+                    setGenerationStep("building_workbooks");
+                  } else {
+                    setGenerationStep("polishing");
+                  }
                   return prev + 3;
                 });
               }, 800);
 
-              // Call Supabase edge function
-              const { data, error } = await supabase.functions.invoke("generate-course", {
-                body: {
-                  outcome: wizardData.outcome || "Course",
-                  audience: wizardData.audience || "",
-                  audience_level: wizardData.audienceLevel || "Intermediate",
-                  course_size: wizardData.courseSize || "standard",
-                  materials: materials,
-                  links: links,
-                }
+              const res = await fetch("http://127.0.0.1:8000/api/generate-course", {
+                method: "POST",
+                body: formData,
               });
 
               clearInterval(progressInterval);
 
-              if (error) {
-                console.error("❌ Edge function error:", error);
+              console.log("📥 Response status:", res.status);
+
+              if (!res.ok) {
+                const text = await res.text();
+                console.error("❌ Backend responded with error:", text);
                 setIsGenerating(false);
-                alert("Error generating course. Please try again.");
+                alert("Error: Backend returned an invalid response.");
                 return;
               }
 
               setGenerationStep("finalizing");
               setGenerationProgress(95);
 
+              const data = await res.json();
+              console.log("✅ Response from backend:", data);
+
+              if (!data) console.warn("⚠️ Empty response data!");
+
               sessionStorage.setItem("coursia_preview", JSON.stringify(data));
-              console.log("✅ Course generated:", data);
+              console.log("💾 Saved to sessionStorage");
 
               setGenerationProgress(100);
               setGenerationStep("done");
 
               setTimeout(() => {
-                // Pass data through to the next wizard step
-                onNext({ materials, links, files });
+                console.log("➡️ Navigating to /preview");
+                window.location.href = "/preview";
               }, 1000);
             } catch (err) {
               console.error("💥 Error during course generation:", err);
               setIsGenerating(false);
-              alert("Something went wrong. Please try again.");
+              alert("Something went wrong. Check console for details.");
             }
           }}
           disabled={!canProceed || isGenerating}
