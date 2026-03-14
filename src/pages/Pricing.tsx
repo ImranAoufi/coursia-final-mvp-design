@@ -220,7 +220,7 @@ const Pricing = () => {
                   )}
 
                   <div
-                    className={`h-full glass rounded-2xl p-8 transition-all duration-300 hover:scale-105 cursor-pointer ${tier.highlighted
+                    className={`h-full glass rounded-xl sm:rounded-2xl p-5 sm:p-8 transition-all duration-300 hover:scale-105 cursor-pointer ${tier.highlighted
                       ? "border-2 border-primary/50 shadow-glow"
                       : "border border-glass-border hover:border-primary/30"
                       } ${isRecommended ? "ring-2 ring-primary/30" : ""} ${selectedTier === tier.name ? "ring-2 ring-primary shadow-glow" : ""
