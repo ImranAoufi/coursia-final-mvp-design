@@ -324,7 +324,7 @@ const MyCourse = () => {
                 <div className="absolute -bottom-20 right-1/3 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
             </div>
 
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-4 sm:space-y-8">
                 {/* Editable Course Header */}
                 <CourseEditableHeader
                     title={course?.course_title || "Your Course"}
@@ -543,7 +543,7 @@ const MyCourse = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7, duration: 0.5 }}
-                    className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+                    className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
                 >
                     {/* Lessons Column */}
                     <main className="lg:col-span-2 space-y-4">

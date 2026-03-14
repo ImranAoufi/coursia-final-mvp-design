@@ -148,18 +148,18 @@ export function CourseEditableHeader({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6"
     >
       {/* Category & Level badges */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.4 }}
-        className="flex flex-wrap items-center gap-3"
+        className="flex flex-wrap items-center gap-2 sm:gap-3"
       >
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-xs font-medium text-primary border border-primary/20">
+        <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 rounded-full bg-primary/10 text-xs font-medium text-primary border border-primary/20">
           <Sparkles className="w-3 h-3" />
-          AI-Generated Course
+          AI-Generated
         </span>
         
         {/* Editable Category */}
@@ -243,7 +243,7 @@ export function CourseEditableHeader({
             <Input
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold h-auto py-2 bg-transparent border-primary/30"
+              className="text-2xl sm:text-3xl lg:text-5xl font-bold h-auto py-2 bg-transparent border-primary/30"
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSaveTitle();
@@ -265,11 +265,11 @@ export function CourseEditableHeader({
           </div>
         ) : (
           <h1 
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight cursor-pointer hover:text-primary/90 transition-colors flex items-center gap-3"
+            className="text-2xl sm:text-4xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight cursor-pointer hover:text-primary/90 transition-colors flex items-start gap-2 sm:gap-3"
             onClick={() => setIsEditingTitle(true)}
           >
-            {title || "Your Course"}
-            <Edit2 className="w-6 h-6 opacity-0 group-hover:opacity-50 transition-opacity" />
+            <span className="break-words">{title || "Your Course"}</span>
+            <Edit2 className="w-4 h-4 sm:w-6 sm:h-6 opacity-0 group-hover:opacity-50 transition-opacity shrink-0 mt-1 sm:mt-2" />
           </h1>
         )}
       </motion.div>
@@ -286,7 +286,7 @@ export function CourseEditableHeader({
             <Textarea
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
-              className="text-lg bg-transparent border-primary/30 min-h-[100px]"
+              className="text-base sm:text-lg bg-transparent border-primary/30 min-h-[100px]"
               placeholder="Add a compelling description for your course..."
               autoFocus
             />
@@ -304,7 +304,7 @@ export function CourseEditableHeader({
           </div>
         ) : (
           <p 
-            className="text-lg text-muted-foreground max-w-3xl cursor-pointer hover:text-foreground transition-colors flex items-start gap-2"
+            className="text-base sm:text-lg text-muted-foreground max-w-3xl cursor-pointer hover:text-foreground transition-colors flex items-start gap-2"
             onClick={() => setIsEditingDescription(true)}
           >
             {description || "Click to add a description..."}
@@ -318,9 +318,9 @@ export function CourseEditableHeader({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.37, duration: 0.5 }}
-        className="glass-strong rounded-2xl p-5 space-y-4"
+        className="glass-strong rounded-xl sm:rounded-2xl p-4 sm:p-5 space-y-3 sm:space-y-4"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
           <div className="flex items-center gap-2 text-sm font-medium text-primary">
             <Sparkles className="w-4 h-4" />
             Marketplace Description
@@ -330,7 +330,7 @@ export function CourseEditableHeader({
             variant="outline"
             onClick={handleGenerateMarketingHook}
             disabled={isGeneratingHook || isSaving}
-            className="flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 border-primary/30"
+            className="flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 border-primary/30 w-full sm:w-auto"
           >
             {isGeneratingHook ? (
               <>
@@ -350,7 +350,7 @@ export function CourseEditableHeader({
             <Textarea
               value={editMarketingHook}
               onChange={(e) => setEditMarketingHook(e.target.value)}
-              className="text-base bg-transparent border-primary/30 min-h-[140px]"
+              className="text-sm sm:text-base bg-transparent border-primary/30 min-h-[120px] sm:min-h-[140px]"
               placeholder="Write a compelling sales pitch for potential buyers. What will they learn? Why should they enroll?"
               autoFocus
             />
@@ -372,11 +372,11 @@ export function CourseEditableHeader({
             onClick={() => setIsEditingMarketingHook(true)}
           >
             {marketingHook ? (
-              <p className="text-base text-foreground/80 leading-relaxed">
+              <p className="text-sm sm:text-base text-foreground/80 leading-relaxed">
                 {marketingHook}
               </p>
             ) : (
-              <p className="text-base text-muted-foreground italic">
+              <p className="text-sm sm:text-base text-muted-foreground italic">
                 Click to add a compelling sales pitch, or use AI Generate to create one automatically...
               </p>
             )}
@@ -390,10 +390,10 @@ export function CourseEditableHeader({
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.4, duration: 0.6 }}
-        className="relative rounded-3xl overflow-hidden shadow-elevated group"
+        className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-elevated group"
       >
         {bannerUrl ? (
-          <div className="relative h-56 sm:h-72 lg:h-80">
+          <div className="relative h-44 sm:h-56 md:h-72 lg:h-80">
             <img
               src={bannerUrl}
               alt="Course banner"
@@ -403,7 +403,7 @@ export function CourseEditableHeader({
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
           </div>
         ) : (
-          <div className="h-56 sm:h-72 lg:h-80 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20 animate-gradient" />
+          <div className="h-44 sm:h-56 md:h-72 lg:h-80 bg-gradient-to-br from-primary/20 via-secondary/10 to-accent/20 animate-gradient" />
         )}
       </motion.div>
     </motion.div>

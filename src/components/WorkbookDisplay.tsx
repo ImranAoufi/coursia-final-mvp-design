@@ -30,7 +30,7 @@ export default function WorkbookDisplay({ workbook, courseId, lessonId, onClose 
     const [visitedPages, setVisitedPages] = useState<Set<number>>(new Set([0]));
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
-    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Parse workbook text into prompts
     const parseWorkbook = useCallback((text: string): string[] => {

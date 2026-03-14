@@ -139,9 +139,9 @@ export default function CourseDetail() {
 
       {/* Header */}
       <header className="relative z-10 glass-strong border-b border-white/10">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <Link to="/">
-            <Logo className="h-12 md:h-14 object-contain" />
+            <Logo className="h-10 sm:h-12 md:h-14 object-contain" />
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -156,21 +156,25 @@ export default function CourseDetail() {
             <ThemeToggle />
             <UserMenu />
           </nav>
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+            <UserMenu />
+          </div>
         </div>
       </header>
 
-      <div className="relative z-10 pt-8 pb-16 px-4 md:px-6">
+      <div className="relative z-10 pt-4 sm:pt-8 pb-10 sm:pb-16 px-3 sm:px-4 md:px-6">
         <div className="max-w-6xl mx-auto">
           {/* Back Button */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="mb-6"
+            className="mb-4 sm:mb-6"
           >
             <Button 
               variant="ghost" 
               onClick={() => navigate("/marketplace")}
-              className="gap-2 hover:bg-white/10"
+              className="gap-2 hover:bg-white/10 text-sm"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Marketplace
@@ -181,9 +185,9 @@ export default function CourseDetail() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-strong rounded-3xl overflow-hidden border border-white/10 mb-8"
+            className="glass-strong rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 mb-6 sm:mb-8"
           >
-            <div className="relative h-64 md:h-80 overflow-hidden">
+            <div className="relative h-48 sm:h-64 md:h-80 overflow-hidden">
               <img
                 src={course.image}
                 alt={course.title}
@@ -192,41 +196,41 @@ export default function CourseDetail() {
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
               
               {course.isUserCourse && (
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-4 py-2 rounded-full shadow-lg">
-                  <Crown className="w-4 h-4 text-white inline mr-2" />
-                  <span className="text-sm font-semibold text-white">Your Course</span>
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg">
+                  <Crown className="w-3 h-3 sm:w-4 sm:h-4 text-white inline mr-1 sm:mr-2" />
+                  <span className="text-xs sm:text-sm font-semibold text-white">Your Course</span>
                 </div>
               )}
 
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-medium text-primary bg-primary/20 px-3 py-1 rounded-full backdrop-blur-sm">
+              <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
+                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                  <span className="text-xs font-medium text-primary bg-primary/20 px-2 sm:px-3 py-1 rounded-full backdrop-blur-sm">
                     {course.category}
                   </span>
-                  <span className="text-xs text-white/80 bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">
+                  <span className="text-xs text-white/80 bg-white/10 px-2 sm:px-3 py-1 rounded-full backdrop-blur-sm">
                     {course.level}
                   </span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">
                   {course.title}
                 </h1>
-                <p className="text-white/80">by {course.instructor}</p>
+                <p className="text-white/80 text-sm sm:text-base">by {course.instructor}</p>
               </div>
             </div>
 
-            <div className="p-6 md:p-8">
+            <div className="p-4 sm:p-6 md:p-8">
               {/* Marketing Description - Premium Display */}
               {courseData?.marketing_hook && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.15 }}
-                  className="relative mb-8 p-6 rounded-2xl bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 border border-primary/10"
+                  className="relative mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 border border-primary/10"
                 >
-                  <div className="absolute top-4 right-4">
-                    <Sparkles className="w-5 h-5 text-primary/50" />
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary/50" />
                   </div>
-                  <p className="text-lg text-foreground/90 leading-relaxed font-medium italic">
+                  <p className="text-sm sm:text-lg text-foreground/90 leading-relaxed font-medium italic pr-6">
                     "{courseData.marketing_hook}"
                   </p>
                 </motion.div>
@@ -234,49 +238,52 @@ export default function CourseDetail() {
 
               {/* Course Description */}
               {courseData?.course_description && (
-                <p className="text-muted-foreground mb-6 text-lg">
+                <p className="text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-lg">
                   {courseData.course_description}
                 </p>
               )}
 
               {/* Stats */}
-              <div className="flex flex-wrap items-center gap-6 mb-6">
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 fill-primary text-primary" />
+              <div className="flex flex-wrap items-center gap-3 sm:gap-6 mb-4 sm:mb-6 text-xs sm:text-sm">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-primary text-primary" />
                   <span className="font-semibold">{course.rating}</span>
-                  <span className="text-muted-foreground">({course.reviews.toLocaleString()} reviews)</span>
+                  <span className="text-muted-foreground hidden sm:inline">({course.reviews.toLocaleString()} reviews)</span>
                 </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Users className="w-5 h-5" />
-                  <span>{course.students.toLocaleString()} students</span>
+                <div className="flex items-center gap-1 sm:gap-2 text-muted-foreground">
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span>{(course.students / 1000).toFixed(1)}k</span>
                 </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="w-5 h-5" />
+                <div className="flex items-center gap-1 sm:gap-2 text-muted-foreground">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>{course.duration}</span>
                 </div>
                 {totalVideos > 0 && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Play className="w-5 h-5" />
+                  <div className="flex items-center gap-1 sm:gap-2 text-muted-foreground">
+                    <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>{totalVideos} videos</span>
                   </div>
                 )}
               </div>
 
               {/* Price & Enroll */}
-              <div className="flex items-center gap-6">
-                <span className="text-4xl font-bold gradient-text">${course.price}</span>
-                <Button variant="gradient" size="lg" className="px-8">
-                  Enroll Now
-                </Button>
-                {course.isUserCourse && (
-                  <Button 
-                    variant="glass" 
-                    size="lg"
-                    onClick={() => navigate("/my-course")}
-                  >
-                    Go to My Course
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
+                <span className="text-3xl sm:text-4xl font-bold gradient-text">${course.price}</span>
+                <div className="flex gap-3 w-full sm:w-auto">
+                  <Button variant="gradient" size="lg" className="px-6 sm:px-8 flex-1 sm:flex-initial">
+                    Enroll Now
                   </Button>
-                )}
+                  {course.isUserCourse && (
+                    <Button 
+                      variant="glass" 
+                      size="lg"
+                      onClick={() => navigate("/my-course")}
+                      className="flex-1 sm:flex-initial"
+                    >
+                      Go to My Course
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>

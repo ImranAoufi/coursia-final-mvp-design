@@ -131,30 +131,39 @@ const Pricing = () => {
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 glass-strong">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Logo className="h-12 md:h-14 object-contain cursor-pointer" onClick={() => navigate("/")} />
-          <div className="flex items-center gap-4">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+          <Logo className="h-10 sm:h-12 md:h-14 object-contain cursor-pointer" onClick={() => navigate("/")} />
+          <div className="flex items-center gap-2 sm:gap-4">
             <ThemeToggle />
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate("/")}
+              className="hidden sm:inline-flex"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/")}
+              className="sm:hidden"
+            >
+              <ArrowLeft className="w-4 h-4" />
             </Button>
           </div>
         </div>
       </header>
 
-      <div className="pt-32 pb-20 px-4 relative z-10">
+      <div className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-3 sm:px-4 relative z-10">
         <div className="container mx-auto max-w-7xl">
           {/* Header Section */}
-          <div className="text-center mb-12 animate-slide-up">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          <div className="text-center mb-8 sm:mb-12 animate-slide-up">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-3 sm:mb-4">
               Choose Your <span className="gradient-text">Perfect Plan</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
               {fromWizard
                 ? "To create your complete course, please select an offer below"
                 : "Transform your expertise into beautiful courses with the plan that fits your ambitions"
@@ -162,10 +171,10 @@ const Pricing = () => {
             </p>
 
             {/* Monthly/Annual Toggle */}
-            <div className="inline-flex items-center gap-3 glass rounded-full p-1.5">
+            <div className="inline-flex items-center gap-2 sm:gap-3 glass rounded-full p-1 sm:p-1.5">
               <button
                 onClick={() => setIsAnnual(false)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${!isAnnual
+                className={`px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${!isAnnual
                   ? "bg-primary text-primary-foreground shadow-glow"
                   : "text-muted-foreground hover:text-foreground"
                   }`}
@@ -174,13 +183,13 @@ const Pricing = () => {
               </button>
               <button
                 onClick={() => setIsAnnual(true)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${isAnnual
+                className={`px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${isAnnual
                   ? "bg-primary text-primary-foreground shadow-glow"
                   : "text-muted-foreground hover:text-foreground"
                   }`}
               >
                 Annual
-                <span className="ml-2 text-xs bg-secondary/20 text-secondary px-2 py-0.5 rounded-full">
+                <span className="ml-1 sm:ml-2 text-xs bg-secondary/20 text-secondary px-1.5 sm:px-2 py-0.5 rounded-full">
                   Save 10%
                 </span>
               </button>
@@ -188,7 +197,7 @@ const Pricing = () => {
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {tiers.map((tier, index) => {
               const price = isAnnual ? tier.priceAnnual : tier.price;
               const isRecommended = recommended === tier.name;
@@ -211,7 +220,7 @@ const Pricing = () => {
                   )}
 
                   <div
-                    className={`h-full glass rounded-2xl p-8 transition-all duration-300 hover:scale-105 cursor-pointer ${tier.highlighted
+                    className={`h-full glass rounded-xl sm:rounded-2xl p-5 sm:p-8 transition-all duration-300 hover:scale-105 cursor-pointer ${tier.highlighted
                       ? "border-2 border-primary/50 shadow-glow"
                       : "border border-glass-border hover:border-primary/30"
                       } ${isRecommended ? "ring-2 ring-primary/30" : ""} ${selectedTier === tier.name ? "ring-2 ring-primary shadow-glow" : ""
